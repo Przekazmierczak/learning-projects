@@ -1,0 +1,14 @@
++------------+--------------+-----------------+
+| first_name |  last_name   | dollars per hit |
++------------+--------------+-----------------+
+| Albert     | Pujols       | 1030            |
+| Juan       | Pierre       | 1064            |
+| Jimmy      | Rollins      | 1111            |
+| David      | Eckstein     | 1204            |
+| Doug       | Mientkiewicz | 1295            |
+| Luis       | Rivas        | 1333            |
+| Terrence   | Long         | 1352            |
+| Paul       | Lo Duca      | 1564            |
+| Torii      | Hunter       | 1564            |
+| Aramis     | Ramirez      | 1574            |
++------------+--------------+-----------------+

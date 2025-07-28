@@ -1,0 +1,1 @@
+SELECT "english_title" AS "title", "artist" FROM "views" ORDER BY "contrast" DESC LIMIT 10;

@@ -1,0 +1,395 @@
++-----------------------------------------------------------------------------------+-----------------------+-----------+
+|                                       name                                        | per_pupil_expenditure | graduated |
++-----------------------------------------------------------------------------------+-----------------------+-----------+
+| Cambridge Rindge and Latin                                                        | 35113.7               | 92        |
+| Martha's Vineyard Charter Public School                                           | 35079.24              | 62.5      |
+| Martha's Vineyard Regional High                                                   | 34611.23              | 91.3      |
+| Minuteman Regional High                                                           | 32814.39              | 90.5      |
+| Weston High                                                                       | 30295.95              | 100       |
+| Codman Academy Charter Public School                                              | 27954.15              | 84        |
+| Joseph P Keefe Technical High School                                              | 26597.62              | 91.4      |
+| Another Course To College                                                         | 26589.17              | 92.1      |
+| Boston Adult Tech Academy                                                         | 26589.17              | 42.9      |
+| Boston Arts Academy                                                               | 26589.17              | 85.9      |
+| Boston Collaborative High School                                                  | 26589.17              | 18.5      |
+| Boston Community Leadership Academy                                               | 26589.17              | 78.2      |
+| Boston International High School & Newcomers Academy                              | 26589.17              | 50.5      |
+| Boston Latin Academy                                                              | 26589.17              | 97.9      |
+| Boston Latin School                                                               | 26589.17              | 97.6      |
+| Brighton High School                                                              | 26589.17              | 68.2      |
+| Burke High School                                                                 | 26589.17              | 80.1      |
+| Charlestown High School                                                           | 26589.17              | 51.2      |
+| Community Academy                                                                 | 26589.17              | 47.8      |
+| Community Academy of Science and Health                                           | 26589.17              | 67        |
+| Dearborn 6-12 STEM Academy                                                        | 26589.17              | 92        |
+| East Boston High School                                                           | 26589.17              | 89.1      |
+| English High School                                                               | 26589.17              | 79.1      |
+| Excel High School                                                                 | 26589.17              | 77.6      |
+| Fenway High School                                                                | 26589.17              | 87.5      |
+| Greater Egleston High School                                                      | 26589.17              | 39        |
+| Henderson K-12 Inclusion School Upper                                             | 26589.17              | 81.5      |
+| Lyon High School                                                                  | 26589.17              | 93.3      |
+| Madison Park Technical Vocational High School                                     | 26589.17              | 71        |
+| Margarita Muniz Academy                                                           | 26589.17              | 72.9      |
+| McKinley Schools                                                                  | 26589.17              | 34.3      |
+| New Mission High School                                                           | 26589.17              | 94.7      |
+| O'Bryant School of Math & Science                                                 | 26589.17              | 100       |
+| Quincy Upper School                                                               | 26589.17              | 91.5      |
+| Snowden International High School                                                 | 26589.17              | 78.8      |
+| TechBoston Academy                                                                | 26589.17              | 88.7      |
+| Community Charter School of Cambridge                                             | 26306.33              | 90.9      |
+| Hull High                                                                         | 26154.61              | 90.5      |
+| Brookline High                                                                    | 25689.75              | 95.6      |
+| Watertown High                                                                    | 25550.44              | 88.4      |
+| Upper Cape Cod Vocational Technical                                               | 25338.64              | 100       |
+| Nantucket High                                                                    | 25267.23              | 93        |
+| Cape Cod Region Vocational Technical                                              | 25144.25              | 92.6      |
+| Franklin County Technical                                                         | 25107.13              | 93.3      |
+| Rockport High                                                                     | 24917.77              | 97        |
+| Charles McCann Vocational Technical                                               | 24890.29              | 93        |
+| Edward M. Kennedy Academy for Health Careers: A Horace Mann Charter Public School | 24835.64              | 98.9      |
+| Boston Preparatory Charter Public School                                          | 24681.45              | 88.7      |
+| Shawsheen Valley Vocational Technical High School                                 | 24679.92              | 98.1      |
+| Amherst Regional High                                                             | 24555.36              | 92.1      |
+| Pathfinder Vocational Technical                                                   | 24381.2               | 89.1      |
+| City on a Hill Charter Public School                                              | 24310.37              | 78.5      |
+| Burlington High                                                                   | 24192.14              | 97.1      |
+| Wellesley Sr High                                                                 | 24183.11              | 97.9      |
+| Lowell Middlesex Academy Charter School                                           | 24167.84              | 17.2      |
+| Lincoln-Sudbury Regional High                                                     | 24060.71              | 97.9      |
+| Match Charter Public School                                                       | 24035.64              | 95.7      |
+| Dedham High                                                                       | 24010.81              | 94.5      |
+| Monument Mt Regional High                                                         | 23998.57              | 91.3      |
+| Pioneer Valley Regional                                                           | 23884.6               | 100       |
+| Mohawk Trail Regional School                                                      | 23807.15              | 86.4      |
+| Norfolk County Agricultural                                                       | 23658.3               | 98.5      |
+| Blue Hills Regional Vocational Technical                                          | 23629.7               | 98.5      |
+| Waltham Sr High                                                                   | 23607.2               | 83.1      |
+| Newton North High                                                                 | 23431.12              | 97.1      |
+| Newton South High                                                                 | 23431.12              | 98.4      |
+| Concord Carlisle High                                                             | 23344.72              | 98.7      |
+| Mt Everett Regional                                                               | 23341.36              | 92.2      |
+| Smith Vocational and Agricultural High                                            | 23303.33              | 95.2      |
+| Nauset Regional High                                                              | 23259.47              | 91.7      |
+| Prospect Hill Academy Charter School                                              | 23236.3               | 94.4      |
+| Gr Lawrence Regional Vocational Technical                                         | 23074.47              | 97.6      |
+| Boston Collegiate Charter School                                                  | 23073.48              | 91.3      |
+| Gr New Bedford Vocational Technical                                               | 22932.96              | 94.8      |
+| Falmouth High                                                                     | 22868.01              | 88        |
+| Full Circle High School                                                           | 22729.93              | 36.8      |
+| Somerville High                                                                   | 22729.93              | 91.9      |
+| Old Colony Regional Vocational Technical                                          | 22711.27              | 99.2      |
+| Tri-County Regional Vocational Technical                                          | 22170.02              | 98.2      |
+| South Shore Vocational Technical High                                             | 22165.9               | 94.9      |
+| Masconomet Regional High School                                                   | 22151.29              | 96.4      |
+| Wilmington High                                                                   | 22094.76              | 95.3      |
+| Dover-Sherborn Regional High                                                      | 21860.15              | 97.1      |
+| Northeast Metro Regional Vocational                                               | 21825.6               | 98.3      |
+| Hampshire Regional High                                                           | 21810.18              | 96.1      |
+| Manchester Essex Regional High School                                             | 21772.56              | 97.6      |
+| Whittier Regional Vocational                                                      | 21641.88              | 98.5      |
+| Montachusett Regional Vocational Technical                                        | 21573.81              | 97.4      |
+| Blackstone Valley                                                                 | 21509.51              | 99.7      |
+| Gr Lowell Regional Vocational Technical                                           | 21503.15              | 96.1      |
+| Phoenix Academy Charter Public High School, Chelsea                               | 21495.76              | 8.3       |
+| Lexington High                                                                    | 21429.38              | 98.7      |
+| Framingham High School                                                            | 21393.73              | 87.5      |
+| Neighborhood House Charter School                                                 | 21392.79              | 77.8      |
+| Bedford High                                                                      | 21372.7               | 98.4      |
+| Bristol County Agricultural High                                                  | 21286.32              | 95.9      |
+| Sandwich Middle High School                                                       | 21246.59              | 96.8      |
+| Academy Of the Pacific Rim Charter Public School                                  | 21216.47              | 93.2      |
+| Needham High                                                                      | 21146.56              | 98.1      |
+| Lenox Memorial High                                                               | 21138.03              | 96.7      |
+| Mashpee Middle-High School                                                        | 21104.55              | 97.5      |
+| Brooke Charter School                                                             | 21044.44              | 78.6      |
+| Bromfield                                                                         | 21006                 | 100       |
+| Diman Regional Vocational Technical High                                          | 20978.46              | 98        |
+| Andover High                                                                      | 20941.36              | 98        |
+| New Liberty Innovation School                                                     | 20930.81              | 4         |
+| Salem High                                                                        | 20930.81              | 88.9      |
+| Salem Prep High School                                                            | 20930.81              | 37.5      |
+| Maynard High                                                                      | 20901.19              | 89        |
+| Curtis-Tufts                                                                      | 20899.84              | 42.9      |
+| Medford High                                                                      | 20899.84              | 93.9      |
+| Triton Regional High School                                                       | 20857.87              | 92.9      |
+| Mt Greylock Regional High                                                         | 20817.31              | 94.4      |
+| Monomoy Regional High School                                                      | 20773.63              | 96.6      |
+| Dennis-Yarmouth Regional High                                                     | 20728.4               | 89.9      |
+| Ipswich High                                                                      | 20686.9               | 94.2      |
+| Nashoba Valley Technical High School                                              | 20629.19              | 95.5      |
+| Foxborough High                                                                   | 20620.81              | 98.4      |
+| Wayland High School                                                               | 20613.54              | 99.1      |
+| Essex North Shore Agricultural and Technical School                               | 20557.03              | 98        |
+| Hamilton-Wenham Regional High                                                     | 20544.67              | 97.8      |
+| Cohasset High School                                                              | 20525.08              | 100       |
+| Westwood High                                                                     | 20499.76              | 98.4      |
+| Woburn High                                                                       | 20497.87              | 92.8      |
+| Assabet Valley Vocational High School                                             | 20447.01              | 98.5      |
+| Norwood High                                                                      | 20402.34              | 96.3      |
+| Four Rivers Charter Public School                                                 | 20324.69              | 84.4      |
+| Bourne High School                                                                | 20294.55              | 95        |
+| Gloucester High                                                                   | 20131.02              | 80.4      |
+| Bristol-Plymouth Vocational Technical                                             | 20069.67              | 95.9      |
+| Turners Fall High                                                                 | 20020.83              | 76.2      |
+| Canton High                                                                       | 20012.55              | 96.2      |
+| Southeastern Regional Vocational Technical                                        | 19974.35              | 98.9      |
+| Newburyport High                                                                  | 19971.98              | 95.2      |
+| King Philip Regional High                                                         | 19918.26              | 96.3      |
+| Amesbury High                                                                     | 19883.64              | 93.6      |
+| Amesbury Innovation High School                                                   | 19883.64              | 85.7      |
+| Hudson High                                                                       | 19882.96              | 84.5      |
+| Wareham Cooperative Alternative School                                            | 19728.99              | 16        |
+| Wareham Senior High                                                               | 19728.99              | 81.3      |
+| Agawam High                                                                       | 19689.66              | 92.5      |
+| Algonquin Regional High                                                           | 19683.27              | 97.9      |
+| Roxbury Preparatory Charter School                                                | 19636.1               | 88.5      |
+| KIPP Academy Lynn Charter School                                                  | 19570.45              | 97.5      |
+| Nashoba Regional                                                                  | 19569.91              | 97        |
+| Plymouth North High                                                               | 19562.98              | 95.3      |
+| Plymouth South High                                                               | 19562.98              | 98.2      |
+| Marblehead High                                                                   | 19558.01              | 97.6      |
+| Paulo Freire Social Justice Charter School                                        | 19556.68              | 80.3      |
+| Excel Academy Charter School                                                      | 19547.89              | 99.4      |
+| Lee Middle/High School                                                            | 19547.75              | 93.9      |
+| Drury High                                                                        | 19460.82              | 82.4      |
+| Billerica Memorial High School                                                    | 19448.64              | 95.6      |
+| Randolph High                                                                     | 19438.97              | 76.7      |
+| Bellingham High School                                                            | 19438.2               | 94.7      |
+| Keough Memorial Academy                                                           | 19438.2               | 66.7      |
+| Francis W. Parker Charter Essential School                                        | 19432.43              | 91.7      |
+| Mansfield High                                                                    | 19431.36              | 97.2      |
+| Bay Path Regional Vocational Technical High School                                | 19363.97              | 98.1      |
+| Salem Academy Charter School                                                      | 19262.34              | 98.3      |
+| Southbridge Academy                                                               | 19261.52              | 14.3      |
+| Southbridge High School                                                           | 19261.52              | 58.9      |
+| Monson High School                                                                | 19243.81              | 90.3      |
+| Tewksbury Memorial High                                                           | 19139.45              | 96.3      |
+| Barnstable High                                                                   | 19121.39              | 82.5      |
+| Boston Day and Evening Academy Charter School                                     | 19085.9               | 5.3       |
+| Gateway Regional High                                                             | 19062.6               | 93        |
+| North Reading High                                                                | 19035.75              | 97.9      |
+| Swampscott High                                                                   | 18977.66              | 94.6      |
+| Groton Dunstable Regional                                                         | 18968.5               | 99.5      |
+| Sharon High                                                                       | 18963.94              | 93        |
+| Acton-Boxborough Regional High                                                    | 18957.61              | 98.8      |
+| Chelsea High                                                                      | 18951.75              | 77        |
+| Chelsea Opportunity Academy                                                       | 18951.75              | 8.8       |
+| Millbury Junior/Senior High                                                       | 18937.93              | 90.3      |
+| Frontier Regional                                                                 | 18888.77              | 91.5      |
+| Rockland Senior High                                                              | 18816.56              | 91.8      |
+| Avon Middle High School                                                           | 18771.55              | 80        |
+| Holyoke High                                                                      | 18731.99              | 75.8      |
+| South Shore Charter Public School                                                 | 18721.63              | 92.3      |
+| Ralph C Mahar Regional                                                            | 18682.74              | 90.7      |
+| Phoenix Academy Public Charter High School, Lawrence                              | 18677.05              | 8.3       |
+| Conservatory of the Arts                                                          | 18642.14              | 93.8      |
+| Gateway to College at Holyoke Community College                                   | 18642.14              | 55.6      |
+| Gateway to College at Springfield Technical Community College                     | 18642.14              | 90.9      |
+| High School Of Commerce                                                           | 18642.14              | 86.8      |
+| John J Duggan Academy                                                             | 18642.14              | 98.1      |
+| Roger L. Putnam Vocational Technical Academy                                      | 18642.14              | 96.8      |
+| Springfield Central High                                                          | 18642.14              | 93.6      |
+| Springfield High School                                                           | 18642.14              | 20        |
+| Springfield High School of Science and Technology                                 | 18642.14              | 91.5      |
+| Springfield Public Day High School                                                | 18642.14              | 32.1      |
+| The Springfield Renaissance School an Expeditionary Learning School               | 18642.14              | 97.6      |
+| Stoughton High                                                                    | 18530.25              | 90.5      |
+| Stoneham High                                                                     | 18512.78              | 95.1      |
+| Wakefield Memorial High                                                           | 18491.73              | 95.7      |
+| Millis High School                                                                | 18436.91              | 93.6      |
+| Medfield Senior High                                                              | 18435.05              | 98        |
+| Silver Lake Regional High                                                         | 18364.65              | 96.6      |
+| Ayer Shirley Regional High School                                                 | 18363.89              | 95.1      |
+| Pittsfield High                                                                   | 18360.88              | 86.8      |
+| Taconic High                                                                      | 18360.88              | 89.5      |
+| Berkshire Arts and Technology Charter Public School                               | 18349.64              | 93.5      |
+| Danvers High                                                                      | 18348.72              | 96.2      |
+| North Quincy High                                                                 | 18338.85              | 91.5      |
+| Quincy High                                                                       | 18338.85              | 93.5      |
+| Rising Tide Charter Public School                                                 | 18321.69              | 98.5      |
+| Saugus High                                                                       | 18320.35              | 88.1      |
+| Weymouth High School                                                              | 18306.98              | 90.4      |
+| Westborough High                                                                  | 18296.72              | 97.8      |
+| Marlborough High                                                                  | 18291.7               | 87.2      |
+| West Boylston Junior/Senior High                                                  | 18281.63              | 95.6      |
+| North Middlesex Regional                                                          | 18224.71              | 92.9      |
+| Old Rochester Regional High                                                       | 18163.85              | 94.8      |
+| Duxbury High                                                                      | 18103.55              | 98.4      |
+| Ludlow Senior High                                                                | 18069.02              | 93.3      |
+| Map Academy Charter School                                                        | 18045.03              | 26.3      |
+| Greenfield High                                                                   | 18018.75              | 87.4      |
+| East Longmeadow High                                                              | 18006.13              | 98.3      |
+| Medway High                                                                       | 17973.38              | 98.7      |
+| Pioneer Valley Performing Arts Charter Public School                              | 17972.7               | 93.3      |
+| Sizer School: A North Central Charter Essential School                            | 17947.98              | 100       |
+| Arlington High                                                                    | 17933.78              | 96.7      |
+| Pentucket Regional Sr High                                                        | 17931.97              | 96.9      |
+| Pioneer Valley Chinese Immersion Charter School                                   | 17912.21              | 96.6      |
+| Quabbin Regional High School                                                      | 17883.41              | 87.2      |
+| Georgetown High School                                                            | 17847.87              | 96.7      |
+| New Heights Charter School of Brockton                                            | 17839.32              | 92.9      |
+| Littleton High School                                                             | 17777.79              | 95.4      |
+| Tyngsborough High School                                                          | 17755.94              | 97.4      |
+| Seekonk High                                                                      | 17750.37              | 96.1      |
+| Northampton High                                                                  | 17616.27              | 94.3      |
+| Nipmuc Regional High                                                              | 17609.67              | 95        |
+| Scituate High School                                                              | 17609.03              | 96.8      |
+| Gateway to College                                                                | 17581.41              | 50        |
+| Uxbridge High                                                                     | 17581.41              | 87.1      |
+| Lynnfield High                                                                    | 17558.54              | 98.8      |
+| Palmer High                                                                       | 17549.4               | 95.1      |
+| Bartlett High School                                                              | 17545.84              | 65.8      |
+| Boston Green Academy Horace Mann Charter School                                   | 17473.88              | 88.5      |
+| Braintree High                                                                    | 17464.59              | 95.6      |
+| New Bedford High                                                                  | 17459.84              | 84.5      |
+| Trinity Day Academy                                                               | 17459.84              | 40        |
+| Whaling City Junior/Senior High School                                            | 17459.84              | 22.2      |
+| Belmont High                                                                      | 17450.83              | 99.7      |
+| Southwick Regional School                                                         | 17426.11              | 93.3      |
+| David Prouty High                                                                 | 17400.14              | 90.2      |
+| Carver Middle/High School                                                         | 17398.01              | 97.2      |
+| Natick High                                                                       | 17396.77              | 96.3      |
+| Walpole High                                                                      | 17395.59              | 95.2      |
+| Tahanto Regional High                                                             | 17386.56              | 100       |
+| Norton High                                                                       | 17349.52              | 95.6      |
+| High School Learning Center                                                       | 17329.75              | 75.8      |
+| Lawrence High School                                                              | 17329.75              | 83.8      |
+| RISE Academy                                                                      | 17329.75              | 48.6      |
+| School for Exceptional Studies                                                    | 17329.75              | 33.3      |
+| Hingham High                                                                      | 17319.48              | 95.9      |
+| Burncoat Senior High                                                              | 17315.9               | 86.4      |
+| Claremont Academy                                                                 | 17315.9               | 82.6      |
+| Doherty Memorial High                                                             | 17315.9               | 92.5      |
+| North High                                                                        | 17315.9               | 87.3      |
+| South High Community                                                              | 17315.9               | 86.8      |
+| University Pk Campus School                                                       | 17315.9               | 97.4      |
+| Worcester Technical High                                                          | 17315.9               | 98.9      |
+| Douglas High School                                                               | 17256.6               | 88.3      |
+| Norwell High                                                                      | 17246.65              | 99.4      |
+| Chelmsford High                                                                   | 17193.1               | 97        |
+| Hopkins Academy                                                                   | 17172.1               | 93        |
+| Somerset Berkley Regional High School                                             | 17168.99              | 96.6      |
+| North Brookfield High                                                             | 17162.11              | 80        |
+| Baystate Academy Charter Public School                                            | 17162.04              | 95.9      |
+| Global Learning Charter Public School                                             | 17159.64              | 100       |
+| Sutton High School                                                                | 17145.45              | 97.6      |
+| Wahconah Regional High                                                            | 17106.95              | 97        |
+| Hoosac Valley High School                                                         | 17090.72              | 83        |
+| Brockton Champion High School                                                     | 17067.61              | 32.3      |
+| Brockton High                                                                     | 17067.61              | 83.8      |
+| Edison Academy                                                                    | 17067.61              | 69        |
+| Huntington Therapeutic Day School                                                 | 17067.61              | 63.6      |
+| Franklin High                                                                     | 17063.18              | 96.9      |
+| Westport Middle-High School                                                       | 17050.64              | 87.9      |
+| Devens School                                                                     | 17044.47              | 12.5      |
+| Everett High                                                                      | 17044.47              | 85.1      |
+| Phoenix Academy Public Charter High School, Springfield                           | 17026.37              | 6.1       |
+| Chicopee Academy                                                                  | 17014.78              | 17.6      |
+| Chicopee Comprehensive High School                                                | 17014.78              | 91.2      |
+| Chicopee High                                                                     | 17014.78              | 88.7      |
+| CityLab Innovation High School                                                    | 17007.49              | 28.8      |
+| Revere High                                                                       | 17007.49              | 90.1      |
+| Quaboag Regional High                                                             | 16982.58              | 90.6      |
+| Minnechaug Regional High                                                          | 16970.87              | 97.5      |
+| Innovation Academy Charter School                                                 | 16920.56              | 88.8      |
+| B M C Durfee High                                                                 | 16905                 | 87.9      |
+| Resiliency Preparatory Academy                                                    | 16905                 | 50.8      |
+| Stone PK-12 School                                                                | 16905                 | 28.6      |
+| Milton High                                                                       | 16863.97              | 95.4      |
+| Abby Kelley Foster Charter Public School                                          | 16853.85              | 98.8      |
+| Winchester High School                                                            | 16817.9               | 98.9      |
+| Malden High                                                                       | 16747.63              | 82.1      |
+| Gateway Academy                                                                   | 16705.23              | 50        |
+| Greenleaf Academy                                                                 | 16705.23              | 36.4      |
+| Haverhill High                                                                    | 16705.23              | 85.4      |
+| Longmeadow High                                                                   | 16704.59              | 99.5      |
+| Advanced Math and Science Academy Charter School                                  | 16675.46              | 98.6      |
+| Northbridge High                                                                  | 16675.15              | 87.1      |
+| Leblanc Therapeutic Day School                                                    | 16639.4               | 77.8      |
+| Lowell High                                                                       | 16639.4               | 82.8      |
+| The Career Academy                                                                | 16639.4               | 60.5      |
+| Westfield High                                                                    | 16630.53              | 94.5      |
+| Westfield Technical Academy                                                       | 16630.53              | 94.9      |
+| Reading Memorial High                                                             | 16616.08              | 98.2      |
+| Sturgis Charter Public School                                                     | 16561.31              | 98        |
+| Dighton-Rehoboth Regional High School                                             | 16537.96              | 96.3      |
+| Marshfield High                                                                   | 16526.74              | 97.1      |
+| Milford High                                                                      | 16497.44              | 83.2      |
+| Hopedale Jr Sr High                                                               | 16471.48              | 97.3      |
+| Pembroke High School                                                              | 16435.27              | 95.1      |
+| Granby Jr Sr High School                                                          | 16403.29              | 94.5      |
+| Holbrook Middle High School                                                       | 16394.15              | 88.2      |
+| Argosy Collegiate Charter School                                                  | 16388.31              | 68.6      |
+| Winthrop High School                                                              | 16354.38              | 90.9      |
+| Classical High                                                                    | 16351.7               | 86.4      |
+| Fecteau-Leary Junior/Senior High School                                           | 16351.7               | 57.1      |
+| Lynn English High                                                                 | 16351.7               | 81.5      |
+| Lynn Vocational Technical Institute                                               | 16351.7               | 97.5      |
+| Fitchburg High                                                                    | 16338.69              | 92.9      |
+| Goodrich Academy                                                                  | 16338.69              | 80.2      |
+| Athol High                                                                        | 16318.64              | 72.4      |
+| Pioneer Charter School of Science II                                              | 16308.22              | 98        |
+| Westford Academy                                                                  | 16256.4               | 99.1      |
+| Taunton Alternative High School                                                   | 16239.97              | 79.3      |
+| Taunton High                                                                      | 16239.97              | 94.4      |
+| Middleborough High                                                                | 16198.65              | 95.3      |
+| Peabody Veterans Memorial High                                                    | 16188.62              | 86.8      |
+| Ashland High                                                                      | 16151.91              | 97.2      |
+| Abington High                                                                     | 16143.23              | 93.8      |
+| Oxford High                                                                       | 16137.05              | 89.7      |
+| Dartmouth High                                                                    | 16107.25              | 93        |
+| Clinton Senior High                                                               | 16102.46              | 92.9      |
+| Beverly High                                                                      | 16081.38              | 92.9      |
+| West Springfield High                                                             | 16081.37              | 90.7      |
+| Pioneer Charter School of Science                                                 | 16080.76              | 98        |
+| South Hadley High                                                                 | 16069.8               | 96.6      |
+| Murdock Academy for Success                                                       | 16066.88              | 26.7      |
+| Murdock High School                                                               | 16066.88              | 86        |
+| North Andover High                                                                | 16052.29              | 98.1      |
+| Oliver Ames High                                                                  | 16047.75              | 97.1      |
+| Leicester High                                                                    | 16044.98              | 92.9      |
+| Shepherd Hill Regional High                                                       | 15953.58              | 91.6      |
+| Ware Junior/Senior High School                                                    | 15904.34              | 74.3      |
+| Methuen High                                                                      | 15902.93              | 91.3      |
+| Hampden Charter School of Science East                                            | 15888.59              | 94.5      |
+| Hopkinton High                                                                    | 15870.07              | 99.7      |
+| Holliston High                                                                    | 15822.37              | 95.9      |
+| Whitman Hanson Regional                                                           | 15774.38              | 91        |
+| Easthampton High                                                                  | 15682.73              | 89.8      |
+| Blackstone Millville RHS                                                          | 15554.2               | 94.7      |
+| Gardner Academy for Learning and Technology                                       | 15454.58              | 60.5      |
+| Gardner High                                                                      | 15454.58              | 94        |
+| Belchertown High                                                                  | 15420.41              | 97.1      |
+| Wachusett Regional High                                                           | 15412.34              | 96.4      |
+| Apponequet Regional High                                                          | 15402.08              | 96.6      |
+| Foxborough Regional Charter School                                                | 15367.85              | 96.9      |
+| Joseph Case High                                                                  | 15361.85              | 98.5      |
+| Attleboro Community Academy                                                       | 15329.28              | 68        |
+| Attleboro High                                                                    | 15329.28              | 94        |
+| Fairhaven High                                                                    | 15287.17              | 93        |
+| Hanover High                                                                      | 15268.87              | 99.5      |
+| Smith Academy                                                                     | 15224.63              | 96        |
+| Lunenburg High                                                                    | 15200.9               | 97.3      |
+| Shrewsbury High School                                                            | 15200.15              | 98.1      |
+| Center For Technical Education Innovation                                         | 15178.86              | 96.4      |
+| Leominster Center for Excellence                                                  | 15178.86              | 84.6      |
+| Leominster High School                                                            | 15178.86              | 96.2      |
+| Tantasqua Regional Sr High                                                        | 15178.61              | 95.5      |
+| Tantasqua Regional Vocational                                                     | 15178.61              | 98.2      |
+| East Bridgewater JR./SR. High School                                              | 15155.67              | 96        |
+| Auburn Senior High                                                                | 15022.63              | 92.4      |
+| Mystic Valley Regional Charter School                                             | 15001                 | 98.8      |
+| Narragansett Regional High                                                        | 14990.67              | 88.1      |
+| Grafton High School                                                               | 14926.96              | 93.6      |
+| Oakmont Regional High School                                                      | 14920.21              | 95.9      |
+| North Attleboro High                                                              | 14664.85              | 95.1      |
+| Bridgewater-Raynham Regional                                                      | 14606.21              | 96.2      |
+| West Bridgewater Junior/Senior                                                    | 14595.33              | 96.3      |
+| Melrose High                                                                      | 14565.67              | 97        |
+| Atlantis Charter School                                                           | 14406.56              | 96.5      |
+| Springfield International Charter School                                          | 13675.68              | 97        |
+| Dracut Senior High                                                                | 13660.99              | 96.1      |
+| TEC Connections Academy Commonwealth Virtual School                               | 10564.26              | 47.9      |
+| Greater Commonwealth Virtual School                                               | 10043.6               | 47.6      |
++-----------------------------------------------------------------------------------+-----------------------+-----------+

@@ -1,0 +1,1 @@
+SELECT "title" FROM "episodes" WHERE "title" LIKE "The %" AND ("season" = 1 OR "season" = 2);

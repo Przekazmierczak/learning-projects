@@ -1,0 +1,9 @@
++--------------------+----------------+
+|        name        | average salary |
++--------------------+----------------+
+| Minnesota Twins    | 893703.7       |
+| Montreal Expos     | 1134177.42     |
+| Florida Marlins    | 1153629.03     |
+| Oakland Athletics  | 1252250.0      |
+| Kansas City Royals | 1265089.29     |
++--------------------+----------------+

@@ -1,0 +1,1004 @@
++------+------------------------------+-----------------------+------------+-----------+--------+--------+---------+
+|  id  |             name             |         class         |    mass    | discovery |  year  |  lat   |  long   |
++------+------------------------------+-----------------------+------------+-----------+--------+--------+---------+
+| 1    | Apache Junction              | Iron, IIIAB           | 25000.0    | Found     | NULL   | 33.45  | -111.52 |
+| 2    | Asarco Mexicana              | Iron, IIIAB           | NULL       | Found     | NULL   | NULL   | NULL    |
+| 3    | Aus                          | L                     | 30.2       | Found     | NULL   | -26.67 | 16.25   |
+| 4    | Benares (b)                  | Iron                  | NULL       | Found     | NULL   | 25.33  | 83.0    |
+| 5    | Cacilandia                   | H6                    | NULL       | Found     | NULL   | NULL   | NULL    |
+| 6    | California                   | Iron, IAB-sLL         | NULL       | Found     | NULL   | NULL   | NULL    |
+| 7    | Camp Wood                    | Iron, IIIAB           | 148000.0   | Found     | NULL   | 29.77  | -99.88  |
+| 8    | Cochabamba                   | CM2                   | 85.0       | Found     | NULL   | NULL   | NULL    |
+| 9    | Cook                         | Unknown               | NULL       | Found     | NULL   | NULL   | NULL    |
+| 10   | Czestochowa Rakow I          | Iron                  | NULL       | Found     | NULL   | 50.8   | 19.12   |
+| 11   | Czestochowa Rakow II         | Iron                  | NULL       | Found     | NULL   | 50.8   | 19.12   |
+| 12   | Dhofar 1073                  | CV3                   | 2.72       | Found     | NULL   | 19.33  | 54.78   |
+| 13   | Dhofar 1738                  | L5                    | 853.0      | Found     | NULL   | 19.33  | 54.91   |
+| 14   | Dhofar 1739                  | H4                    | 130.0      | Found     | NULL   | 19.18  | 54.89   |
+| 15   | Dhofar 1740                  | L6                    | 30.8       | Found     | NULL   | 19.16  | 54.88   |
+| 16   | Dhofar 1741                  | H5                    | 66.0       | Found     | NULL   | 19.11  | 54.82   |
+| 17   | Dhofar 1742                  | H5                    | 4.4        | Found     | NULL   | 19.11  | 54.83   |
+| 18   | Dhofar 1743                  | L4                    | 84.0       | Found     | NULL   | 19.06  | 54.88   |
+| 19   | Dhofar 1744                  | H5                    | 1414.0     | Found     | NULL   | 19.15  | 54.59   |
+| 20   | Dhofar 1745                  | H5                    | 12.1       | Found     | NULL   | 19.08  | 54.51   |
+| 21   | Dhofar 1746                  | H5                    | 19.2       | Found     | NULL   | 19.06  | 54.51   |
+| 22   | Dhofar 1747                  | H5                    | 81.0       | Found     | NULL   | 19.06  | 54.51   |
+| 23   | Dhofar 1748                  | H5                    | 34.4       | Found     | NULL   | 19.08  | 54.58   |
+| 24   | Dhofar 1749                  | H5                    | 35.3       | Found     | NULL   | 19.16  | 54.76   |
+| 25   | Dhofar 1750                  | H5                    | 123.0      | Found     | NULL   | 19.19  | 54.61   |
+| 26   | Dhofar 1751                  | H5                    | 20.9       | Found     | NULL   | 19.2   | 54.59   |
+| 27   | Dhofar 1752                  | H5                    | 88.0       | Found     | NULL   | 19.24  | 54.75   |
+| 28   | Dhofar 910                   | Lunar (anorth)        | 142.0      | Found     | NULL   | 19.33  | 54.78   |
+| 29   | Dhofar 911                   | Lunar (anorth)        | 194.0      | Found     | NULL   | 19.33  | 54.78   |
+| 30   | Duan                         | Iron                  | NULL       | Found     | NULL   | 23.9   | 108.1   |
+| 31   | El Chiflón                   | Iron?                 | NULL       | Found     | NULL   | -29.43 | -66.83  |
+| 32   | Elizabeth                    | Iron, IAB-ung         | 732.0      | Found     | NULL   | 42.32  | -90.22  |
+| 33   | Espiritu Santo               | Iron, IIIAB           | 89.0       | Found     | NULL   | 20.0   | -102.18 |
+| 34   | Fengzhen                     | Iron, IIIAB           | 458.0      | Found     | NULL   | 40.5   | 113.0   |
+| 35   | Fujian                       | Iron                  | NULL       | Found     | NULL   | 26.0   | 119.0   |
+| 36   | Fuzzy Creek                  | Iron, IVA             | 2700.0     | Found     | NULL   | 31.61  | -99.9   |
+| 37   | Guixi                        | Iron, IIIAB           | 220000.0   | Found     | NULL   | 28.28  | 117.18  |
+| 38   | Guizhou                      | Iron                  | NULL       | Found     | NULL   | 25.4   | 107.5   |
+| 39   | Hammadah al Hamra 260        | L6                    | 530.0      | Found     | NULL   | 28.61  | 12.95   |
+| 40   | Havana                       | Iron, IAB complex     | NULL       | Found     | NULL   | 40.33  | -90.05  |
+| 41   | Huangling                    | Iron, IVA             | NULL       | Found     | NULL   | 29.5   | 110.0   |
+| 42   | Hughes 002                   | L6                    | 1074.0     | Found     | NULL   | -30.57 | 129.63  |
+| 43   | Hughes 003                   | H5                    | 3200.0     | Found     | NULL   | -30.23 | 129.4   |
+| 44   | Idaho                        | Iron, IAB-MG          | NULL       | Found     | NULL   | NULL   | NULL    |
+| 45   | Itapuranga                   | Iron, IAB-MG          | 628000.0   | Found     | NULL   | -15.58 | -50.15  |
+| 46   | Jiddat Arkad 003             | L5                    | 148.0      | Found     | NULL   | 18.97  | 56.43   |
+| 47   | Jiddat al Harasis 719        | L6                    | 2144.0     | Found     | NULL   | 19.66  | 55.73   |
+| 48   | Jiddat al Harasis 720        | H4                    | 172.0      | Found     | NULL   | 19.69  | 55.68   |
+| 49   | Jiddat al Harasis 721        | H5                    | 859.0      | Found     | NULL   | 19.69  | 55.68   |
+| 50   | Jiddat al Harasis 722        | H5                    | 291.0      | Found     | NULL   | 19.67  | 55.64   |
+| 51   | Jiddat al Harasis 723        | H4                    | 1876.0     | Found     | NULL   | 19.64  | 55.58   |
+| 52   | Jiddat al Harasis 724        | L6                    | 14.2       | Found     | NULL   | 19.64  | 55.6    |
+| 53   | Jiddat al Harasis 725        | L5                    | 49.0       | Found     | NULL   | 19.75  | 55.76   |
+| 54   | Jiddat al Harasis 726        | L6                    | 507.0      | Found     | NULL   | 19.7   | 55.25   |
+| 55   | Jiddat al Harasis 727        | L6                    | 301.0      | Found     | NULL   | 19.7   | 55.76   |
+| 56   | Jiddat al Harasis 728        | H4                    | 69.0       | Found     | NULL   | 19.68  | 55.7    |
+| 57   | Jiddat al Harasis 729        | L5                    | 951.0      | Found     | NULL   | 19.66  | 55.56   |
+| 58   | Jiddat al Harasis 730        | L4                    | 1040.0     | Found     | NULL   | 19.64  | 55.58   |
+| 59   | Jiddat al Harasis 731        | H4                    | 72.3       | Found     | NULL   | 19.57  | 55.57   |
+| 60   | Jiddat al Harasis 732        | L5                    | 154.0      | Found     | NULL   | 19.7   | 56.23   |
+| 61   | Jiddat al Harasis 733        | H6                    | 1296.0     | Found     | NULL   | 19.56  | 56.21   |
+| 62   | Jiddat al Harasis 734        | L4                    | 371.0      | Found     | NULL   | 19.18  | 56.43   |
+| 63   | Jiddat al Harasis 735        | H6                    | 33.4       | Found     | NULL   | 19.51  | 56.3    |
+| 64   | Jiddat al Harasis 736        | L4                    | 24.7       | Found     | NULL   | 19.83  | 56.48   |
+| 65   | Jiddat al Harasis 737        | L5                    | 1137.0     | Found     | NULL   | 19.77  | 56.4    |
+| 66   | Jiddat al Harasis 738        | H5                    | 469.0      | Found     | NULL   | 19.77  | 56.4    |
+| 67   | Jiddat al Harasis 739        | L4                    | 587.0      | Found     | NULL   | 19.83  | 56.44   |
+| 68   | Jiddat al Harasis 740        | L4                    | 354.0      | Found     | NULL   | 19.79  | 56.48   |
+| 69   | Jiddat al Harasis 741        | L4                    | 31.6       | Found     | NULL   | 19.81  | 56.49   |
+| 70   | Jiddat al Harasis 742        | L4                    | 1144.0     | Found     | NULL   | 19.83  | 56.47   |
+| 71   | Jiddat al Harasis 743        | L4                    | 105.0      | Found     | NULL   | 19.83  | 56.48   |
+| 72   | Jiddat al Harasis 744        | L4                    | 17.3       | Found     | NULL   | 19.85  | 56.45   |
+| 73   | Jiddat al Harasis 745        | L4                    | 30.5       | Found     | NULL   | 19.85  | 56.47   |
+| 74   | Jiddat al Harasis 746        | L4                    | 22.9       | Found     | NULL   | 19.85  | 56.47   |
+| 75   | Jiddat al Harasis 747        | L5                    | 37.9       | Found     | NULL   | 19.85  | 56.44   |
+| 76   | Jiddat al Harasis 748        | L5                    | 18.8       | Found     | NULL   | 19.85  | 56.44   |
+| 77   | Jiddat al Harasis 749        | L5                    | 33.0       | Found     | NULL   | 19.85  | 56.44   |
+| 78   | Jiddat al Harasis 750        | L5                    | 269.0      | Found     | NULL   | 19.82  | 56.47   |
+| 79   | Jiddat al Harasis 751        | L5                    | 378.0      | Found     | NULL   | 19.83  | 56.45   |
+| 80   | Jiddat al Harasis 752        | L5                    | 174.0      | Found     | NULL   | 19.82  | 56.44   |
+| 81   | Jiddat al Harasis 753        | L5                    | 34.2       | Found     | NULL   | 19.85  | 56.46   |
+| 82   | Jiddat al Harasis 754        | L5                    | 51.0       | Found     | NULL   | 19.85  | 56.46   |
+| 83   | Jiddat al Harasis 755        | L5                    | 17.5       | Found     | NULL   | 19.84  | 56.46   |
+| 84   | Jiddat al Harasis 756        | L5                    | 74.0       | Found     | NULL   | 19.86  | 56.45   |
+| 85   | Jiddat al Harasis 757        | LL5                   | 178.0      | Found     | NULL   | 19.72  | 55.71   |
+| 86   | Jiddat al Harasis 758        | L6                    | 271.0      | Found     | NULL   | 19.77  | 55.69   |
+| 87   | Jiddat al Harasis 759        | L5                    | 347.0      | Found     | NULL   | 19.72  | 55.72   |
+| 88   | Jiddat al Harasis 760        | H5                    | 49.0       | Found     | NULL   | 19.68  | 55.59   |
+| 89   | Jiddat al Harasis 761        | H5                    | 1251.0     | Found     | NULL   | 19.95  | 56.39   |
+| 90   | Jiddat al Harasis 762        | L5                    | 46.0       | Found     | NULL   | 19.85  | 56.44   |
+| 91   | Jiddat al Harasis 763        | L5                    | 62.0       | Found     | NULL   | 19.84  | 56.44   |
+| 92   | Jiddat al Harasis 764        | L5                    | 1236.0     | Found     | NULL   | 19.81  | 56.48   |
+| 93   | Jiddat al Harasis 765        | H4                    | 45.0       | Found     | NULL   | 19.8   | 56.47   |
+| 94   | Jiddat al Harasis 766        | L4                    | 73.0       | Found     | NULL   | 19.81  | 56.49   |
+| 95   | Jiddat al Harasis 767        | L4                    | 91.0       | Found     | NULL   | 19.81  | 56.51   |
+| 96   | Jiddat al Harasis 768        | L4                    | 64.0       | Found     | NULL   | 19.81  | 56.51   |
+| 97   | Jiddat al Harasis 769        | L4                    | 36.5       | Found     | NULL   | 19.81  | 56.51   |
+| 98   | Jiddat al Harasis 770        | L4                    | 26.0       | Found     | NULL   | 19.81  | 56.49   |
+| 99   | Jiddat al Harasis 771        | L4                    | 40.3       | Found     | NULL   | 19.81  | 56.51   |
+| 100  | Jiddat al Harasis 772        | H4                    | 39.6       | Found     | NULL   | 19.81  | 56.51   |
+| 101  | Jiddat al Harasis 773        | L4                    | 19.32      | Found     | NULL   | 19.81  | 56.51   |
+| 102  | Jiddat al Harasis 774        | L4                    | 131.0      | Found     | NULL   | 19.81  | 56.42   |
+| 103  | Jiddat al Harasis 775        | L4                    | 17.9       | Found     | NULL   | 19.81  | 56.51   |
+| 104  | Jiddat al Harasis 776        | L4                    | 85.0       | Found     | NULL   | 19.82  | 56.49   |
+| 105  | Jiddat al Harasis 777        | L4                    | 130.0      | Found     | NULL   | 19.82  | 56.45   |
+| 106  | Jiddat al Harasis 778        | L4                    | 367.0      | Found     | NULL   | 19.83  | 56.44   |
+| 107  | Jiddat al Harasis 779        | L4                    | 57.0       | Found     | NULL   | 19.85  | 56.44   |
+| 108  | Jiddat al Harasis 780        | L4                    | 32.5       | Found     | NULL   | 19.82  | 56.44   |
+| 109  | Jiddat al Harasis 781        | L4                    | 169.0      | Found     | NULL   | 19.8   | 56.43   |
+| 110  | Jiddat al Harasis 782        | L4                    | 532.0      | Found     | NULL   | 19.8   | 56.54   |
+| 111  | Jiddat al Harasis 783        | L4                    | 553.5      | Found     | NULL   | 19.84  | 56.42   |
+| 112  | Jiddat al Harasis 784        | H4                    | 182.0      | Found     | NULL   | 19.84  | 56.42   |
+| 113  | Jiddat al Harasis 785        | L6                    | 36.7       | Found     | NULL   | 20.0   | 56.33   |
+| 114  | Jiddat al Harasis 786        | L5                    | 227.0      | Found     | NULL   | 19.84  | 55.89   |
+| 115  | Jiddat al Harasis 787        | L6                    | 6.8        | Found     | NULL   | 19.82  | 55.72   |
+| 116  | Jiddat al Harasis 788        | H4                    | 108.0      | Found     | NULL   | 19.73  | 55.72   |
+| 117  | Jiddat al Harasis 789        | L6                    | 227.0      | Found     | NULL   | 19.71  | 55.74   |
+| 118  | Jiddat al Harasis 790        | L6                    | 868.0      | Found     | NULL   | 19.7   | 55.73   |
+| 119  | Jiddat al Harasis 791        | L6                    | 1194.0     | Found     | NULL   | 19.73  | 55.7    |
+| 120  | Jiddat al Harasis 792        | H6                    | 353.0      | Found     | NULL   | 19.82  | 55.93   |
+| 121  | Jiddat al Harasis 793        | L5                    | 420.0      | Found     | NULL   | 19.93  | 55.96   |
+| 122  | Jiddat al Harasis 794        | L5                    | 387.0      | Found     | NULL   | 19.97  | 55.99   |
+| 123  | Jiddat al Harasis 795        | L4                    | 5.3        | Found     | NULL   | 19.88  | 55.9    |
+| 124  | Jiddat al Harasis 796        | L5                    | 22.8       | Found     | NULL   | 19.81  | 55.75   |
+| 125  | Jiddat al Harasis 797        | L5                    | 249.0      | Found     | NULL   | 19.73  | 55.57   |
+| 126  | Kalahari 001                 | H4/5                  | 150.0      | Found     | NULL   | NULL   | NULL    |
+| 127  | Kalahari 002                 | H5                    | 141.0      | Found     | NULL   | NULL   | NULL    |
+| 128  | Kalahari 003                 | H5/6                  | 827.0      | Found     | NULL   | NULL   | NULL    |
+| 129  | Kalahari 004                 | H5                    | 87.0       | Found     | NULL   | NULL   | NULL    |
+| 130  | Kalahari 005                 | H5                    | 220.0      | Found     | NULL   | NULL   | NULL    |
+| 131  | Kalahari 006                 | H5                    | 157.0      | Found     | NULL   | NULL   | NULL    |
+| 132  | Kalahari 007                 | H4                    | 72.0       | Found     | NULL   | NULL   | NULL    |
+| 133  | Karavannoe                   | Pallasite, PES        | 132000.0   | Found     | NULL   | 57.78  | 47.68   |
+| 134  | Moshesh                      | H                     | 200000.0   | Found     | NULL   | -30.1  | 28.72   |
+| 135  | Ness County (c)              | OC                    | 399.0      | Found     | NULL   | NULL   | NULL    |
+| 136  | Northwest Africa 048         | LL6                   | 851.0      | Found     | NULL   | NULL   | NULL    |
+| 137  | Northwest Africa 050         | H5                    | 1145.0     | Found     | NULL   | 29.92  | -5.58   |
+| 138  | Northwest Africa 051         | L4                    | 330.0      | Found     | NULL   | 29.92  | -5.58   |
+| 139  | Northwest Africa 053         | R4                    | 390.0      | Found     | NULL   | 32.05  | -3.03   |
+| 140  | Northwest Africa 054         | LL5                   | 305.0      | Found     | NULL   | 32.05  | -3.03   |
+| 141  | Northwest Africa 055         | L4                    | 42000.0    | Found     | NULL   | 32.05  | -3.03   |
+| 142  | Northwest Africa 056         | H5                    | 436.0      | Found     | NULL   | 27.17  | -9.5    |
+| 143  | Northwest Africa 057         | H5                    | 370.0      | Found     | NULL   | 27.17  | -9.5    |
+| 144  | Northwest Africa 058         | L6                    | 1091.0     | Found     | NULL   | 27.17  | -9.5    |
+| 145  | Northwest Africa 059         | H3.9/4                | 27000.0    | Found     | NULL   | 31.83  | -2.93   |
+| 146  | Northwest Africa 1007        | L6                    | 4420.0     | Found     | NULL   | 0.0    | 0.0     |
+| 147  | Northwest Africa 1239        | Diogenite-pm          | 237.0      | Found     | NULL   | NULL   | NULL    |
+| 148  | Northwest Africa 1611        | Iron, IAB-MG          | 6000.0     | Found     | NULL   | 0.0    | 0.0     |
+| 149  | Northwest Africa 1809        | LL6                   | 214.0      | Found     | NULL   | NULL   | NULL    |
+| 150  | Northwest Africa 1811        | LL6                   | 300.0      | Found     | NULL   | NULL   | NULL    |
+| 151  | Northwest Africa 1993        | H6                    | 1670.0     | Found     | NULL   | NULL   | NULL    |
+| 152  | Northwest Africa 2016        | H4                    | 215.0      | Found     | NULL   | NULL   | NULL    |
+| 153  | Northwest Africa 2036        | EL6                   | 390.0      | Found     | NULL   | 31.59  | -5.77   |
+| 154  | Northwest Africa 2055        | H4                    | 148.0      | Found     | NULL   | NULL   | NULL    |
+| 155  | Northwest Africa 2056        | L4                    | 1447.0     | Found     | NULL   | NULL   | NULL    |
+| 156  | Northwest Africa 2057        | H4                    | 958.0      | Found     | NULL   | NULL   | NULL    |
+| 157  | Northwest Africa 2188        | H4                    | 129.0      | Found     | NULL   | NULL   | NULL    |
+| 158  | Northwest Africa 2193        | L6                    | 785.0      | Found     | NULL   | NULL   | NULL    |
+| 159  | Northwest Africa 2195        | LL3.6                 | 152.5      | Found     | NULL   | NULL   | NULL    |
+| 160  | Northwest Africa 2196        | CR2                   | 141.7      | Found     | NULL   | NULL   | NULL    |
+| 161  | Northwest Africa 2226        | Howardite             | 1004.0     | Found     | NULL   | NULL   | NULL    |
+| 162  | Northwest Africa 2227        | Eucrite               | 302.0      | Found     | NULL   | NULL   | NULL    |
+| 163  | Northwest Africa 2350        | H4                    | 141.5      | Found     | NULL   | NULL   | NULL    |
+| 164  | Northwest Africa 2514        | H4                    | 6.6        | Found     | NULL   | NULL   | NULL    |
+| 165  | Northwest Africa 2599        | LL5                   | 234.5      | Found     | NULL   | 0.0    | 0.0     |
+| 166  | Northwest Africa 2601        | L3                    | 576.0      | Found     | NULL   | 0.0    | 0.0     |
+| 167  | Northwest Africa 2612        | H5                    | 1109.0     | Found     | NULL   | 0.0    | 0.0     |
+| 168  | Northwest Africa 2615        | H6                    | 202.8      | Found     | NULL   | 0.0    | 0.0     |
+| 169  | Northwest Africa 2740        | L5                    | 53822.0    | Found     | NULL   | NULL   | NULL    |
+| 170  | Northwest Africa 2741        | LL5                   | 1350.0     | Found     | NULL   | NULL   | NULL    |
+| 171  | Northwest Africa 3172        | L                     | 21029.0    | Found     | NULL   | NULL   | NULL    |
+| 172  | Northwest Africa 4052        | L3-6                  | 66.0       | Found     | NULL   | NULL   | NULL    |
+| 173  | Northwest Africa 4053        | H5                    | 610.0      | Found     | NULL   | NULL   | NULL    |
+| 174  | Northwest Africa 4054        | H5                    | 454.0      | Found     | NULL   | NULL   | NULL    |
+| 175  | Northwest Africa 4055        | L6                    | 196.0      | Found     | NULL   | NULL   | NULL    |
+| 176  | Northwest Africa 4057        | L3                    | 103.4      | Found     | NULL   | NULL   | NULL    |
+| 177  | Northwest Africa 4058        | LL6                   | 58.0       | Found     | NULL   | NULL   | NULL    |
+| 178  | Northwest Africa 4060        | L6                    | 292.0      | Found     | NULL   | NULL   | NULL    |
+| 179  | Northwest Africa 4061        | H4/5                  | 41.2       | Found     | NULL   | NULL   | NULL    |
+| 180  | Northwest Africa 4063        | L6                    | 132.4      | Found     | NULL   | NULL   | NULL    |
+| 181  | Northwest Africa 4064        | H6                    | 130.6      | Found     | NULL   | NULL   | NULL    |
+| 182  | Northwest Africa 4065        | H5                    | 146.4      | Found     | NULL   | NULL   | NULL    |
+| 183  | Northwest Africa 4066        | H5                    | 254.0      | Found     | NULL   | NULL   | NULL    |
+| 184  | Northwest Africa 4067        | L5                    | 335.4      | Found     | NULL   | NULL   | NULL    |
+| 185  | Northwest Africa 4068        | H4/5                  | 460.0      | Found     | NULL   | NULL   | NULL    |
+| 186  | Northwest Africa 4069        | L6                    | 506.0      | Found     | NULL   | NULL   | NULL    |
+| 187  | Northwest Africa 4072        | L5                    | 334.7      | Found     | NULL   | NULL   | NULL    |
+| 188  | Northwest Africa 4073        | H6                    | 242.0      | Found     | NULL   | NULL   | NULL    |
+| 189  | Northwest Africa 4074        | H5/6                  | 216.0      | Found     | NULL   | NULL   | NULL    |
+| 190  | Northwest Africa 4076        | L6                    | 143.1      | Found     | NULL   | NULL   | NULL    |
+| 191  | Northwest Africa 4077        | H6                    | 89.9       | Found     | NULL   | NULL   | NULL    |
+| 192  | Northwest Africa 4078        | L5                    | 53.1       | Found     | NULL   | NULL   | NULL    |
+| 193  | Northwest Africa 4079        | L5                    | 192.0      | Found     | NULL   | NULL   | NULL    |
+| 194  | Northwest Africa 4080        | L6                    | 99.1       | Found     | NULL   | NULL   | NULL    |
+| 195  | Northwest Africa 4083        | L4                    | 77.5       | Found     | NULL   | NULL   | NULL    |
+| 196  | Northwest Africa 4084        | H3                    | 70.0       | Found     | NULL   | NULL   | NULL    |
+| 197  | Northwest Africa 4085        | L6                    | 68.7       | Found     | NULL   | NULL   | NULL    |
+| 198  | Northwest Africa 4087        | L6                    | 57.8       | Found     | NULL   | NULL   | NULL    |
+| 199  | Northwest Africa 4089        | H/L4/5                | 96.8       | Found     | NULL   | NULL   | NULL    |
+| 200  | Northwest Africa 4090        | L6                    | 776.3      | Found     | NULL   | NULL   | NULL    |
+| 201  | Northwest Africa 4092        | L6                    | 147.6      | Found     | NULL   | NULL   | NULL    |
+| 202  | Northwest Africa 4094        | H4                    | 143.5      | Found     | NULL   | NULL   | NULL    |
+| 203  | Northwest Africa 4097        | H/L3                  | 128.5      | Found     | NULL   | NULL   | NULL    |
+| 204  | Northwest Africa 4098        | L4/5                  | 1470.0     | Found     | NULL   | NULL   | NULL    |
+| 205  | Northwest Africa 4101        | H4                    | 261.0      | Found     | NULL   | NULL   | NULL    |
+| 206  | Northwest Africa 4102        | L6                    | 169.0      | Found     | NULL   | NULL   | NULL    |
+| 207  | Northwest Africa 4103        | L3                    | 112.8      | Found     | NULL   | NULL   | NULL    |
+| 208  | Northwest Africa 4104        | H4                    | 60.0       | Found     | NULL   | NULL   | NULL    |
+| 209  | Northwest Africa 4107        | L6                    | 53.1       | Found     | NULL   | NULL   | NULL    |
+| 210  | Northwest Africa 4109        | L6                    | 233.0      | Found     | NULL   | NULL   | NULL    |
+| 211  | Northwest Africa 4110        | L6                    | 309.0      | Found     | NULL   | NULL   | NULL    |
+| 212  | Northwest Africa 4112        | L6                    | 45.0       | Found     | NULL   | NULL   | NULL    |
+| 213  | Northwest Africa 4113        | L4                    | 78.4       | Found     | NULL   | NULL   | NULL    |
+| 214  | Northwest Africa 4116        | H5/6                  | 90.6       | Found     | NULL   | NULL   | NULL    |
+| 215  | Northwest Africa 4117        | H3/4                  | 70.0       | Found     | NULL   | NULL   | NULL    |
+| 216  | Northwest Africa 4120        | L6                    | 15200.0    | Found     | NULL   | NULL   | NULL    |
+| 217  | Northwest Africa 4121        | L6                    | 750.0      | Found     | NULL   | NULL   | NULL    |
+| 218  | Northwest Africa 4124        | H6                    | 81.8       | Found     | NULL   | NULL   | NULL    |
+| 219  | Northwest Africa 4125        | L5/6                  | 209.0      | Found     | NULL   | NULL   | NULL    |
+| 220  | Northwest Africa 4127        | L6                    | 54.4       | Found     | NULL   | NULL   | NULL    |
+| 221  | Northwest Africa 4129        | H3                    | 42.9       | Found     | NULL   | NULL   | NULL    |
+| 222  | Northwest Africa 4135        | L6                    | 91.1       | Found     | NULL   | NULL   | NULL    |
+| 223  | Northwest Africa 4136        | L6                    | 78.2       | Found     | NULL   | NULL   | NULL    |
+| 224  | Northwest Africa 4137        | L6                    | 121.1      | Found     | NULL   | NULL   | NULL    |
+| 225  | Northwest Africa 4139        | H6                    | 341.0      | Found     | NULL   | NULL   | NULL    |
+| 226  | Northwest Africa 4140        | L6                    | 139.1      | Found     | NULL   | NULL   | NULL    |
+| 227  | Northwest Africa 4141        | L6                    | 70.3       | Found     | NULL   | NULL   | NULL    |
+| 228  | Northwest Africa 4142        | H4                    | 63.0       | Found     | NULL   | NULL   | NULL    |
+| 229  | Northwest Africa 4143        | L4                    | 74.4       | Found     | NULL   | NULL   | NULL    |
+| 230  | Northwest Africa 4145        | H4                    | 122.3      | Found     | NULL   | NULL   | NULL    |
+| 231  | Northwest Africa 4146        | L6                    | 305.6      | Found     | NULL   | NULL   | NULL    |
+| 232  | Northwest Africa 4150        | H/L6-melt rock        | 436.4      | Found     | NULL   | NULL   | NULL    |
+| 233  | Northwest Africa 4152        | H/L6                  | 91.7       | Found     | NULL   | NULL   | NULL    |
+| 234  | Northwest Africa 4153        | H/L6                  | 75.4       | Found     | NULL   | NULL   | NULL    |
+| 235  | Northwest Africa 4154        | H/L6                  | 132.5      | Found     | NULL   | NULL   | NULL    |
+| 236  | Northwest Africa 4155        | H/L6                  | 247.0      | Found     | NULL   | NULL   | NULL    |
+| 237  | Northwest Africa 4156        | H/L6                  | 165.0      | Found     | NULL   | NULL   | NULL    |
+| 238  | Northwest Africa 4157        | L3                    | 135.0      | Found     | NULL   | NULL   | NULL    |
+| 239  | Northwest Africa 4158        | H5                    | 77.7       | Found     | NULL   | NULL   | NULL    |
+| 240  | Northwest Africa 4772        | L5                    | 9.7        | Found     | NULL   | NULL   | NULL    |
+| 241  | Northwest Africa 4773        | L5                    | 249.8      | Found     | NULL   | NULL   | NULL    |
+| 242  | Northwest Africa 4774        | LL6                   | 9.1        | Found     | NULL   | NULL   | NULL    |
+| 243  | Northwest Africa 4775        | LL5                   | 22.7       | Found     | NULL   | NULL   | NULL    |
+| 244  | Northwest Africa 4776        | LL6                   | 25.3       | Found     | NULL   | NULL   | NULL    |
+| 245  | Northwest Africa 4777        | H4                    | 1396.6     | Found     | NULL   | NULL   | NULL    |
+| 246  | Northwest Africa 4908        | Eucrite               | 464.0      | Found     | NULL   | 0.0    | 0.0     |
+| 247  | Northwest Africa 5290        | L6                    | 716.0      | Found     | NULL   | NULL   | NULL    |
+| 248  | Northwest Africa 5291        | H5                    | 230.0      | Found     | NULL   | NULL   | NULL    |
+| 249  | Northwest Africa 5709        | L3                    | 8.1        | Found     | NULL   | 0.0    | 0.0     |
+| 250  | Northwest Africa 5710        | L5                    | 344.3      | Found     | NULL   | 0.0    | 0.0     |
+| 251  | Northwest Africa 5711        | L5                    | 2140.2     | Found     | NULL   | 0.0    | 0.0     |
+| 252  | Northwest Africa 5713        | L5                    | 92.5       | Found     | NULL   | 0.0    | 0.0     |
+| 253  | Northwest Africa 5714        | L5                    | 106.3      | Found     | NULL   | 0.0    | 0.0     |
+| 254  | Northwest Africa 5782        | Acapulcoite/lodranite | 130.0      | Found     | NULL   | 0.0    | 0.0     |
+| 255  | Northwest Africa 5789        | Martian (shergottite) | 49.0       | Found     | NULL   | 0.0    | 0.0     |
+| 256  | Northwest Africa 5807        | H3                    | 50.0       | Found     | NULL   | 0.0    | 0.0     |
+| 257  | Northwest Africa 5808        | H3.15                 | 730.0      | Found     | NULL   | 0.0    | 0.0     |
+| 258  | Northwest Africa 5815        | L5                    | 256.8      | Found     | NULL   | 0.0    | 0.0     |
+| 259  | Northwest Africa 5819        | L4                    | 147.0      | Found     | NULL   | 0.0    | 0.0     |
+| 260  | Northwest Africa 5828        | H5                    | 2799.0     | Found     | NULL   | 0.0    | 0.0     |
+| 261  | Northwest Africa 5838        | H6                    | 1438.7     | Found     | NULL   | 0.0    | 0.0     |
+| 262  | Northwest Africa 5844        | L5                    | 1000.0     | Found     | NULL   | 0.0    | 0.0     |
+| 263  | Northwest Africa 5845        | L5                    | 3000.0     | Found     | NULL   | 0.0    | 0.0     |
+| 264  | Northwest Africa 5852        | L6                    | 293.0      | Found     | NULL   | 0.0    | 0.0     |
+| 265  | Northwest Africa 5853        | L6                    | 74.5       | Found     | NULL   | 0.0    | 0.0     |
+| 266  | Northwest Africa 6514        | LL(L)3.1              | 3200.0     | Found     | NULL   | 0.0    | 0.0     |
+| 267  | Northwest Africa 6704        | Achondrite-ung        | 8387.0     | Found     | NULL   | 0.0    | 0.0     |
+| 268  | Northwest Africa 6853        | L~6                   | 22.28      | Found     | NULL   | 0.0    | 0.0     |
+| 269  | Northwest Africa 724         | LL3                   | 1200.0     | Found     | NULL   | 30.23  | -5.87   |
+| 270  | Northwest Africa 725         | Acapulcoite           | 3824.0     | Found     | NULL   | 30.6   | -5.05   |
+| 271  | Northwest Africa 726         | H4                    | 354.0      | Found     | NULL   | 31.03  | -4.0    |
+| 272  | Nova 008                     | L6                    | 4200.0     | Found     | NULL   | NULL   | NULL    |
+| 273  | Nova 009                     | H4                    | 7300.0     | Found     | NULL   | NULL   | NULL    |
+| 274  | Nuevo Mercurio (c)           | H5-6                  | 16.8       | Found     | NULL   | 24.26  | -102.14 |
+| 275  | Ramlat as Sahmah 426         | H4                    | 92.0       | Found     | NULL   | 20.11  | 56.4    |
+| 276  | Ramlat as Sahmah 427         | H5                    | 7.6        | Found     | NULL   | 20.1   | 56.41   |
+| 277  | Ramlat as Sahmah 428         | L6                    | 16247.0    | Found     | NULL   | 20.1   | 56.33   |
+| 278  | Rio Bunge                    | L                     | 11.0       | Found     | NULL   | NULL   | NULL    |
+| 279  | Río Cuarto 001               | Eucrite               | 62.7       | Found     | NULL   | -32.87 | -64.22  |
+| 280  | Sayh al Uhaymir 557          | H4                    | 3.0        | Found     | NULL   | 20.17  | 56.51   |
+| 281  | Sleeper Camp 005             | H5                    | 129.0      | Found     | NULL   | -30.17 | 126.29  |
+| 282  | Squaw Creek                  | Iron, IIAB            | 14500.0    | Found     | NULL   | 32.0   | -98.0   |
+| 283  | Uasara                       | Iron, IIAB            | 3140.0     | Found     | NULL   | 0.0    | 0.0     |
+| 284  | Um-Hadid                     | Mesosiderite          | 15400.0    | Found     | NULL   | 21.7   | 50.6    |
+| 285  | Ur                           | Iron                  | NULL       | Found     | NULL   | 30.9   | 46.02   |
+| 286  | Valencia                     | H5                    | 33500.0    | Found     | NULL   | 39.0   | -0.03   |
+| 287  | Villa Regina                 | Iron, IIIAB           | 5030.0     | Found     | NULL   | -39.1  | -67.07  |
+| 288  | Wietrzno-Bobrka              | Iron                  | 376.0      | Found     | NULL   | 49.42  | 21.7    |
+| 289  | Wiltshire                    | H5                    | 92750.0    | Found     | NULL   | 51.15  | -1.81   |
+| 290  | Zaragoza                     | Iron, IVA-an          | 162000.0   | Found     | NULL   | 41.65  | -0.87   |
+| 291  | Elbogen                      | Iron, IID             | 107000.0   | Fell      | 1399.0 | 50.18  | 12.73   |
+| 292  | Rivolta de Bassi             | Stone-uncl            | 103.3      | Fell      | 1490.0 | 45.48  | 9.52    |
+| 293  | Ensisheim                    | LL6                   | 127000.0   | Fell      | 1491.0 | 47.87  | 7.35    |
+| 294  | Valdinoce                    | Stone-uncl            | NULL       | Fell      | 1495.0 | 44.07  | 12.1    |
+| 295  | Oliva-Gandia                 | Stone-uncl            | NULL       | Fell      | 1519.0 | 39.0   | -0.03   |
+| 296  | Campo del Cielo              | Iron, IAB-MG          | 50000000.0 | Found     | 1575.0 | -27.47 | -60.58  |
+| 297  | Castrovillari                | Stone-uncl            | 15000.0    | Fell      | 1583.0 | 39.8   | 16.2    |
+| 298  | Morito                       | Iron, IIIAB           | 10100000.0 | Found     | 1600.0 | 27.05  | -105.43 |
+| 299  | Jalandhar                    | Iron                  | 1967.0     | Fell      | 1621.0 | 31.0   | 75.0    |
+| 300  | Stretchleigh                 | Stone-uncl            | 10400.0    | Fell      | 1623.0 | 50.38  | -3.95   |
+| 301  | Hatford                      | Stone-uncl            | 29000.0    | Fell      | 1628.0 | 51.65  | -1.52   |
+| 302  | Minamino                     | L                     | 1040.0     | Fell      | 1632.0 | 35.08  | 136.93  |
+| 303  | Sagan                        | Stone-uncl            | NULL       | Fell      | 1636.0 | 51.53  | 14.88   |
+| 304  | Mount Vaisi                  | Stone-uncl            | 17000.0    | Fell      | 1637.0 | 44.08  | 6.87    |
+| 305  | Stolzenau                    | Stone-uncl            | NULL       | Fell      | 1647.0 | 52.53  | 9.05    |
+| 306  | Fünen                        | Stone-uncl            | NULL       | Fell      | 1654.0 | 55.33  | 10.33   |
+| 307  | Novy-Ergi                    | Stone-uncl            | NULL       | Fell      | 1662.0 | 58.55  | 31.33   |
+| 308  | Vago                         | H6                    | 40.0       | Fell      | 1668.0 | 45.42  | 11.13   |
+| 309  | Ortenau                      | Stone-uncl            | 4500.0     | Fell      | 1671.0 | 48.5   | 8.0     |
+| 310  | Sasagase                     | H                     | 695.0      | Fell      | 1688.0 | 34.72  | 137.78  |
+| 311  | Barcelona (stone)            | OC                    | NULL       | Fell      | 1704.0 | 41.37  | 2.17    |
+| 312  | Schellin                     | L                     | 7000.0     | Fell      | 1715.0 | 53.35  | 15.05   |
+| 313  | Siratik                      | Iron, IIAB            | 1700.0     | Found     | 1716.0 | 14.0   | -11.0   |
+| 314  | Ploschkovitz                 | L5                    | 39.0       | Fell      | 1723.0 | 50.53  | 14.12   |
+| 315  | Steinbach                    | Iron, IVA-an          | 98000.0    | Found     | 1724.0 | 50.5   | 12.5    |
+| 316  | Rasgrad                      | Stone-uncl            | 24700.0    | Fell      | 1740.0 | 43.5   | 26.53   |
+| 317  | Ogi                          | H6                    | 14360.0    | Fell      | 1741.0 | 33.28  | 130.2   |
+| 318  | Krasnojarsk                  | Pallasite, PMG-an     | 700000.0   | Found     | 1749.0 | 54.9   | 91.8    |
+| 319  | Nicorps                      | Stone-uncl            | NULL       | Fell      | 1750.0 | 49.03  | -1.43   |
+| 320  | Hraschina                    | Iron, IID             | 49000.0    | Fell      | 1751.0 | 46.1   | 16.33   |
+| 321  | Luponnas                     | H3-5                  | 14000.0    | Fell      | 1753.0 | 46.22  | 5.0     |
+| 322  | Tabor                        | H5                    | 7540.0     | Fell      | 1753.0 | 49.4   | 14.65   |
+| 323  | Albareto                     | L/LL4                 | 2000.0     | Fell      | 1766.0 | 44.65  | 11.02   |
+| 324  | Lucé                         | L6                    | 3500.0     | Fell      | 1768.0 | 47.85  | 0.48    |
+| 325  | Mauerkirchen                 | L6                    | 19000.0    | Fell      | 1768.0 | 48.18  | 13.13   |
+| 326  | Aire-sur-la-Lys              | Unknown               | NULL       | Fell      | 1769.0 | 50.67  | 2.33    |
+| 327  | Sena                         | H4                    | 4000.0     | Fell      | 1773.0 | 41.72  | -0.05   |
+| 328  | Owrucz                       | OC                    | NULL       | Fell      | 1775.0 | 51.33  | 28.83   |
+| 329  | Rodach                       | Stone-uncl            | 2900.0     | Fell      | 1775.0 | 50.35  | 10.8    |
+| 330  | Toluca                       | Iron, IAB-sLL         | 3000000.0  | Found     | 1776.0 | 19.57  | -99.57  |
+| 331  | Pettiswood                   | Stone-uncl            | NULL       | Fell      | 1779.0 | 53.53  | -7.33   |
+| 332  | Longchang                    | Iron, IVA-an          | 158500.0   | Found     | 1781.0 | 29.3   | 105.3   |
+| 333  | Bendegó                      | Iron, IC              | 5360000.0  | Found     | 1784.0 | -10.12 | -39.2   |
+| 334  | Sierra Blanca                | Iron, IAB?            | 405.0      | Found     | 1784.0 | 27.15  | -104.9  |
+| 335  | Eichstädt                    | H5                    | 3000.0     | Fell      | 1785.0 | 48.9   | 11.22   |
+| 336  | Kharkov                      | L6                    | 1500.0     | Fell      | 1787.0 | 50.63  | 35.08   |
+| 337  | Barbotan                     | H5                    | 6400.0     | Fell      | 1790.0 | 43.95  | -0.05   |
+| 338  | Castel Berardenga            | Stone-uncl            | NULL       | Fell      | 1791.0 | 43.35  | 11.5    |
+| 339  | Zacatecas (1792)             | Iron, ungrouped       | 1000000.0  | Found     | 1792.0 | 22.82  | -102.57 |
+| 340  | Cape of Good Hope            | Iron, IVB             | 136000.0   | Found     | 1793.0 | -33.5  | 26.0    |
+| 341  | Siena                        | LL5                   | 3700.0     | Fell      | 1794.0 | 43.12  | 11.6    |
+| 342  | Mulletiwu                    | L                     | 25.5       | Fell      | 1795.0 | 9.33   | 80.83   |
+| 343  | Wold Cottage                 | L6                    | 25000.0    | Fell      | 1795.0 | 54.14  | -0.41   |
+| 344  | Bjelaja Zerkov               | H6                    | 1850.0     | Fell      | 1796.0 | 49.78  | 30.17   |
+| 345  | Portugal                     | Stone-uncl            | 4500.0     | Fell      | 1796.0 | 38.5   | -8.0    |
+| 346  | Prambanan                    | Iron, ungrouped       | 500000.0   | Found     | 1797.0 | -7.57  | 110.83  |
+| 347  | Benares (a)                  | LL4                   | 3700.0     | Fell      | 1798.0 | 25.37  | 82.92   |
+| 348  | Salles                       | L5                    | 9000.0     | Fell      | 1798.0 | 46.05  | 4.63    |
+| 349  | Mauritius                    | L6                    | 220.0      | Fell      | 1801.0 | -20.0  | 57.0    |
+| 350  | Apt                          | L6                    | 3200.0     | Fell      | 1803.0 | 43.87  | 5.38    |
+| 351  | L'Aigle                      | L6                    | 37000.0    | Fell      | 1803.0 | 48.77  | 0.63    |
+| 352  | Mässing                      | Howardite             | 1600.0     | Fell      | 1803.0 | 48.13  | 12.62   |
+| 353  | Bocas                        | L6                    | 56.0       | Fell      | 1804.0 | 23.0   | -102.0  |
+| 354  | Charcas                      | Iron, IIIAB           | 1400000.0  | Found     | 1804.0 | 23.08  | -101.02 |
+| 355  | Darmstadt                    | H5                    | 100.0      | Fell      | 1804.0 | 49.87  | 8.65    |
+| 356  | Durango                      | Iron, IIIAB           | 164000.0   | Found     | 1804.0 | NULL   | NULL    |
+| 357  | High Possil                  | L6                    | 4500.0     | Fell      | 1804.0 | 55.9   | -4.23   |
+| 358  | Misteca                      | Iron, ungrouped       | 10000.0    | Found     | 1804.0 | 16.8   | -97.1   |
+| 359  | Asco                         | H6                    | 41.0       | Fell      | 1805.0 | 42.45  | 9.03    |
+| 360  | Bitburg                      | Iron, IAB complex     | 1500000.0  | Found     | 1805.0 | 49.97  | 6.53    |
+| 361  | Doroninsk                    | H5-7                  | 3891.0     | Fell      | 1805.0 | 51.2   | 112.3   |
+| 362  | Alais                        | CI1                   | 6000.0     | Fell      | 1806.0 | 44.12  | 4.08    |
+| 363  | Timochin                     | H5                    | 65500.0    | Fell      | 1807.0 | 54.5   | 35.2    |
+| 364  | Weston                       | H4                    | 150000.0   | Fell      | 1807.0 | 41.27  | -73.27  |
+| 365  | Borgo San Donino             | LL6                   | 1676.0     | Fell      | 1808.0 | 44.87  | 10.05   |
+| 366  | Lissa                        | L6                    | 12800.0    | Fell      | 1808.0 | 50.2   | 14.85   |
+| 367  | Moradabad                    | L6                    | 70.0       | Fell      | 1808.0 | 28.78  | 78.83   |
+| 368  | Red River                    | Iron, IIIAB           | 800000.0   | Found     | 1808.0 | 32.0   | -95.0   |
+| 369  | Stannern                     | Eucrite-mmict         | 52000.0    | Fell      | 1808.0 | 49.28  | 15.57   |
+| 370  | Kikino                       | H6                    | 195.0      | Fell      | 1809.0 | 55.0   | 34.0    |
+| 371  | Brahin                       | Pallasite, PMG        | 823000.0   | Found     | 1810.0 | 52.5   | 30.33   |
+| 372  | Caswell County               | OC                    | 1360.0     | Fell      | 1810.0 | 36.5   | -79.25  |
+| 373  | Charsonville                 | H6                    | 27000.0    | Fell      | 1810.0 | 47.93  | 1.57    |
+| 374  | Mooresfort                   | H5                    | 3520.0     | Fell      | 1810.0 | 52.45  | -8.33   |
+| 375  | Santa Rosa                   | Iron, IC              | 825000.0   | Found     | 1810.0 | 5.92   | -73.0   |
+| 376  | Berlanguillas                | L6                    | 1440.0     | Fell      | 1811.0 | 41.68  | -3.8    |
+| 377  | Kuleschovka                  | L6                    | 6000.0     | Fell      | 1811.0 | 50.75  | 33.5    |
+| 378  | Punganaru                    | Stone-uncl            | 100.0      | Fell      | 1811.0 | 13.33  | 78.95   |
+| 379  | Borodino                     | H5                    | 500.0      | Fell      | 1812.0 | 55.47  | 35.87   |
+| 380  | Chantonnay                   | L6                    | 31500.0    | Fell      | 1812.0 | 46.68  | 1.05    |
+| 381  | Erxleben                     | H6                    | 2250.0     | Fell      | 1812.0 | 52.22  | 11.25   |
+| 382  | Toulouse                     | H6                    | 1030.0     | Fell      | 1812.0 | 43.6   | 1.4     |
+| 383  | Limerick                     | H5                    | 50000.0    | Fell      | 1813.0 | 52.57  | -8.78   |
+| 384  | Luotolax                     | Howardite             | 885.0      | Fell      | 1813.0 | 61.2   | 27.7    |
+| 385  | Agen                         | H5                    | 30000.0    | Fell      | 1814.0 | 44.22  | 0.62    |
+| 386  | Bachmut                      | L6                    | 18000.0    | Fell      | 1814.0 | 48.6   | 38.0    |
+| 387  | Chail                        | H6                    | 0.5        | Fell      | 1814.0 | 25.37  | 81.67   |
+| 388  | Gurram Konda                 | L6                    | 28.0       | Fell      | 1814.0 | 13.78  | 78.57   |
+| 389  | Lenarto                      | Iron, IIIAB           | 108500.0   | Found     | 1814.0 | 49.0   | 21.0    |
+| 390  | Chassigny                    | Martian (chassignite) | 4000.0     | Fell      | 1815.0 | 47.72  | 5.37    |
+| 391  | Durala                       | L6                    | 13200.0    | Fell      | 1815.0 | 30.3   | 76.63   |
+| 392  | Hachi-oji                    | H?                    | 0.2        | Fell      | 1817.0 | 35.65  | 139.33  |
+| 393  | Cambria                      | Iron, ungrouped       | 16300.0    | Found     | 1818.0 | 43.2   | -78.8   |
+| 394  | Cape York                    | Iron, IIIAB           | 58200000.0 | Found     | 1818.0 | 76.13  | -64.93  |
+| 395  | Seres                        | H4                    | 8500.0     | Fell      | 1818.0 | 41.05  | 23.57   |
+| 396  | Slobodka                     | L4                    | 2750.0     | Fell      | 1818.0 | 55.0   | 35.0    |
+| 397  | Zaborzika                    | L6                    | 3867.0     | Fell      | 1818.0 | 50.28  | 27.68   |
+| 398  | Burlington                   | Iron, IIIE            | 68000.0    | Found     | 1819.0 | 42.75  | -75.18  |
+| 399  | Jonzac                       | Eucrite-mmict         | 5000.0     | Fell      | 1819.0 | 45.43  | -0.45   |
+| 400  | Pohlitz                      | L5                    | 3000.0     | Fell      | 1819.0 | 50.93  | 12.13   |
+| 401  | Lixna                        | H4                    | 5213.0     | Fell      | 1820.0 | 56.0   | 26.43   |
+| 402  | Juvinas                      | Eucrite-mmict         | 91000.0    | Fell      | 1821.0 | 44.72  | 4.3     |
+| 403  | Angers                       | L6                    | NULL       | Fell      | 1822.0 | 47.47  | -0.55   |
+| 404  | Clohars                      | L4                    | 48.6       | Fell      | 1822.0 | NULL   | NULL    |
+| 405  | Futtehpur                    | L6                    | 4000.0     | Fell      | 1822.0 | 25.95  | 80.82   |
+| 406  | Guilford County              | Iron, IIIAB           | 1100.0     | Found     | 1822.0 | 35.57  | -79.83  |
+| 407  | Imilac                       | Pallasite, PMG        | 920000.0   | Found     | 1822.0 | -24.2  | -68.81  |
+| 408  | Kadonah                      | H6                    | 89.0       | Fell      | 1822.0 | 27.08  | 78.33   |
+| 409  | Umbala                       | LL5                   | 100.0      | Fell      | 1822.0 | 30.33  | 76.33   |
+| 410  | Épinal                       | H5                    | 277.0      | Fell      | 1822.0 | 48.18  | 6.47    |
+| 411  | Botschetschki                | L4                    | 614.0      | Fell      | 1823.0 | 51.33  | 33.88   |
+| 412  | Nobleborough                 | Eucrite-pmict         | 2300.0     | Fell      | 1823.0 | 44.08  | -69.48  |
+| 413  | Renazzo                      | CR2                   | 1000.0     | Fell      | 1824.0 | 44.77  | 11.28   |
+| 414  | Tounkin                      | OC                    | 2000.0     | Fell      | 1824.0 | 51.73  | 102.53  |
+| 415  | Zebrak                       | H5                    | 2000.0     | Fell      | 1824.0 | 49.88  | 13.92   |
+| 416  | Honolulu                     | L5                    | 2420.0     | Fell      | 1825.0 | 21.3   | -157.87 |
+| 417  | Nanjemoy                     | H6                    | 7500.0     | Fell      | 1825.0 | 38.42  | -77.17  |
+| 418  | Yanhuitlan                   | Iron, IVA             | 421000.0   | Found     | 1825.0 | 17.53  | -97.35  |
+| 419  | Galapian                     | H6                    | 132.7      | Fell      | 1826.0 | 44.3   | 0.4     |
+| 420  | Mineo                        | Pallasite             | 42.0       | Fell      | 1826.0 | 37.28  | 14.7    |
+| 421  | Pavlograd                    | L6                    | 40000.0    | Fell      | 1826.0 | 48.53  | 35.98   |
+| 422  | Bialystok                    | Eucrite-pmict         | 4000.0     | Fell      | 1827.0 | 53.1   | 23.2    |
+| 423  | Drake Creek                  | L6                    | 5000.0     | Fell      | 1827.0 | 36.4   | -86.5   |
+| 424  | Mhow                         | L6                    | 350.0      | Fell      | 1827.0 | 25.9   | 83.62   |
+| 425  | La Caille                    | Iron, ungrouped       | 626000.0   | Found     | 1828.0 | 43.73  | 6.78    |
+| 426  | Richmond                     | LL5                   | 1800.0     | Fell      | 1828.0 | 37.47  | -77.5   |
+| 427  | Bohumilitz                   | Iron, IAB-MG          | 59000.0    | Found     | 1829.0 | 49.05  | 13.77   |
+| 428  | Deal                         | L6                    | 28.0       | Fell      | 1829.0 | 40.25  | -74.0   |
+| 429  | Forsyth                      | L6                    | 16300.0    | Fell      | 1829.0 | 33.02  | -83.97  |
+| 430  | Krasnoi-Ugol                 | L6                    | 2440.0     | Fell      | 1829.0 | 54.03  | 40.9    |
+| 431  | Launton                      | L6                    | 1060.0     | Fell      | 1830.0 | 51.9   | -1.12   |
+| 432  | Perth                        | LL5                   | 2.0        | Fell      | 1830.0 | 56.4   | -3.43   |
+| 433  | Vouillé                      | L6                    | 20000.0    | Fell      | 1831.0 | 46.63  | 0.17    |
+| 434  | Wessely                      | H5                    | 3750.0     | Fell      | 1831.0 | 48.95  | 17.38   |
+| 435  | Walker County                | Iron, IIAB            | 74800.0    | Found     | 1832.0 | 34.0   | -87.17  |
+| 436  | Blansko                      | H6                    | 470.0      | Fell      | 1833.0 | 49.37  | 16.63   |
+| 437  | Charwallas                   | H6                    | 12000.0    | Fell      | 1834.0 | 29.48  | 75.5    |
+| 438  | Lime Creek                   | Iron, IAB-ung         | 20000.0    | Found     | 1834.0 | 31.55  | -87.52  |
+| 439  | Okniny                       | LL6                   | 12000.0    | Fell      | 1834.0 | 50.83  | 25.5    |
+| 440  | Aldsworth                    | LL5                   | 700.0      | Fell      | 1835.0 | 51.78  | -1.78   |
+| 441  | Charlotte                    | Iron, IVA             | 4300.0     | Fell      | 1835.0 | 36.17  | -87.33  |
+| 442  | Aubres                       | Aubrite               | 800.0      | Fell      | 1836.0 | 44.38  | 5.17    |
+| 443  | Gibeon                       | Iron, IVA             | 26000000.0 | Found     | 1836.0 | -25.5  | 18.0    |
+| 444  | Macau                        | H5                    | 1500.0     | Fell      | 1836.0 | -5.2   | -36.67  |
+| 445  | Mascombes                    | L6                    | 1000.0     | Fell      | 1836.0 | 45.37  | 1.87    |
+| 446  | Wichita County               | Iron, IAB-MG          | 145000.0   | Found     | 1836.0 | 34.07  | -98.92  |
+| 447  | Coahuila                     | Iron, IIAB            | 2100000.0  | Found     | 1837.0 | 28.7   | -102.73 |
+| 448  | Cosby's Creek                | Iron, IAB-MG          | 960000.0   | Found     | 1837.0 | 35.78  | -83.25  |
+| 449  | Esnandes                     | L6                    | 1500.0     | Fell      | 1837.0 | 46.25  | -1.1    |
+| 450  | Gross-Divina                 | H5                    | 10500.0    | Fell      | 1837.0 | 49.27  | 18.72   |
+| 451  | Yonozu                       | H4/5                  | 31650.0    | Fell      | 1837.0 | 37.75  | 139.0   |
+| 452  | Akbarpur                     | H4                    | 1800.0     | Fell      | 1838.0 | 29.72  | 77.95   |
+| 453  | Chandakapur                  | L5                    | 8800.0     | Fell      | 1838.0 | 20.27  | 76.02   |
+| 454  | Cold Bokkeveld               | CM2                   | 5200.0     | Fell      | 1838.0 | -33.13 | 19.38   |
+| 455  | Kaee                         | H5                    | 230.0      | Fell      | 1838.0 | 27.25  | 79.97   |
+| 456  | Montlivault                  | L6                    | 500.0      | Fell      | 1838.0 | 47.63  | 1.58    |
+| 457  | Simbirsk (of P. Partsch)     | OC                    | 1500.0     | Found     | 1838.0 | 54.3   | 48.4    |
+| 458  | Slobodka (of P. Partsch)     | L6                    | 950.0      | Found     | 1838.0 | 55.0   | 35.0    |
+| 459  | Asheville                    | Iron, IIIAB           | 800.0      | Found     | 1839.0 | 35.58  | -82.53  |
+| 460  | Black Mountain               | Iron, IAB-MG          | 800.0      | Found     | 1839.0 | 35.58  | -82.35  |
+| 461  | Little Piney                 | L5                    | 491.0      | Fell      | 1839.0 | 37.92  | -92.08  |
+| 462  | Putnam County                | Iron, IVA             | 32700.0    | Found     | 1839.0 | 33.25  | -83.25  |
+| 463  | Smithland                    | Iron, IVA             | 5000.0     | Found     | 1839.0 | 37.13  | -88.4   |
+| 464  | Abo                          | H                     | 1.2        | Found     | 1840.0 | 60.43  | 22.3    |
+| 465  | Carthage                     | Iron, IIIAB           | 127000.0   | Found     | 1840.0 | 36.27  | -85.98  |
+| 466  | Cereseto                     | H5                    | 6460.0     | Fell      | 1840.0 | 45.08  | 8.3     |
+| 467  | Karakol                      | LL6                   | 3000.0     | Fell      | 1840.0 | 47.22  | 81.02   |
+| 468  | Magura                       | Iron, IAB-MG          | 150000.0   | Found     | 1840.0 | 49.33  | 19.48   |
+| 469  | Smithville                   | Iron, IAB-MG          | 70500.0    | Found     | 1840.0 | 35.98  | -85.85  |
+| 470  | Uden                         | LL7                   | 710.0      | Fell      | 1840.0 | 51.65  | 5.62    |
+| 471  | Château-Renard               | L6                    | 30000.0    | Fell      | 1841.0 | 47.93  | 2.92    |
+| 472  | Grüneberg                    | H4                    | 1000.0     | Fell      | 1841.0 | 51.93  | 15.5    |
+| 473  | Petropavlovsk                | Iron, ungrouped       | 7000.0     | Found     | 1841.0 | 53.35  | 87.18   |
+| 474  | St. Christophe-la-Chartreuse | L6                    | 5500.0     | Fell      | 1841.0 | 46.95  | -1.5    |
+| 475  | Aumieres                     | L6                    | 2000.0     | Fell      | 1842.0 | 44.33  | 3.23    |
+| 476  | Babb's Mill (Troost's Iron)  | Iron, ungrouped       | 6400.0     | Found     | 1842.0 | 36.3   | -82.88  |
+| 477  | Barea                        | Mesosiderite-A1       | 3200.0     | Fell      | 1842.0 | 42.38  | -2.5    |
+| 478  | Milena                       | L6                    | 10000.0    | Fell      | 1842.0 | 46.18  | 16.1    |
+| 479  | Myhee Caunta                 | OC                    | NULL       | Fell      | 1842.0 | 23.05  | 72.63   |
+| 480  | Berdyansk                    | L6                    | 2250.0     | Found     | 1843.0 | 46.75  | 36.82   |
+| 481  | Bishopville                  | Aubrite               | 6000.0     | Fell      | 1843.0 | 34.17  | -80.28  |
+| 482  | Klein-Wenden                 | H6                    | 3250.0     | Fell      | 1843.0 | 51.6   | 10.8    |
+| 483  | Manegaon                     | Diogenite             | 50.0       | Fell      | 1843.0 | 20.97  | 76.1    |
+| 484  | Picote                       | Stone-uncl            | NULL       | Fell      | 1843.0 | 41.37  | -6.23   |
+| 485  | Utrecht                      | L6                    | 9700.0     | Fell      | 1843.0 | 52.12  | 5.18    |
+| 486  | Verkhne Tschirskaia          | H5                    | 8000.0     | Fell      | 1843.0 | 48.42  | 43.2    |
+| 487  | Cosina                       | H5                    | 1200.0     | Fell      | 1844.0 | 21.17  | -100.87 |
+| 488  | Favars                       | H5                    | 1500.0     | Fell      | 1844.0 | 44.38  | 2.82    |
+| 489  | Killeter                     | H6                    | 140.0      | Fell      | 1844.0 | 54.67  | -7.67   |
+| 490  | Ruff's Mountain              | Iron, IIIAB           | 53070.0    | Found     | 1844.0 | 34.3   | -81.4   |
+| 491  | Barratta                     | L4                    | 200000.0   | Found     | 1845.0 | -35.3  | 144.57  |
+| 492  | Le Pressoir                  | H5                    | 3000.0     | Fell      | 1845.0 | 47.17  | 0.43    |
+| 493  | Le Teilleul                  | Howardite             | 780.0      | Fell      | 1845.0 | 48.53  | -0.87   |
+| 494  | Assam                        | L5                    | 2700.0     | Found     | 1846.0 | 26.0   | 92.0    |
+| 495  | Cape Girardeau               | H6                    | 2300.0     | Fell      | 1846.0 | 37.27  | -89.58  |
+| 496  | Deep Springs                 | Iron, ungrouped       | 11500.0    | Found     | 1846.0 | 36.5   | -79.75  |
+| 497  | Jackson County               | Iron, IIIAB           | 450.0      | Found     | 1846.0 | 36.42  | -85.5   |
+| 498  | Monte Milone                 | L5                    | 3130.0     | Fell      | 1846.0 | 43.27  | 13.35   |
+| 499  | Netschaëvo                   | Iron, IIE-an          | 250000.0   | Found     | 1846.0 | 54.23  | 35.15   |
+| 500  | Schönenberg                  | L6                    | 8000.0     | Fell      | 1846.0 | 48.12  | 10.47   |
+| 501  | Braunau                      | Iron, IIAB            | 39000.0    | Fell      | 1847.0 | 50.6   | 16.3    |
+| 502  | Marion (Iowa)                | L6                    | 28400.0    | Fell      | 1847.0 | 41.9   | -91.6   |
+| 503  | Murfreesboro                 | Iron, ungrouped       | 8600.0     | Found     | 1847.0 | 35.83  | -86.42  |
+| 504  | Seeläsgen                    | Iron, IAB-MG          | 102000.0   | Found     | 1847.0 | 52.27  | 15.55   |
+| 505  | Singhur                      | Pallasite?            | 14180.0    | Found     | 1847.0 | 18.32  | 73.92   |
+| 506  | Castine                      | L6                    | 94.0       | Fell      | 1848.0 | 44.38  | -68.75  |
+| 507  | Dharwar                      | OC                    | 1800.0     | Fell      | 1848.0 | 14.88  | 75.6    |
+| 508  | Marmande                     | L5                    | 3000.0     | Fell      | 1848.0 | 44.5   | 0.15    |
+| 509  | Ski                          | L6                    | 850.0      | Fell      | 1848.0 | 59.73  | 10.87   |
+| 510  | Chesterville                 | Iron, IIAB            | 16500.0    | Found     | 1849.0 | 34.7   | -81.2   |
+| 511  | Fukue                        | Iron                  | 7.3        | Found     | 1849.0 | 32.7   | 128.85  |
+| 512  | Monroe                       | H4                    | 8600.0     | Fell      | 1849.0 | 35.25  | -80.5   |
+| 513  | Botetourt County             | Iron                  | 500.0      | Found     | 1850.0 | 37.5   | -79.75  |
+| 514  | Kesen                        | H4                    | 135000.0   | Fell      | 1850.0 | 38.98  | 141.62  |
+| 515  | Pittsburg                    | Iron, IAB-MG          | 600.0      | Found     | 1850.0 | 40.43  | -80.0   |
+| 516  | Salt River                   | Iron, IIC             | 3600.0     | Found     | 1850.0 | 37.95  | -85.78  |
+| 517  | Schwetz                      | Iron, IIIAB           | 21500.0    | Found     | 1850.0 | 53.4   | 18.45   |
+| 518  | Seneca Falls                 | Iron, IIIAB           | 4000.0     | Found     | 1850.0 | 42.92  | -76.78  |
+| 519  | Shalka                       | Diogenite             | 4000.0     | Fell      | 1850.0 | 23.1   | 87.3    |
+| 520  | Tucson                       | Iron, ungrouped       | 975000.0   | Found     | 1850.0 | 31.85  | -110.97 |
+| 521  | Gütersloh                    | H3/4                  | 1000.0     | Fell      | 1851.0 | 51.92  | 8.38    |
+| 522  | Nulles                       | H6                    | 5000.0     | Fell      | 1851.0 | 41.63  | 0.75    |
+| 523  | Quincay                      | L6                    | 65.0       | Fell      | 1851.0 | 46.6   | 0.25    |
+| 524  | Borkut                       | L5                    | 7000.0     | Fell      | 1852.0 | 48.15  | 24.28   |
+| 525  | Bustee                       | Aubrite               | 1500.0     | Fell      | 1852.0 | 26.78  | 82.83   |
+| 526  | Chupaderos                   | Iron, IIIAB           | 24300000.0 | Found     | 1852.0 | 27.0   | -105.1  |
+| 527  | Cranberry Plains             | Iron, IVA             | 90.0       | Found     | 1852.0 | 37.23  | -80.73  |
+| 528  | Mainz                        | L6                    | 1700.0     | Found     | 1852.0 | 50.0   | 8.27    |
+| 529  | Mezö-Madaras                 | L3.7                  | 22700.0    | Fell      | 1852.0 | 46.5   | 25.73   |
+| 530  | Rodeo                        | Iron, IID             | 44000.0    | Found     | 1852.0 | 25.33  | -104.67 |
+| 531  | Yatoor                       | H5                    | 13600.0    | Fell      | 1852.0 | 14.3   | 79.77   |
+| 532  | Duruma                       | L6                    | 577.0      | Fell      | 1853.0 | -4.0   | 39.5    |
+| 533  | Girgenti                     | L6                    | 18000.0    | Fell      | 1853.0 | 37.32  | 13.57   |
+| 534  | Segowlie                     | LL6                   | 6930.0     | Fell      | 1853.0 | 26.75  | 84.78   |
+| 535  | Tazewell                     | Iron, IAB-sLH         | 27000.0    | Found     | 1853.0 | 36.43  | -83.75  |
+| 536  | Union County                 | Iron, IC              | 6800.0     | Found     | 1853.0 | 34.75  | -84.0   |
+| 537  | Cranbourne                   | Iron, IAB-MG          | 8600000.0  | Found     | 1854.0 | -38.1  | 145.3   |
+| 538  | Duel Hill (1854)             | Iron, IVA             | 21800.0    | Found     | 1854.0 | 35.85  | -82.7   |
+| 539  | Emmitsburg                   | Iron, IIIAB?          | 450.0      | Found     | 1854.0 | 39.72  | -77.3   |
+| 540  | Linum                        | L6                    | 1862.0     | Fell      | 1854.0 | 52.75  | 12.9    |
+| 541  | Madoc                        | Iron, IIIAB           | 168000.0   | Found     | 1854.0 | 44.5   | -77.47  |
+| 542  | Oktibbeha County             | Iron, IAB-ung         | 156.0      | Found     | 1854.0 | 33.5   | -89.0   |
+| 543  | Sarepta                      | Iron, IAB-MG          | 14000.0    | Found     | 1854.0 | 48.48  | 44.82   |
+| 544  | Tabarz                       | Iron, IAB-MG          | 150.0      | Found     | 1854.0 | 50.88  | 10.52   |
+| 545  | Verkhne Udinsk               | Iron, IIIAB           | 18000.0    | Found     | 1854.0 | 54.77  | 113.98  |
+| 546  | Avilez                       | H                     | 146.0      | Fell      | 1855.0 | 25.0   | -103.5  |
+| 547  | Barranca Blanca              | Iron, IIE-an          | 12000.0    | Found     | 1855.0 | -28.08 | -69.33  |
+| 548  | Bremervörde                  | H/L3.9                | 7250.0     | Fell      | 1855.0 | 53.4   | 9.1     |
+| 549  | Narraburra                   | Iron, IIIAB           | 32200.0    | Found     | 1855.0 | -34.25 | 147.7   |
+| 550  | Oesel                        | L6                    | 6000.0     | Fell      | 1855.0 | 58.5   | 23.0    |
+| 551  | Orange River (iron)          | Iron, IIIAB           | 148800.0   | Found     | 1855.0 | -30.0  | 25.0    |
+| 552  | Petersburg                   | Eucrite-pmict         | 1800.0     | Fell      | 1855.0 | 35.3   | -86.63  |
+| 553  | Sabetmahet                   | H5                    | 1250.0     | Fell      | 1855.0 | 27.43  | 82.08   |
+| 554  | St. Denis Westrem            | L6                    | 700.0      | Fell      | 1855.0 | 51.05  | 3.75    |
+| 555  | Denton County                | Iron, IIIAB           | 5400.0     | Found     | 1856.0 | 33.0   | -97.0   |
+| 556  | Fort Pierre                  | Iron, IIIAB           | 15900.0    | Found     | 1856.0 | 44.35  | -100.38 |
+| 557  | Hainholz                     | Mesosiderite-A4       | 16500.0    | Found     | 1856.0 | 52.28  | 8.92    |
+| 558  | Nelson County                | Iron, IIIF            | 73030.0    | Found     | 1856.0 | 37.75  | -85.5   |
+| 559  | Oviedo                       | H5                    | 205.0      | Fell      | 1856.0 | 43.4   | -5.87   |
+| 560  | Trenzano                     | H3/4                  | 11800.0    | Fell      | 1856.0 | 45.47  | 10.0    |
+| 561  | Heredia                      | H5                    | 1000.0     | Fell      | 1857.0 | 10.0   | -84.1   |
+| 562  | Kaba                         | CV3                   | 3000.0     | Fell      | 1857.0 | 47.35  | 21.3    |
+| 563  | Laurens County               | Iron, ungrouped       | 2150.0     | Found     | 1857.0 | 34.5   | -82.03  |
+| 564  | Les Ormes                    | L6                    | 125.0      | Fell      | 1857.0 | 48.35  | 3.25    |
+| 565  | Locust Grove                 | Iron, IIAB            | 10000.0    | Found     | 1857.0 | 33.33  | -84.1   |
+| 566  | Mincy                        | Mesosiderite-B4       | 89400.0    | Found     | 1857.0 | 36.55  | -93.1   |
+| 567  | Ohaba                        | H5                    | 16250.0    | Fell      | 1857.0 | 46.07  | 23.58   |
+| 568  | Parnallee                    | LL3.6                 | 77600.0    | Fell      | 1857.0 | 9.23   | 78.35   |
+| 569  | Quenggouk                    | H4                    | 6045.0     | Fell      | 1857.0 | 17.77  | 95.18   |
+| 570  | Stavropol                    | L6                    | 1500.0     | Fell      | 1857.0 | 45.05  | 41.98   |
+| 571  | Augusta County               | Iron, IIIAB           | 76000.0    | Found     | 1858.0 | 38.17  | -79.08  |
+| 572  | Ausson                       | L5                    | 50000.0    | Fell      | 1858.0 | 43.08  | 0.58    |
+| 573  | Joel's Iron                  | Iron, IIIAB           | 1300.0     | Found     | 1858.0 | -24.0  | -69.0   |
+| 574  | Kakowa                       | L6                    | 577.0      | Fell      | 1858.0 | 45.13  | 21.67   |
+| 575  | Molina                       | H5                    | 144000.0   | Fell      | 1858.0 | 38.12  | -1.17   |
+| 576  | Trenton                      | Iron, IIIAB           | 505000.0   | Found     | 1858.0 | 43.37  | -88.13  |
+| 577  | Wooster                      | Iron, IAB-sLL         | 22700.0    | Found     | 1858.0 | 40.77  | -81.95  |
+| 578  | Zmenj                        | Howardite             | 246.0      | Fell      | 1858.0 | 51.83  | 26.83   |
+| 579  | Bethlehem                    | H                     | 13.9       | Fell      | 1859.0 | 42.53  | -73.83  |
+| 580  | Beuste                       | L5                    | 2000.0     | Fell      | 1859.0 | 43.22  | -0.23   |
+| 581  | Harrison County              | L6                    | 680.0      | Fell      | 1859.0 | 38.25  | -86.17  |
+| 582  | Pampanga                     | L5                    | 10500.0    | Fell      | 1859.0 | 15.08  | 120.7   |
+| 583  | Tombigbee River              | Iron, IIG             | 43000.0    | Found     | 1859.0 | 32.23  | -88.2   |
+| 584  | Alessandria                  | H5                    | 908.0      | Fell      | 1860.0 | 44.88  | 8.75    |
+| 585  | Cleveland                    | Iron, IIIAB           | 115000.0   | Found     | 1860.0 | 34.88  | -84.78  |
+| 586  | Coopertown                   | Iron, IIIE            | 16800.0    | Found     | 1860.0 | 36.43  | -87.0   |
+| 587  | Dhurmsala                    | LL6                   | 32000.0    | Fell      | 1860.0 | 32.23  | 76.47   |
+| 588  | Kheragur                     | L6                    | 450.0      | Fell      | 1860.0 | 26.95  | 77.88   |
+| 589  | Kusiali                      | L6                    | 5.0        | Fell      | 1860.0 | 29.68  | 78.38   |
+| 590  | La Grange                    | Iron, IVA             | 50800.0    | Found     | 1860.0 | 38.4   | -85.37  |
+| 591  | Marshall County              | Iron, IIIAB           | 6800.0     | Found     | 1860.0 | 37.0   | -88.25  |
+| 592  | New Concord                  | L6                    | 230000.0   | Fell      | 1860.0 | 40.0   | -81.77  |
+| 593  | Sologne                      | H5                    | 54.0       | Fell      | 1860.0 | 47.37  | 1.73    |
+| 594  | Victoria West                | Iron, IAB-sHL         | 2950.0     | Found     | 1860.0 | -31.7  | 23.75   |
+| 595  | Butsura                      | H6                    | 29000.0    | Fell      | 1861.0 | 27.08  | 84.08   |
+| 596  | Cañellas                     | H4                    | 945.0      | Fell      | 1861.0 | 41.25  | 1.67    |
+| 597  | Grosnaja                     | CV3                   | 3500.0     | Fell      | 1861.0 | 43.67  | 45.38   |
+| 598  | Lutschaunig's Stone          | L6                    | 100000.0   | Found     | 1861.0 | -27.0  | -70.0   |
+| 599  | Meerut                       | H5                    | 22.0       | Fell      | 1861.0 | 29.02  | 77.8    |
+| 600  | Vaca Muerta                  | Mesosiderite-A1       | 3828000.0  | Found     | 1861.0 | -25.75 | -70.5   |
+| 601  | Kokomo                       | Iron, IVB             | 1800.0     | Found     | 1862.0 | 40.48  | -86.37  |
+| 602  | Menow                        | H4                    | 10500.0    | Fell      | 1862.0 | 53.18  | 13.15   |
+| 603  | Sevilla                      | LL4                   | 180.0      | Fell      | 1862.0 | 37.42  | -6.0    |
+| 604  | Bacubirito                   | Iron, ungrouped       | 22000000.0 | Found     | 1863.0 | 26.2   | -107.83 |
+| 605  | Buschhof                     | L6                    | 5000.0     | Fell      | 1863.0 | 46.45  | 25.78   |
+| 606  | Copiapo                      | Iron, IAB-MG          | 20000.0    | Found     | 1863.0 | -27.3  | -70.4   |
+| 607  | Manbhoom                     | LL6                   | 1700.0     | Fell      | 1863.0 | 23.05  | 86.7    |
+| 608  | Obernkirchen                 | Iron, IVA             | 41000.0    | Found     | 1863.0 | 52.27  | 9.1     |
+| 609  | Pillistfer                   | EL6                   | 23250.0    | Fell      | 1863.0 | 58.67  | 25.73   |
+| 610  | Pulsora                      | H5                    | 560.0      | Fell      | 1863.0 | 23.37  | 75.18   |
+| 611  | Russel Gulch                 | Iron, IIIAB           | 13200.0    | Found     | 1863.0 | 39.8   | -105.5  |
+| 612  | Shytal                       | L6                    | 3200.0     | Fell      | 1863.0 | 24.33  | 90.17   |
+| 613  | Smith's Mountain             | Iron, IIIAB           | 5000.0     | Found     | 1863.0 | 36.42  | -80.0   |
+| 614  | St. Francois County          | Iron, IC              | 3600.0     | Found     | 1863.0 | 37.75  | -90.5   |
+| 615  | Tomhannock Creek             | H5                    | 1500.0     | Found     | 1863.0 | 42.88  | -73.6   |
+| 616  | Tourinnes-la-Grosse          | L6                    | 14500.0    | Fell      | 1863.0 | 50.78  | 4.77    |
+| 617  | Wabar                        | Iron, IIIAB           | 2550000.0  | Found     | 1863.0 | 21.5   | 50.47   |
+| 618  | Wairarapa Valley             | H6                    | 6000.0     | Found     | 1863.0 | -41.32 | 175.13  |
+| 619  | Dolgovoli                    | L6                    | 1600.0     | Fell      | 1864.0 | 50.75  | 25.3    |
+| 620  | Nerft                        | L6                    | 10250.0    | Fell      | 1864.0 | 56.5   | 21.5    |
+| 621  | Orgueil                      | CI1                   | 14000.0    | Fell      | 1864.0 | 43.88  | 1.38    |
+| 622  | Tamentit                     | Iron, IIIAB           | 510000.0   | Found     | 1864.0 | 27.72  | -0.25   |
+| 623  | Aumale                       | L6                    | 50000.0    | Fell      | 1865.0 | 36.17  | 3.67    |
+| 624  | Dellys                       | Iron                  | 76.0       | Found     | 1865.0 | 36.92  | 3.92    |
+| 625  | Dundrum                      | H5                    | 2270.0     | Fell      | 1865.0 | 52.55  | -8.03   |
+| 626  | Gopalpur                     | H6                    | 1600.0     | Fell      | 1865.0 | 24.23  | 89.05   |
+| 627  | Muddoor                      | L5                    | 4400.0     | Fell      | 1865.0 | 12.63  | 77.02   |
+| 628  | Shergotty                    | Martian (shergottite) | 5000.0     | Fell      | 1865.0 | 24.55  | 84.83   |
+| 629  | Supuhee                      | H6                    | 7235.0     | Fell      | 1865.0 | 26.72  | 84.22   |
+| 630  | Vernon County                | H6                    | 1500.0     | Fell      | 1865.0 | 43.5   | -91.17  |
+| 631  | Bear Creek                   | Iron, IIIAB           | 227000.0   | Found     | 1866.0 | 39.6   | -105.3  |
+| 632  | Cangas de Onis               | H5                    | 34000.0    | Fell      | 1866.0 | 43.38  | -5.15   |
+| 633  | Dehesa                       | Iron, ungrouped       | 280.0      | Found     | 1866.0 | -33.5  | -70.5   |
+| 634  | Frankfort (iron)             | Iron, IIIAB           | 10900.0    | Found     | 1866.0 | 38.2   | -84.83  |
+| 635  | Jamkheir                     | H6                    | 22.0       | Fell      | 1866.0 | 18.75  | 75.33   |
+| 636  | Juncal                       | Iron, IIIAB           | 104000.0   | Found     | 1866.0 | -26.0  | -69.25  |
+| 637  | Knyahinya                    | L/LL5                 | 500000.0   | Fell      | 1866.0 | 48.9   | 22.4    |
+| 638  | Pokhra                       | H5                    | 350.0      | Fell      | 1866.0 | 26.72  | 82.67   |
+| 639  | Rushville                    | L5                    | 50.0       | Found     | 1866.0 | 39.62  | -85.45  |
+| 640  | Sone                         | H5                    | 17100.0    | Fell      | 1866.0 | 35.17  | 135.33  |
+| 641  | St. Mesmin                   | LL6                   | 8300.0     | Fell      | 1866.0 | 48.45  | 3.93    |
+| 642  | Udipi                        | H5                    | 3600.0     | Fell      | 1866.0 | 13.48  | 74.78   |
+| 643  | Auburn                       | Iron, IIG             | 3630.0     | Found     | 1867.0 | 32.63  | -85.5   |
+| 644  | Ballarat                     | Iron, IAB complex     | 15.0       | Found     | 1867.0 | -37.57 | 143.83  |
+| 645  | Cacaria                      | Iron, IIIAB           | 41400.0    | Found     | 1867.0 | 24.5   | -104.8  |
+| 646  | Casas Grandes                | Iron, IIIAB           | 1545000.0  | Found     | 1867.0 | 30.4   | -107.8  |
+| 647  | Khetri                       | H6                    | 100.0      | Fell      | 1867.0 | 28.02  | 75.82   |
+| 648  | Otomi                        | H                     | 6510.0     | Fell      | 1867.0 | 38.4   | 140.35  |
+| 649  | Scottsville                  | Iron, IIAB            | 10000.0    | Found     | 1867.0 | 36.77  | -86.17  |
+| 650  | Tadjera                      | L5                    | 9000.0     | Fell      | 1867.0 | 36.18  | 5.42    |
+| 651  | Daniel's Kuil                | EL6                   | 1064.0     | Fell      | 1868.0 | -28.2  | 24.57   |
+| 652  | Danville                     | L6                    | 2000.0     | Fell      | 1868.0 | 34.4   | -87.07  |
+| 653  | Frankfort (stone)            | Howardite             | 650.0      | Fell      | 1868.0 | 34.48  | -87.83  |
+| 654  | Goalpara                     | Ureilite              | 2700.0     | Found     | 1868.0 | 26.17  | 90.6    |
+| 655  | Lodran                       | Lodranite             | 1000.0     | Fell      | 1868.0 | 29.53  | 71.8    |
+| 656  | Losttown                     | Iron, IID             | 3000.0     | Found     | 1868.0 | 34.25  | -84.5   |
+| 657  | Moti-ka-nagla                | H6                    | 1500.0     | Fell      | 1868.0 | 26.83  | 77.33   |
+| 658  | Motta di Conti               | H4                    | 9150.0     | Fell      | 1868.0 | 45.2   | 8.5     |
+| 659  | Mount Vernon                 | Pallasite, PMG        | 159000.0   | Found     | 1868.0 | 36.93  | -87.4   |
+| 660  | Ornans                       | CO3.4                 | 6000.0     | Fell      | 1868.0 | 47.12  | 6.15    |
+| 661  | Pevensey                     | LL5                   | 4300.0     | Found     | 1868.0 | -34.78 | 144.67  |
+| 662  | Pnompehn                     | L6                    | 96.0       | Fell      | 1868.0 | 11.58  | 104.92  |
+| 663  | Pultusk                      | H5                    | 250000.0   | Fell      | 1868.0 | 52.77  | 21.27   |
+| 664  | San Francisco del Mezquital  | Iron, IIAB            | 7500.0     | Found     | 1868.0 | 23.48  | -104.37 |
+| 665  | Sauguis                      | L6                    | 4000.0     | Fell      | 1868.0 | 43.15  | -0.85   |
+| 666  | Slavetic                     | H5                    | 1708.0     | Fell      | 1868.0 | 45.68  | 15.6    |
+| 667  | Angra dos Reis (stone)       | Angrite               | 1500.0     | Fell      | 1869.0 | -22.97 | -44.32  |
+| 668  | Caperr                       | Iron, IIIAB           | 113900.0   | Found     | 1869.0 | -45.28 | -70.48  |
+| 669  | Hessle                       | H5                    | 20000.0    | Fell      | 1869.0 | 59.85  | 17.67   |
+| 670  | Iron Creek                   | Iron, IIIAB           | 175000.0   | Found     | 1869.0 | 53.0   | -112.0  |
+| 671  | Kernouve                     | H6                    | 80000.0    | Fell      | 1869.0 | 48.12  | -3.08   |
+| 672  | Krähenberg                   | LL5                   | 16500.0    | Fell      | 1869.0 | 49.33  | 7.46    |
+| 673  | Lumpkin                      | L6                    | 340.0      | Fell      | 1869.0 | 32.03  | -84.77  |
+| 674  | Salt Lake City               | H5                    | 875.0      | Found     | 1869.0 | 40.92  | -111.67 |
+| 675  | Shingle Springs              | Iron, ungrouped       | 39000.0    | Found     | 1869.0 | 38.67  | -120.93 |
+| 676  | Staunton                     | Iron, IIIE            | 43500.0    | Found     | 1869.0 | 38.22  | -79.05  |
+| 677  | Tjabe                        | H6                    | 20000.0    | Fell      | 1869.0 | -7.08  | 111.53  |
+| 678  | Yorktown (New York)          | L5                    | 250.0      | Fell      | 1869.0 | 41.28  | -73.82  |
+| 679  | Cabezo de Mayo               | L/LL6                 | 25000.0    | Fell      | 1870.0 | 37.98  | -1.17   |
+| 680  | Cincinnati                   | Iron, IIAB            | 1500.0     | Found     | 1870.0 | 39.12  | -84.5   |
+| 681  | Ibbenbüren                   | Diogenite             | 2000.0     | Fell      | 1870.0 | 52.28  | 7.7     |
+| 682  | Ilimaes (iron)               | Iron, IIIAB           | 51700.0    | Found     | 1870.0 | -26.0  | -70.0   |
+| 683  | McKinney                     | L4                    | 150000.0   | Found     | 1870.0 | 33.18  | -96.72  |
+| 684  | Nedagolla                    | Iron, ungrouped       | 4500.0     | Fell      | 1870.0 | 18.68  | 83.48   |
+| 685  | Bandong                      | LL6                   | 11500.0    | Fell      | 1871.0 | -6.92  | 107.6   |
+| 686  | Cuba                         | Iron, IAB?            | 1500.0     | Found     | 1871.0 | 22.0   | -80.0   |
+| 687  | Iquique                      | Iron, IVB             | 12500.0    | Found     | 1871.0 | -20.18 | -69.73  |
+| 688  | Laborel                      | H5                    | 3833.0     | Fell      | 1871.0 | 44.28  | 5.58    |
+| 689  | Oczeretna                    | H4                    | 130.0      | Found     | 1871.0 | 49.32  | 31.52   |
+| 690  | Roda                         | Diogenite             | 400.0      | Fell      | 1871.0 | 42.3   | 0.55    |
+| 691  | Searsmont                    | H5                    | 5400.0     | Fell      | 1871.0 | 44.37  | -69.2   |
+| 692  | Dyalpur                      | Ureilite              | 300.0      | Fell      | 1872.0 | 26.25  | 82.0    |
+| 693  | Lancé                        | CO3.5                 | 51700.0    | Fell      | 1872.0 | 47.7   | 1.07    |
+| 694  | Nenntmannsdorf               | Iron, IIAB            | 12500.0    | Found     | 1872.0 | 50.97  | 13.95   |
+| 695  | Orvinio                      | H6                    | 3400.0     | Fell      | 1872.0 | 42.13  | 12.93   |
+| 696  | Santa Apolonia               | Iron, IIIAB           | 1316000.0  | Found     | 1872.0 | 19.22  | -98.3   |
+| 697  | Tennasilm                    | L4                    | 28500.0    | Fell      | 1872.0 | 58.03  | 26.95   |
+| 698  | Aleppo                       | L6                    | 3200.0     | Fell      | 1873.0 | 36.23  | 37.13   |
+| 699  | Chulafinnee                  | Iron, IIIAB           | 16220.0    | Found     | 1873.0 | 33.5   | -85.67  |
+| 700  | Duel Hill (1873)             | Iron, IAB-MG          | 11300.0    | Found     | 1873.0 | 35.85  | -82.7   |
+| 701  | Jhung                        | L5                    | 5900.0     | Fell      | 1873.0 | 31.3   | 72.38   |
+| 702  | Khairpur                     | EL6                   | 13600.0    | Fell      | 1873.0 | 29.53  | 72.3    |
+| 703  | Paneth's Iron                | Iron, IIIE            | 150000.0   | Found     | 1873.0 | NULL   | NULL    |
+| 704  | Santa Barbara                | L4                    | 400.0      | Fell      | 1873.0 | -29.2  | -51.87  |
+| 705  | Ssyromolotovo                | Iron, IIIAB           | 217000.0   | Found     | 1873.0 | 58.62  | 98.93   |
+| 706  | Virba                        | L6                    | 3600.0     | Fell      | 1873.0 | 43.53  | 22.63   |
+| 707  | Waconda                      | L6                    | 50000.0    | Found     | 1873.0 | 39.33  | -98.17  |
+| 708  | Butler                       | Iron, ungrouped       | 41000.0    | Found     | 1874.0 | 38.3   | -94.37  |
+| 709  | Cachiyuyal                   | Iron, IIIE            | 2500.0     | Found     | 1874.0 | -25.0  | -69.5   |
+| 710  | Castalia                     | H5                    | 7300.0     | Fell      | 1874.0 | 36.08  | -78.07  |
+| 711  | Coolac                       | Iron, IAB-MG          | 19280.0    | Found     | 1874.0 | -34.97 | 148.13  |
+| 712  | Kerilis                      | H5                    | 5000.0     | Fell      | 1874.0 | 48.4   | -3.3    |
+| 713  | Sevrukovo                    | L5                    | 101000.0   | Fell      | 1874.0 | 50.62  | 36.6    |
+| 714  | Alexander County             | Iron, IAB complex     | 192.0      | Found     | 1875.0 | 35.75  | -81.25  |
+| 715  | Canyon City                  | Iron, IIIAB           | 8600.0     | Found     | 1875.0 | 40.9   | -123.1  |
+| 716  | Feid Chair                   | H4                    | 380.0      | Fell      | 1875.0 | 36.88  | 8.45    |
+| 717  | Homestead                    | L5                    | 230000.0   | Fell      | 1875.0 | 41.8   | -91.87  |
+| 718  | Mejillones                   | Iron, IIAB            | 14830.0    | Found     | 1875.0 | -23.1  | -70.5   |
+| 719  | Mornans                      | H5                    | 1300.0     | Fell      | 1875.0 | 44.6   | 5.13    |
+| 720  | Nagaria                      | Eucrite-cm            | 20.0       | Fell      | 1875.0 | 26.98  | 78.22   |
+| 721  | North Chile                  | Iron, IIAB            | 300000.0   | Found     | 1875.0 | -23.0  | -69.0   |
+| 722  | Santa Catharina              | Iron, IAB-ung         | 7000000.0  | Found     | 1875.0 | -26.22 | -48.6   |
+| 723  | Serrania de Varas            | Iron, IVA             | 1500.0     | Found     | 1875.0 | -24.55 | -69.07  |
+| 724  | Sitathali                    | H5                    | 1600.0     | Fell      | 1875.0 | 20.92  | 82.58   |
+| 725  | Yardea                       | Iron, IAB-MG          | 3290.0     | Found     | 1875.0 | -32.45 | 135.55  |
+| 726  | Zsadany                      | H5                    | 552.0      | Fell      | 1875.0 | 46.93  | 21.5    |
+| 727  | Babb's Mill (Blake's Iron)   | Iron, ungrouped       | 136000.0   | Found     | 1876.0 | 36.3   | -82.88  |
+| 728  | Judesegeri                   | H6                    | 680.0      | Fell      | 1876.0 | 12.85  | 76.8    |
+| 729  | Mantos Blancos               | Iron, IVA             | 10300.0    | Found     | 1876.0 | -23.45 | -70.12  |
+| 730  | Nochtuisk                    | Iron                  | 8.0        | Found     | 1876.0 | 59.98  | 117.58  |
+| 731  | Rochester                    | H6                    | 340.0      | Fell      | 1876.0 | 41.08  | -86.28  |
+| 732  | Rowton                       | Iron, IIIAB           | 3500.0     | Fell      | 1876.0 | 52.77  | -2.52   |
+| 733  | Ställdalen                   | H5                    | 34000.0    | Fell      | 1876.0 | 59.93  | 14.95   |
+| 734  | Vavilovka                    | LL6                   | 1932.0     | Fell      | 1876.0 | 46.15  | 32.83   |
+| 735  | Verkhne Dnieprovsk           | Iron, IIE             | 70.0       | Found     | 1876.0 | 48.63  | 34.37   |
+| 736  | Bhagur                       | L6                    | 18.0       | Fell      | 1877.0 | 20.88  | 74.83   |
+| 737  | Casey County                 | Iron, IAB-MG          | 723.0      | Found     | 1877.0 | 37.25  | -85.0   |
+| 738  | Cronstad                     | H5                    | 3650.0     | Fell      | 1877.0 | -27.7  | 27.3    |
+| 739  | Cynthiana                    | L/LL4                 | 6000.0     | Fell      | 1877.0 | 38.4   | -84.25  |
+| 740  | Hungen                       | H6                    | 112.0      | Fell      | 1877.0 | 50.3   | 8.92    |
+| 741  | Jodzie                       | Howardite             | 30.0       | Fell      | 1877.0 | 55.7   | 24.4    |
+| 742  | Mühlau                       | OC                    | 5.0        | Found     | 1877.0 | 47.28  | 11.42   |
+| 743  | Soko-Banja                   | LL4                   | 80000.0    | Fell      | 1877.0 | 43.67  | 21.87   |
+| 744  | Warrenton                    | CO3.7                 | 1600.0     | Fell      | 1877.0 | 38.68  | -91.15  |
+| 745  | Bluff (a)                    | L5                    | 153300.0   | Found     | 1878.0 | 29.88  | -96.87  |
+| 746  | Dandapur                     | L6                    | 5650.0     | Fell      | 1878.0 | 26.92  | 83.97   |
+| 747  | Haraiya                      | Eucrite-mmict         | 1000.0     | Fell      | 1878.0 | 26.8   | 82.53   |
+| 748  | La Charca                    | OC                    | 399.0      | Fell      | 1878.0 | 20.67  | -101.28 |
+| 749  | Lujan                        | Iron                  | 50.0       | Found     | 1878.0 | -34.67 | -59.37  |
+| 750  | Mern                         | L6                    | 4000.0     | Fell      | 1878.0 | 55.05  | 12.07   |
+| 751  | Rakovka                      | L6                    | 9000.0     | Fell      | 1878.0 | 52.98  | 37.03   |
+| 752  | Tieschitz                    | H/L3.6                | 28000.0    | Fell      | 1878.0 | 49.6   | 17.12   |
+| 753  | York (iron)                  | Iron, IIIAB           | 835.0      | Found     | 1878.0 | 40.75  | -97.5   |
+| 754  | Campo de Pucara (iron)       | Iron                  | 41.0       | Found     | 1879.0 | -27.67 | -67.12  |
+| 755  | Dalton                       | Iron, IIIAB           | 53000.0    | Found     | 1879.0 | 34.8   | -84.98  |
+| 756  | Densmore (1879)              | L6                    | 37200.0    | Found     | 1879.0 | 39.65  | -99.68  |
+| 757  | Estherville                  | Mesosiderite-A3/4     | 320000.0   | Fell      | 1879.0 | 43.42  | -94.83  |
+| 758  | Gnadenfrei                   | H5                    | 1750.0     | Fell      | 1879.0 | 50.67  | 16.77   |
+| 759  | Itapicuru-Mirim              | H5                    | 2024.0     | Fell      | 1879.0 | -3.4   | -44.33  |
+| 760  | Kalumbi                      | L6                    | 4500.0     | Fell      | 1879.0 | 17.83  | 73.98   |
+| 761  | La Bécasse                   | L6                    | 2800.0     | Fell      | 1879.0 | 47.08  | 1.75    |
+| 762  | Lick Creek                   | Iron, IIAB            | 1240.0     | Found     | 1879.0 | 35.67  | -80.25  |
+| 763  | Makarewa                     | L6                    | 2300.0     | Found     | 1879.0 | -46.32 | 168.4   |
+| 764  | Niagara                      | Iron, IAB-sLL         | 115.0      | Found     | 1879.0 | 48.0   | -97.93  |
+| 765  | Nogoya                       | CM2                   | 4000.0     | Fell      | 1879.0 | -32.37 | -59.83  |
+| 766  | Tenham                       | L6                    | 160000.0   | Fell      | 1879.0 | -25.73 | 142.95  |
+| 767  | Tomatlan                     | H6                    | 900.0      | Fell      | 1879.0 | 20.17  | -105.22 |
+| 768  | Aachen                       | L5                    | 21.0       | Fell      | 1880.0 | 50.78  | 6.08    |
+| 769  | Andhara                      | Stone-uncl            | 2700.0     | Fell      | 1880.0 | 26.58  | 85.57   |
+| 770  | Bingera                      | Iron, IIAB            | 10841.0    | Found     | 1880.0 | -29.88 | 150.57  |
+| 771  | Chetrinahatti                | Stone-uncl            | 72.0       | Fell      | 1880.0 | 14.5   | 76.5    |
+| 772  | Colfax                       | Iron, IAB-ung         | 2300.0     | Found     | 1880.0 | 35.3   | -81.73  |
+| 773  | Eagle Station                | Pallasite, PES        | 36000.0    | Found     | 1880.0 | 38.62  | -84.97  |
+| 774  | Greenbrier County            | Iron, IIIAB           | 5000.0     | Found     | 1880.0 | 37.83  | -80.32  |
+| 775  | Ivanpah                      | Iron, IIIAB           | 58000.0    | Found     | 1880.0 | 35.33  | -115.32 |
+| 776  | Jiapigou                     | Stone-uncl            | NULL       | Found     | 1880.0 | 42.83  | 127.5   |
+| 777  | Lexington County             | Iron, IAB-MG          | 4760.0     | Found     | 1880.0 | 34.0   | -81.25  |
+| 778  | Muizenberg                   | L6                    | 4610.0     | Found     | 1880.0 | -34.1  | 18.47   |
+| 779  | Ratyn                        | Stone-uncl            | 910.0      | Fell      | 1880.0 | 52.2   | 17.98   |
+| 780  | Takenouchi                   | H5                    | 720.0      | Fell      | 1880.0 | 35.38  | 134.9   |
+| 781  | Veramin                      | Mesosiderite-B2       | 54000.0    | Fell      | 1880.0 | 35.33  | 51.63   |
+| 782  | Wittekrantz                  | L5                    | 2200.0     | Fell      | 1880.0 | -32.5  | 23.0    |
+| 783  | Admire                       | Pallasite, PMG        | 180000.0   | Found     | 1881.0 | 38.7   | -96.1   |
+| 784  | Chilkoot                     | Iron, IIIAB           | 43000.0    | Found     | 1881.0 | 59.33  | -136.0  |
+| 785  | Costilla Peak                | Iron, IIIAB           | 35500.0    | Found     | 1881.0 | 36.83  | -105.23 |
+| 786  | Grossliebenthal              | L6                    | 8000.0     | Fell      | 1881.0 | 46.35  | 30.58   |
+| 787  | Middlesbrough                | L6                    | 1600.0     | Fell      | 1881.0 | 54.57  | -1.17   |
+| 788  | Pacula                       | L6                    | 3400.0     | Fell      | 1881.0 | 21.05  | -99.3   |
+| 789  | Piquetberg                   | H                     | 37.0       | Fell      | 1881.0 | -32.87 | 18.72   |
+| 790  | Smithsonian Iron             | Iron, IIAB            | 3510.0     | Found     | 1881.0 | NULL   | NULL    |
+| 791  | Thunda                       | Iron, IIIAB           | 62100.0    | Found     | 1881.0 | -25.7  | 143.05  |
+| 792  | Winburg                      | Iron, IC-an           | 50000.0    | Found     | 1881.0 | -28.5  | 27.0    |
+| 793  | Brenham                      | Pallasite, PMG-an     | 4300000.0  | Found     | 1882.0 | 37.58  | -99.16  |
+| 794  | Fukutomi                     | L5                    | 11620.0    | Fell      | 1882.0 | 33.18  | 130.2   |
+| 795  | Hex River Mountains          | Iron, IIAB            | 60000.0    | Found     | 1882.0 | -33.32 | 19.62   |
+| 796  | Linville                     | Iron, IAB-sHH         | 442.0      | Found     | 1882.0 | 35.87  | -81.92  |
+| 797  | Mocs                         | L5-6                  | 300000.0   | Fell      | 1882.0 | 46.8   | 24.03   |
+| 798  | Pavlovka                     | Howardite             | 2000.0     | Fell      | 1882.0 | 52.03  | 43.0    |
+| 799  | Pirgunje                     | L6                    | 842.0      | Fell      | 1882.0 | 25.8   | 88.45   |
+| 800  | Rancho de la Pila (1882)     | Iron, IIIAB           | 46500.0    | Found     | 1882.0 | 24.12  | -104.3  |
+| 801  | San Cristobal                | Iron, IAB-ung         | 5000.0     | Found     | 1882.0 | -23.43 | -69.5   |
+| 802  | Adalia                       | Eucrite-mmict         | 1.0        | Found     | 1883.0 | 36.9   | 30.68   |
+| 803  | Alfianello                   | L6                    | 228000.0   | Fell      | 1883.0 | 45.27  | 10.15   |
+| 804  | Enon                         | Iron, ungrouped       | 763.0      | Found     | 1883.0 | 39.87  | -83.95  |
+| 805  | Estacado                     | H6                    | 290000.0   | Found     | 1883.0 | 33.9   | -101.75 |
+| 806  | Grand Rapids                 | Iron, ungrouped       | 51700.0    | Found     | 1883.0 | 42.97  | -85.77  |
+| 807  | Jenny's Creek                | Iron, IAB-MG          | 12000.0    | Found     | 1883.0 | 37.9   | -82.38  |
+| 808  | Ngawi                        | LL3.6                 | 1393.0     | Fell      | 1883.0 | -7.45  | 111.42  |
+| 809  | Silverton (New South Wales)  | L6                    | 350.7      | Found     | 1883.0 | -31.88 | 141.2   |
+| 810  | St. Caprais-de-Quinsac       | L6                    | 360.0      | Fell      | 1883.0 | 44.75  | 0.05    |
+| 811  | São Julião de Moreira        | Iron, IIAB            | 162000.0   | Found     | 1883.0 | 41.77  | -8.58   |
+| 812  | Chañaral                     | Iron, IIIAB           | 1207.0     | Found     | 1884.0 | -26.5  | -70.25  |
+| 813  | Corrizatillo                 | Iron, IAB complex     | 1328.0     | Found     | 1884.0 | -26.03 | -70.33  |
+| 814  | Djati-Pengilon               | H6                    | 166000.0   | Fell      | 1884.0 | -7.5   | 111.5   |
+| 815  | Glorieta Mountain            | Pallasite, PMG-an     | 148000.0   | Found     | 1884.0 | 35.6   | -105.8  |
+| 816  | Hammond                      | Iron, ungrouped       | 24000.0    | Found     | 1884.0 | 44.92  | -92.43  |
+| 817  | Joe Wright Mountain          | Iron, IIIAB           | 42600.0    | Found     | 1884.0 | 35.77  | -91.5   |
+| 818  | Kokstad                      | Iron, IIIE            | 341000.0   | Found     | 1884.0 | -30.55 | 29.42   |
+| 819  | Merceditas                   | Iron, IIIAB           | 42900.0    | Found     | 1884.0 | -26.33 | -70.28  |
+| 820  | Pirthalla                    | H6                    | 1161.0     | Fell      | 1884.0 | 29.58  | 76.0    |
+| 821  | Tysnes Island                | H4                    | 19860.0    | Fell      | 1884.0 | 60.0   | 5.62    |
+| 822  | Youndegin                    | Iron, IAB-MG          | 3800000.0  | Found     | 1884.0 | -32.1  | 117.72  |
+| 823  | Chandpur                     | L6                    | 1100.0     | Fell      | 1885.0 | 27.28  | 79.05   |
+| 824  | Jamestown                    | Iron, IVA             | 4000.0     | Found     | 1885.0 | 46.62  | -98.5   |
+| 825  | Lucky Hill                   | Iron, IIIAB           | 20500.0    | Found     | 1885.0 | 17.9   | -77.63  |
+| 826  | Mazapil                      | Iron, IAB-sLL         | 4000.0     | Fell      | 1885.0 | 24.68  | -101.68 |
+| 827  | Pavlodar (pallasite)         | Pallasite, PMG-an     | 4500.0     | Found     | 1885.0 | 51.17  | 77.33   |
+| 828  | Puquios                      | Iron, IID             | 6580.0     | Found     | 1885.0 | -27.15 | -69.92  |
+| 829  | Tanokami Mountain            | Iron, IIIE            | 174000.0   | Found     | 1885.0 | 34.92  | 135.97  |
+| 830  | Assisi                       | H5                    | 2000.0     | Fell      | 1886.0 | 43.03  | 12.55   |
+| 831  | Barntrup                     | LL4                   | 17.0       | Fell      | 1886.0 | 52.0   | 9.1     |
+| 832  | Bradford Woods               | L                     | 762.0      | Fell      | 1886.0 | 40.5   | -80.08  |
+| 833  | Cabin Creek                  | Iron, IIIAB           | 48500.0    | Fell      | 1886.0 | 35.5   | -93.5   |
+| 834  | Kulnine                      | L6                    | 55300.0    | Found     | 1886.0 | -34.15 | 141.78  |
+| 835  | Kyushu                       | L6                    | 45000.0    | Fell      | 1886.0 | 32.03  | 130.63  |
+| 836  | Nammianthal                  | H5                    | 4500.0     | Fell      | 1886.0 | 12.28  | 79.2    |
+| 837  | Novo-Urei                    | Ureilite              | 1900.0     | Fell      | 1886.0 | 54.82  | 46.0    |
+| 838  | Rafrüti                      | Iron, ungrouped       | 18200.0    | Found     | 1886.0 | 47.0   | 7.83    |
+| 839  | Tonganoxie                   | Iron, IIIAB           | 11800.0    | Found     | 1886.0 | 39.08  | -95.12  |
+| 840  | Algoma                       | Iron, IAB-sHL         | 4100.0     | Found     | 1887.0 | 44.65  | -87.47  |
+| 841  | Bielokrynitschie             | H4                    | 1900.0     | Fell      | 1887.0 | 50.13  | 27.17   |
+| 842  | Carlton                      | Iron, IAB-sLM         | 81200.0    | Found     | 1887.0 | 31.92  | -98.03  |
+| 843  | Crab Orchard                 | Mesosiderite-A1       | 48500.0    | Found     | 1887.0 | 35.83  | -84.92  |
+| 844  | De Cewsville                 | H6                    | 340.0      | Fell      | 1887.0 | 43.0   | -80.0   |
+| 845  | Doyleville                   | H5                    | 112.0      | Found     | 1887.0 | 38.42  | -106.58 |
+| 846  | Holland's Store              | Iron, IIAB            | 12200.0    | Found     | 1887.0 | 34.37  | -85.43  |
+| 847  | Indian Valley                | Iron, IIAB            | 14100.0    | Found     | 1887.0 | 36.93  | -80.5   |
+| 848  | Indio Rico                   | H6                    | 15000.0    | Found     | 1887.0 | -38.33 | -60.88  |
+| 849  | Kendall County               | Iron, IAB-ung         | 21000.0    | Found     | 1887.0 | 29.4   | -98.5   |
+| 850  | Lalitpur                     | L6                    | 372.0      | Fell      | 1887.0 | 24.45  | 78.57   |
+| 851  | Morristown                   | Mesosiderite-A3       | 16300.0    | Found     | 1887.0 | 36.2   | -83.38  |
+| 852  | Mount Joy                    | Iron, IIAB            | 384000.0   | Found     | 1887.0 | 39.78  | -77.22  |
+| 853  | Ochansk                      | H4                    | 500000.0   | Fell      | 1887.0 | 57.78  | 55.27   |
+| 854  | Pan de Azucar                | Iron, IAB complex     | 19500.0    | Found     | 1887.0 | -26.5  | -69.5   |
+| 855  | Phu Hong                     | H4                    | 500.0      | Fell      | 1887.0 | 11.25  | 108.58  |
+| 856  | Pipe Creek                   | H6                    | 13600.0    | Found     | 1887.0 | 29.68  | -98.92  |
+| 857  | San Emigdio                  | H4                    | 36000.0    | Found     | 1887.0 | 36.0   | -119.0  |
+| 858  | San Pedro Springs            | L6                    | 72.0       | Found     | 1887.0 | 29.5   | -98.5   |
+| 859  | Silver Crown                 | Iron, IAB-MG          | 11600.0    | Found     | 1887.0 | 41.23  | -104.98 |
+| 860  | Waldron Ridge                | Iron, IAB complex     | 13600.0    | Found     | 1887.0 | 36.63  | -83.83  |
+| 861  | Bella Roca                   | Iron, IIIAB           | 33000.0    | Found     | 1888.0 | 24.9   | -105.4  |
+| 862  | Bischtübe                    | Iron, IAB-sLL         | 48250.0    | Found     | 1888.0 | 51.95  | 62.2    |
+| 863  | Carcote                      | H5                    | 392.0      | Found     | 1888.0 | -24.0  | -69.0   |
+| 864  | Cowra                        | Iron, ungrouped       | 5560.0     | Found     | 1888.0 | -33.85 | 148.68  |
+| 865  | Eli Elwah                    | L6                    | 15200.0    | Found     | 1888.0 | -34.5  | 144.72  |
+| 866  | Franklinville                | L6                    | 108.0      | Found     | 1888.0 | 38.5   | -100.0  |
+| 867  | Haniet-el-Beguel             | Iron, IAB complex     | 2000.0     | Found     | 1888.0 | 32.48  | 4.4     |
+| 868  | La Primitiva                 | Iron, IIG             | 27400.0    | Found     | 1888.0 | -19.92 | -69.82  |
+| 869  | Lonaconing                   | Iron, IAB-sHL         | 1400.0     | Found     | 1888.0 | 39.42  | -79.15  |
+| 870  | Minas Gerais                 | L6                    | 1224.0     | Found     | 1888.0 | -18.5  | -44.0   |
+| 871  | Pirapora                     | Iron, IIAB            | 6175.0     | Found     | 1888.0 | -17.3  | -45.0   |
+| 872  | St. Genevieve County         | Iron, IIIF            | 244500.0   | Found     | 1888.0 | 37.97  | -90.32  |
+| 873  | Thomson                      | L6                    | 218.0      | Found     | 1888.0 | 33.47  | -82.48  |
+| 874  | Thurlow                      | Iron, IIIAB           | 5500.0     | Found     | 1888.0 | 44.75  | -77.58  |
+| 875  | Welland                      | Iron, IIIAB           | 8200.0     | Found     | 1888.0 | 43.02  | -79.22  |
+| 876  | Ameca-Ameca                  | Iron                  | 1.2        | Found     | 1889.0 | 20.58  | -104.07 |
+| 877  | Apoala                       | Iron, IIIAB           | 85000.0    | Found     | 1889.0 | 17.7   | -97.0   |
+| 878  | Dexter                       | Iron, IIIAB           | 1724.0     | Found     | 1889.0 | 33.82  | -97.0   |
+| 879  | Ergheo                       | L5                    | 20000.0    | Fell      | 1889.0 | 1.17   | 44.17   |
+| 880  | Ferguson                     | OC                    | 220.0      | Fell      | 1889.0 | 36.1   | -81.42  |
+| 881  | Gilgoin                      | H5                    | 147000.0   | Found     | 1889.0 | -30.38 | 147.2   |
+| 882  | Hopper                       | Iron, IIIAB           | 1800.0     | Found     | 1889.0 | 36.55  | -79.78  |
+| 883  | Iron River                   | Iron, IVA             | 1420.0     | Found     | 1889.0 | 46.08  | -88.56  |
+| 884  | Jelica                       | LL6                   | 34000.0    | Fell      | 1889.0 | 43.83  | 20.44   |
+| 885  | Kenton County                | Iron, IIIAB           | 194000.0   | Found     | 1889.0 | 38.82  | -84.6   |
+| 886  | Lundsgård                    | L6                    | 11000.0    | Fell      | 1889.0 | 56.22  | 13.03   |
+| 887  | Mighei                       | CM2                   | 8000.0     | Fell      | 1889.0 | 48.07  | 30.97   |
+| 888  | Moctezuma                    | Iron, IAB-sLL         | 1700.0     | Found     | 1889.0 | 29.8   | -109.67 |
+| 889  | Travis County (a)            | H5                    | 175400.0   | Found     | 1889.0 | 30.3   | -97.7   |
+| 890  | Travis County (b)            | H4                    | 5900.0     | Found     | 1889.0 | 30.56  | -97.95  |
+| 891  | Augustinovka                 | Iron, IIIAB           | 400000.0   | Found     | 1890.0 | 48.07  | 35.08   |
+| 892  | Blue Tier                    | Iron                  | 1400.0     | Found     | 1890.0 | -41.18 | 148.03  |
+| 893  | Bridgewater                  | Iron, IID             | 13600.0    | Found     | 1890.0 | 35.72  | -81.87  |
+| 894  | Collescipoli                 | H5                    | 5000.0     | Fell      | 1890.0 | 42.53  | 12.62   |
+| 895  | Farmington                   | L5                    | 89400.0    | Fell      | 1890.0 | 39.75  | -97.03  |
+| 896  | Forest City                  | H5                    | 152000.0   | Fell      | 1890.0 | 43.25  | -93.67  |
+| 897  | Franceville                  | Iron, IIIAB           | 18800.0    | Found     | 1890.0 | 38.82  | -104.62 |
+| 898  | Hassi-Jekna                  | Iron, IAB-sHL         | 1250.0     | Fell      | 1890.0 | 28.95  | 0.82    |
+| 899  | Jianshi                      | Iron, IIIAB           | 600000.0   | Fell      | 1890.0 | 30.81  | 109.5   |
+| 900  | Kakangari                    | K3                    | 350.0      | Fell      | 1890.0 | 12.38  | 78.52   |
+| 901  | Misshof                      | H5                    | 5800.0     | Fell      | 1890.0 | 56.67  | 23.0    |
+| 902  | Morland                      | H6                    | 295000.0   | Found     | 1890.0 | 39.33  | -100.07 |
+| 903  | Nagy-Vázsony                 | Iron, IAB-sLL         | 2000.0     | Found     | 1890.0 | 46.98  | 17.7    |
+| 904  | Nawapali                     | CM2                   | 105.0      | Fell      | 1890.0 | 21.25  | 83.67   |
+| 905  | Sacramento Mountains         | Iron, IIIAB           | 237200.0   | Found     | 1890.0 | 32.92  | -104.67 |
+| 906  | Shirahagi                    | Iron, IVA             | 22700.0    | Found     | 1890.0 | 36.7   | 137.37  |
+| 907  | St. Germain-du-Pinel         | H6                    | 4000.0     | Fell      | 1890.0 | 48.02  | -1.15   |
+| 908  | Summit                       | Iron, IIAB            | 1000.0     | Found     | 1890.0 | 34.2   | -86.48  |
+| 909  | Villedieu                    | H4                    | 14000.0    | Found     | 1890.0 | 47.92  | 4.35    |
+| 910  | Western Arkansas             | Iron, IVA             | 1750.0     | Found     | 1890.0 | 35.0   | -94.0   |
+| 911  | Bald Eagle                   | Iron, IIIAB           | 3200.0     | Found     | 1891.0 | 41.28  | -77.05  |
+| 912  | Canyon Diablo                | Iron, IAB-MG          | 30000000.0 | Found     | 1891.0 | 35.05  | -111.03 |
+| 913  | Forsyth County               | Iron, IIAB            | 22700.0    | Found     | 1891.0 | 36.1   | -80.2   |
+| 914  | Guêa                         | Stone-uncl            | 1915.0     | Fell      | 1891.0 | 43.77  | 20.23   |
+| 915  | Indarch                      | EH4                   | 27000.0    | Fell      | 1891.0 | 39.75  | 46.67   |
+| 916  | Jonesboro                    | Iron, IVA             | 30.0       | Found     | 1891.0 | 36.3   | -82.47  |
+| 917  | Kingston                     | Iron, ungrouped       | 12900.0    | Found     | 1891.0 | 32.9   | -107.73 |
+| 918  | Long Island                  | L6                    | 564000.0   | Found     | 1891.0 | 39.93  | -99.6   |
+| 919  | Ternera                      | Iron, IVB             | 1980.0     | Found     | 1891.0 | -27.33 | -69.8   |
+| 920  | Toubil River                 | Iron, IIIAB           | 22000.0    | Found     | 1891.0 | 55.88  | 89.1    |
+| 921  | Ballinoo                     | Iron, IIC             | 42200.0    | Found     | 1892.0 | -27.7  | 115.77  |
+| 922  | Bansur                       | L6                    | 15000.0    | Fell      | 1892.0 | 27.7   | 76.33   |
+| 923  | Bath                         | H4                    | 21000.0    | Fell      | 1892.0 | 45.42  | -98.32  |
+| 924  | Cobija                       | H6                    | 6530.0     | Found     | 1892.0 | -22.57 | -70.25  |
+| 925  | Cross Roads                  | H5                    | 167.0      | Fell      | 1892.0 | 35.63  | -78.13  |
+| 926  | Dayton                       | Iron, IAB-sLH         | 26300.0    | Found     | 1892.0 | 39.75  | -84.17  |
+| 927  | Guareña                      | H6                    | 39000.0    | Fell      | 1892.0 | 38.73  | -6.02   |
+| 928  | Moonbi                       | Iron, IIIF            | 13200.0    | Found     | 1892.0 | -30.92 | 151.28  |
+| 929  | Morradal                     | Iron, ungrouped       | 2750.0     | Found     | 1892.0 | 62.0   | 7.67    |
+| 930  | Roebourne                    | Iron, IIIAB           | 86860.0    | Found     | 1892.0 | -22.33 | 118.0   |
+| 931  | Saotome                      | Iron, IVA             | 10880.0    | Found     | 1892.0 | 36.5   | 137.0   |
+| 932  | Beaver Creek                 | H5                    | 14000.0    | Fell      | 1893.0 | 51.17  | -117.33 |
+| 933  | Bherai                       | L6                    | 100.0      | Fell      | 1893.0 | 20.83  | 71.47   |
+| 934  | El Capitan                   | Iron, IIIAB           | 27500.0    | Found     | 1893.0 | 33.5   | -105.5  |
+| 935  | Kaufman                      | L5                    | 23000.0    | Found     | 1893.0 | 32.58  | -96.42  |
+| 936  | Kofa                         | Iron, IAB-sHH         | 490.0      | Found     | 1893.0 | 33.5   | -114.0  |
+| 937  | Oroville                     | Iron, IIIAB           | 24500.0    | Found     | 1893.0 | 39.68  | -121.63 |
+| 938  | Persimmon Creek              | Iron, IAB-sLM         | 5000.0     | Found     | 1893.0 | 35.05  | -84.23  |
+| 939  | Plymouth                     | Iron, IIIAB           | 14000.0    | Found     | 1893.0 | 41.33  | -86.32  |
+| 940  | Prairie Dog Creek            | H3.7                  | 2900.0     | Found     | 1893.0 | 39.63  | -100.5  |
+| 941  | Pricetown                    | L6                    | 900.0      | Fell      | 1893.0 | 39.12  | -83.85  |
+| 942  | South Bend                   | Pallasite, PMG        | 2500.0     | Found     | 1893.0 | 41.65  | -86.22  |
+| 943  | Zabrodje                     | L6                    | 3000.0     | Fell      | 1893.0 | 55.18  | 27.92   |
+| 944  | Arlington                    | Iron, IIE-an          | 8940.0     | Found     | 1894.0 | 44.6   | -94.1   |
+| 945  | Bori                         | L6                    | 8600.0     | Fell      | 1894.0 | 21.95  | 78.03   |
+| 946  | Canton                       | Iron, IIIAB           | 7030.0     | Found     | 1894.0 | 34.2   | -84.48  |
+| 947  | Fisher                       | L6                    | 17600.0    | Fell      | 1894.0 | 47.82  | -96.85  |
+| 948  | Hildreth                     | L5                    | 3060.0     | Found     | 1894.0 | 40.33  | -99.03  |
+| 949  | Jerome (Kansas)              | L4                    | 29600.0    | Found     | 1894.0 | 38.77  | -100.73 |
+| 950  | Los Martinez                 | L6                    | 25.0       | Fell      | 1894.0 | 38.0   | -0.83   |
+| 951  | Ness County (1894)           | L6                    | 82000.0    | Found     | 1894.0 | 38.5   | -99.6   |
+| 952  | Sam's Valley                 | Iron, IIIAB           | 6920.0     | Found     | 1894.0 | 42.53  | -122.88 |
+| 953  | Savtschenskoje               | LL4                   | 2500.0     | Fell      | 1894.0 | 47.22  | 29.87   |
+| 954  | Ambapur Nagla                | H5                    | 6400.0     | Fell      | 1895.0 | 27.67  | 78.25   |
+| 955  | Bishunpur                    | LL3.15                | 1039.0     | Fell      | 1895.0 | 25.38  | 82.6    |
+| 956  | Hayden Creek                 | Iron, IIIAB           | 270.0      | Found     | 1895.0 | 45.0   | -114.0  |
+| 957  | Nagy-Borové                  | L5                    | 6100.0     | Fell      | 1895.0 | 49.17  | 19.5    |
+| 958  | Nocoleche                    | Iron, IC-an           | 20000.0    | Found     | 1895.0 | -29.87 | 144.22  |
+| 959  | Oakley (stone)               | H6                    | 27700.0    | Found     | 1895.0 | 38.95  | -101.02 |
+| 960  | Oscuro Mountains             | Iron, IAB-MG          | 3600.0     | Found     | 1895.0 | 33.63  | -106.38 |
+| 961  | Pampa del Infierno           | L6                    | 896.0      | Found     | 1895.0 | -26.68 | -61.08  |
+| 962  | Reed City                    | Iron, ungrouped       | 20000.0    | Found     | 1895.0 | 43.87  | -85.52  |
+| 963  | Rockhampton                  | Stone-uncl            | 1641.0     | Fell      | 1895.0 | -23.38 | 150.52  |
+| 964  | Arispe                       | Iron, IC              | 683000.0   | Found     | 1896.0 | 30.33  | -109.98 |
+| 965  | Atemajac                     | L6                    | 94.2       | Fell      | 1896.0 | 20.07  | -103.67 |
+| 966  | Bolivia                      | Iron, IAB-MG          | 21250.0    | Found     | 1896.0 | NULL   | NULL    |
+| 967  | Covert                       | H5                    | 61000.0    | Found     | 1896.0 | 39.2   | -98.78  |
+| 968  | Lesves                       | L6                    | 2000.0     | Fell      | 1896.0 | 50.37  | 4.73    |
+| 969  | Loreto                       | Iron, IIIAB           | 94800.0    | Found     | 1896.0 | 26.02  | -111.37 |
+| 970  | Luis Lopez                   | Iron, IIIAB           | 7000.0     | Found     | 1896.0 | 34.0   | -106.97 |
+| 971  | Madrid                       | L6                    | 400.0      | Fell      | 1896.0 | 40.42  | -3.72   |
+| 972  | Ottawa                       | LL6                   | 840.0      | Fell      | 1896.0 | 38.6   | -95.22  |
+| 973  | Rosario                      | Iron, IAB-MG          | 2700.0     | Found     | 1896.0 | 14.6   | -88.68  |
+| 974  | Delhi                        | L5                    | 0.8        | Fell      | 1897.0 | 28.57  | 77.25   |
+| 975  | Gambat                       | L6                    | 6400.0     | Fell      | 1897.0 | 27.35  | 68.53   |
+| 976  | Higashi-koen                 | H5                    | 750.0      | Fell      | 1897.0 | 33.6   | 130.43  |
+| 977  | Kangra Valley                | H5                    | 400.0      | Fell      | 1897.0 | 32.08  | 76.3    |
+| 978  | Lancon                       | H6                    | 7000.0     | Fell      | 1897.0 | 43.75  | 5.12    |
+| 979  | Los Reyes                    | Iron, IIIAB           | 19500.0    | Found     | 1897.0 | 19.27  | -97.28  |
+| 980  | Meuselbach                   | L6                    | 870.0      | Fell      | 1897.0 | 50.58  | 11.1    |
+| 981  | Mount Morris (New York)      | H                     | 12.5       | Found     | 1897.0 | 42.7   | -77.88  |
+| 982  | Mungindi                     | Iron, IAB-sLM         | 51300.0    | Found     | 1897.0 | -28.93 | 148.95  |
+| 983  | Nio                          | H3-4                  | 467.0      | Fell      | 1897.0 | 34.2   | 131.57  |
+| 984  | San Angelo                   | Iron, IIIAB           | 88000.0    | Found     | 1897.0 | 31.42  | -100.35 |
+| 985  | Zavid                        | L6                    | 95000.0    | Fell      | 1897.0 | 44.4   | 19.12   |
+| 986  | Alt Bela                     | Iron, IID             | 4000.0     | Found     | 1898.0 | 49.77  | 18.25   |
+| 987  | Andover                      | L6                    | 3200.0     | Fell      | 1898.0 | 44.62  | -70.75  |
+| 988  | Andryushki                   | L6                    | 26.6       | Found     | 1898.0 | 49.65  | 29.63   |
+| 989  | Armanty                      | Iron, IIIE            | 28000000.0 | Found     | 1898.0 | 47.0   | 88.0    |
+| 990  | Bendock                      | Pallasite             | 27000.0    | Found     | 1898.0 | -37.15 | 148.92  |
+| 991  | Bond Springs                 | H6                    | 6.2        | Found     | 1898.0 | -23.5  | 133.83  |
+| 992  | Cedartown                    | Iron, IIAB            | 11300.0    | Found     | 1898.0 | 34.02  | -85.27  |
+| 993  | Iredell                      | Iron, IIAB            | 1500.0     | Found     | 1898.0 | 31.97  | -97.87  |
+| 994  | Kodaikanal                   | Iron, IIE             | 15900.0    | Found     | 1898.0 | 10.27  | 77.4    |
+| 995  | Mariaville                   | Iron                  | 340.0      | Fell      | 1898.0 | 42.72  | -99.38  |
+| 996  | Mart                         | Iron, IVA             | 7140.0     | Found     | 1898.0 | 31.5   | -96.88  |
+| 997  | Mjelleim                     | H                     | 100.7      | Fell      | 1898.0 | 61.73  | 5.93    |
+| 998  | Mount Ouray                  | Iron, IID             | 900.0      | Found     | 1898.0 | 38.42  | -106.22 |
+| 999  | Quesa                        | Iron, IAB-ung         | 10750.0    | Fell      | 1898.0 | 39.0   | -0.67   |
+| 1000 | Sierra Gorda                 | Iron, IIAB            | 26000.0    | Found     | 1898.0 | -22.9  | -69.35  |
++------+------------------------------+-----------------------+------------+-----------+--------+--------+---------+

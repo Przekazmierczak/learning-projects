@@ -1,0 +1,205 @@
++------------------------+--------------------------+
+|          city          | number of public schools |
++------------------------+--------------------------+
+| Ashburnham             | 3                        |
+| Athol                  | 3                        |
+| Barre                  | 3                        |
+| Charlestown            | 3                        |
+| Chestnut Hill          | 3                        |
+| Clinton                | 3                        |
+| Dalton                 | 3                        |
+| Dartmouth              | 3                        |
+| Dighton                | 3                        |
+| Dover                  | 3                        |
+| East Bridgewater       | 3                        |
+| East Walpole           | 3                        |
+| Fiskdale               | 3                        |
+| Great Barrington       | 3                        |
+| Harwich                | 3                        |
+| Hopedale               | 3                        |
+| Hull                   | 3                        |
+| Huntington             | 3                        |
+| Manchester             | 3                        |
+| Mashpee                | 3                        |
+| Maynard                | 3                        |
+| Millbury               | 3                        |
+| Monson                 | 3                        |
+| Newton                 | 3                        |
+| Norfolk                | 3                        |
+| Orange                 | 3                        |
+| Palmer                 | 3                        |
+| Raynham                | 3                        |
+| Rockport               | 3                        |
+| Rutland                | 3                        |
+| South Hamilton         | 3                        |
+| Southwick              | 3                        |
+| Spencer                | 3                        |
+| Turners Falls          | 3                        |
+| Upton                  | 3                        |
+| Ware                   | 3                        |
+| Warren                 | 3                        |
+| Webster                | 3                        |
+| West Newbury           | 3                        |
+| Westport               | 3                        |
+| Whitinsville           | 3                        |
+| Wrentham               | 3                        |
+| Acushnet               | 2                        |
+| Allston                | 2                        |
+| Auburndale             | 2                        |
+| Avon                   | 2                        |
+| Ayer                   | 2                        |
+| Baldwinville           | 2                        |
+| Berkley                | 2                        |
+| Bolton                 | 2                        |
+| Boylston               | 2                        |
+| Bradford               | 2                        |
+| Brewster               | 2                        |
+| Byfield                | 2                        |
+| Carver                 | 2                        |
+| Chatham                | 2                        |
+| Cheshire               | 2                        |
+| East Falmouth          | 2                        |
+| East Sandwich          | 2                        |
+| East Taunton           | 2                        |
+| Easthampton            | 2                        |
+| Feeding Hills          | 2                        |
+| Florence               | 2                        |
+| Granby                 | 2                        |
+| Hadley                 | 2                        |
+| Hanscom Air Force Base | 2                        |
+| Hanson                 | 2                        |
+| Harvard                | 2                        |
+| Hatfield               | 2                        |
+| Holbrook               | 2                        |
+| Lancaster              | 2                        |
+| Lee                    | 2                        |
+| Lenox                  | 2                        |
+| Mendon                 | 2                        |
+| Merrimac               | 2                        |
+| Middleton              | 2                        |
+| Montague               | 2                        |
+| North Brookfield       | 2                        |
+| North Chelmsford       | 2                        |
+| North Dartmouth        | 2                        |
+| Northfield             | 2                        |
+| Oak Bluffs             | 2                        |
+| Orleans                | 2                        |
+| Pepperell              | 2                        |
+| Plainville             | 2                        |
+| Rehoboth               | 2                        |
+| Rochester              | 2                        |
+| Shelburne Falls        | 2                        |
+| Shirley                | 2                        |
+| South Deerfield        | 2                        |
+| South Weymouth         | 2                        |
+| Sterling               | 2                        |
+| Stow                   | 2                        |
+| Topsfield              | 2                        |
+| Waban                  | 2                        |
+| West Boylston          | 2                        |
+| West Newton            | 2                        |
+| Westhampton            | 2                        |
+| Westminster            | 2                        |
+| Williamstown           | 2                        |
+| Adams                  | 1                        |
+| Ashby                  | 1                        |
+| Ashfield               | 1                        |
+| Back Bay               | 1                        |
+| Becket                 | 1                        |
+| Berlin                 | 1                        |
+| Bernardston            | 1                        |
+| Bournedale             | 1                        |
+| Boxborough             | 1                        |
+| Brimfield              | 1                        |
+| Brookfield             | 1                        |
+| Carlisle               | 1                        |
+| Centerville            | 1                        |
+| Charlemont             | 1                        |
+| Chester                | 1                        |
+| Chesterfield           | 1                        |
+| Chilmark               | 1                        |
+| Clarksburg             | 1                        |
+| Colrain                | 1                        |
+| Conway                 | 1                        |
+| Cuttyhunk              | 1                        |
+| Dunstable              | 1                        |
+| East Brookfield        | 1                        |
+| East Freetown          | 1                        |
+| Eastham                | 1                        |
+| Edgartown              | 1                        |
+| Erving                 | 1                        |
+| Essex                  | 1                        |
+| Florida                | 1                        |
+| Gilbertville           | 1                        |
+| Gill                   | 1                        |
+| Groveland              | 1                        |
+| Halifax                | 1                        |
+| Hamilton               | 1                        |
+| Hampden                | 1                        |
+| Hancock                | 1                        |
+| Hathorne               | 1                        |
+| Hinsdale               | 1                        |
+| Holland                | 1                        |
+| Hubbardston            | 1                        |
+| Indian Orchard         | 1                        |
+| Jefferson              | 1                        |
+| Lanesborough           | 1                        |
+| Leeds                  | 1                        |
+| Leverett               | 1                        |
+| Lincoln                | 1                        |
+| Marion                 | 1                        |
+| Marston Mills          | 1                        |
+| Marstons Mills         | 1                        |
+| Middleboro             | 1                        |
+| Millville              | 1                        |
+| Nahant                 | 1                        |
+| New Braintree          | 1                        |
+| New Salem              | 1                        |
+| Newbury                | 1                        |
+| Newton Corner          | 1                        |
+| Newton Highlands       | 1                        |
+| North Billerica        | 1                        |
+| North Dighton          | 1                        |
+| North Eastham          | 1                        |
+| North Falmouth         | 1                        |
+| North Grafton          | 1                        |
+| North Weymouth         | 1                        |
+| Oakham                 | 1                        |
+| Otis                   | 1                        |
+| Paxton                 | 1                        |
+| Pelham                 | 1                        |
+| Petersham              | 1                        |
+| Plympton               | 1                        |
+| Princeton              | 1                        |
+| Provincetown           | 1                        |
+| Richmond               | 1                        |
+| Rowe                   | 1                        |
+| Rowley                 | 1                        |
+| Royalston              | 1                        |
+| Salisbury              | 1                        |
+| Sandwich               | 1                        |
+| Savoy                  | 1                        |
+| Sherborn               | 1                        |
+| Shutesbury             | 1                        |
+| South Dartmouth        | 1                        |
+| South Easton           | 1                        |
+| South Grafton          | 1                        |
+| Southampton            | 1                        |
+| Sturbridge             | 1                        |
+| Sunderland             | 1                        |
+| Templeton              | 1                        |
+| Truro                  | 1                        |
+| Vineyard Haven         | 1                        |
+| Wales                  | 1                        |
+| Wellfleet              | 1                        |
+| Wenham                 | 1                        |
+| West Barnstable        | 1                        |
+| West Brookfield        | 1                        |
+| West Dennis            | 1                        |
+| West Tisbury           | 1                        |
+| West Warren            | 1                        |
+| West Yarmouth          | 1                        |
+| Whately                | 1                        |
+| Williamsburg           | 1                        |
+| Worthington            | 1                        |
++------------------------+--------------------------+

@@ -1,0 +1,7 @@
++-----------------------+
+|         name          |
++-----------------------+
+| Cleveland Indians     |
+| Kansas City Athletics |
+| St. Louis Browns      |
++-----------------------+
