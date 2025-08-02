@@ -40,5 +40,5 @@ function Powerup:update(dt)
 end
 
 function Powerup:render()
-    love.graphics.draw(gTextures['powerups'], gFrames['powerups'][self.skin], self.x, self.y)
+    love.graphics.draw(gTextures['main'], gFrames['powerups'][self.skin], self.x, self.y)
 end

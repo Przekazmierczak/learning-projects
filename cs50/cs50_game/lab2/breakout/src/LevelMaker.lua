@@ -95,8 +95,12 @@ function LevelMaker.createMap(level)
                 y * 16                  -- just use y * 16, since we need top padding anyway
             )
 
+            if math.random(1,10) == 1 then
+                b.color = -1
+                b.tier = 0
+                alternateFlag = not alternateFlag
             -- if we're alternating, figure out which color/tier we're on
-            if alternatePattern and alternateFlag then
+            elseif alternatePattern and alternateFlag then
                 b.color = alternateColor1
                 b.tier = alternateTier1
                 alternateFlag = not alternateFlag

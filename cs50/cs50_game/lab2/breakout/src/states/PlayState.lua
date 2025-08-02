@@ -95,8 +95,11 @@ function PlayState:update(dt)
 
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
-                if math.random(1,10) == 1 then
+                chance = math.random(1,100)
+                if chance < 11 then
                     table.insert(self.powerups, Powerup(7, brick.x + 8, brick.y))
+                elseif chance < 16 then 
+                    table.insert(self.powerups, Powerup(10, brick.x + 8, brick.y))
                 end
 
                 -- if we have enough points, recover a point of health
@@ -193,16 +196,23 @@ function PlayState:update(dt)
         
         if powerup:collides(self.paddle) then
             table.insert(toRemovePowerUp, k)
+            if powerup.skin == 7 then
+                for i = 1, 2 do
+                    new_ball = Ball(math.random(7))
+                    new_ball.x = self.paddle.x + (self.paddle.width / 2) - 4
+                    new_ball.y = self.paddle.y - 8
 
-            for i = 1, 2 do
-                new_ball = Ball(math.random(7))
-                new_ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-                new_ball.y = self.paddle.y - 8
+                    new_ball.dx = math.random(-200, 200)
+                    new_ball.dy = math.random(-50, -60)
 
-                new_ball.dx = math.random(-200, 200)
-                new_ball.dy = math.random(-50, -60)
-
-                table.insert(self.balls, new_ball)
+                    table.insert(self.balls, new_ball)
+                end
+            elseif powerup.skin == 10 then
+                for k, brick in pairs(self.bricks) do
+                    if brick.color == -1 then
+                        brick.color = -2
+                    end
+                end
             end
 
             gSounds['paddle-hit']:play()
