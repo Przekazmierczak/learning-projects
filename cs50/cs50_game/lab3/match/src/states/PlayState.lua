@@ -157,7 +157,7 @@ function PlayState:update(dt)
                 -- swap tiles in the tiles table
                 self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
                     self.highlightedTile
-
+                
                 self.board.tiles[newTile.gridY][newTile.gridX] = newTile
 
                 -- tween coordinates between the two so they swap
@@ -165,10 +165,35 @@ function PlayState:update(dt)
                     [self.highlightedTile] = {x = newTile.x, y = newTile.y},
                     [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
                 })
-                
                 -- once the swap is finished, we can tween falling blocks as needed
                 :finish(function()
-                    self:calculateMatches()
+                    ifswap = self:calculateMatches()
+
+                    if ifswap == false then
+                        -- swap grid positions of tiles
+                        local tempX = newTile.gridX
+                        local tempY = newTile.gridY
+
+                        local newTile2 = self.board.tiles[y][x]
+
+                        newTile.gridX = newTile2.gridX
+                        newTile.gridY = newTile2.gridY
+                        newTile2.gridX = tempX
+                        newTile2.gridY = tempY
+
+                        -- swap tiles in the tiles table
+                        self.board.tiles[newTile.gridY][newTile.gridX] =
+                            newTile
+
+                        self.board.tiles[newTile2.gridY][newTile2.gridX] = newTile2
+
+                        Timer.tween(0.1, {
+                            [newTile] = {x = newTile2.x, y = newTile2.y},
+                            [newTile2] = {x = newTile.x, y = newTile.y}
+                        })
+    
+                        gSounds['error']:play()
+                    end
                 end)
             end
         end
@@ -197,7 +222,7 @@ function PlayState:calculateMatches()
         for k, match in pairs(matches) do
             self.timer = self.timer + #match
             for l, tile in pairs(match) do
-                self.score = self.score + tile.variety * 50
+                self.score = self.score + tile.variety * 20
             end
         end
 
@@ -215,10 +240,11 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
-    
+        return true
     -- if no matches, we can continue playing
     else
         self.canInput = true
+        return false
     end
 end
 
