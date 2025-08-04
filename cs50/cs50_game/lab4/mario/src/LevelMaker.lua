@@ -22,13 +22,31 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(20)
     local topperset = math.random(20)
 
+    local key_location = math.random(3, width - 2)
+    local lock_location
+    local lock_object
+    repeat
+        lock_location = math.random(3, width - 2)
+    until lock_location ~= key_location
+
     -- insert blank tables into tiles for later access
     for x = 1, height do
         table.insert(tiles, {})
     end
 
+    -- first block
+    for y = 1, 6 do
+        table.insert(tiles[y],
+            Tile(1, y, TILE_ID_EMPTY, nil, tileset, topperset))
+    end
+
+    for y = 7, height do
+        table.insert(tiles[y],
+            Tile(1, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
+    end
+
     -- column by column generation instead of row; sometimes better for platformers
-    for x = 1, width do
+    for x = 2, width - 1 do
         local tileID = TILE_ID_EMPTY
         
         -- lay out the empty space
@@ -37,8 +55,78 @@ function LevelMaker.generate(width, height)
                 Tile(x, y, tileID, nil, tileset, topperset))
         end
 
+        if x == key_location then
+            tileID = TILE_ID_GROUND
+
+            -- height at which we would spawn a potential jump block
+            local blockHeight = 4
+
+            for y = 7, height do
+                table.insert(tiles[y],
+                    Tile(x, y, tileID, y == 7 and topper or nil, tileset, topperset))
+            end
+
+            table.insert(objects,
+                -- jump block
+                GameObject {
+                    texture = 'keys-and-locks',
+                    x = (x - 1) * TILE_SIZE,
+                    y = (blockHeight - 1) * TILE_SIZE,
+                    width = 16,
+                    height = 16,
+
+                    -- make it a random variant
+                    frame = math.random(4),
+                    collidable = true,
+                    consumable = true,
+                    solid = false,
+
+                    onConsume = function(player, object)
+                        gSounds['pickup']:play()
+                        
+                        lock_object.collidable = true
+                        lock_object.consumable = true
+                        lock_object.solid = false
+
+                        lock_object.onConsume = function(player, object)
+                            gSounds['pickup']:play()
+                        end
+                    end
+                }
+            )
+        elseif x == lock_location then
+            tileID = TILE_ID_GROUND
+
+            -- height at which we would spawn a potential jump block
+            local blockHeight = 4
+
+            for y = 7, height do
+                table.insert(tiles[y],
+                    Tile(x, y, tileID, y == 7 and topper or nil, tileset, topperset))
+            end
+
+            lock_object = GameObject {
+                texture = 'keys-and-locks',
+                x = (x - 1) * TILE_SIZE,
+                y = (blockHeight - 1) * TILE_SIZE,
+                width = 16,
+                height = 16,
+
+                -- make it a random variant
+                frame = math.random(5, 8),
+                collidable = true,
+                hit = false,
+                solid = true,
+
+                onCollide = function(player, object)
+                    gSounds['empty-block']:play()
+                end
+            }
+
+            table.insert(objects, lock_object)
+            
         -- chance to just be emptiness
-        if math.random(7) == 1 then
+        elseif math.random(7) == 1 then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -159,6 +247,17 @@ function LevelMaker.generate(width, height)
                 )
             end
         end
+    end
+
+    -- last block
+    for y = 1, 6 do
+        table.insert(tiles[y],
+            Tile(width, y, TILE_ID_EMPTY, nil, tileset, topperset))
+    end
+
+    for y = 7, height do
+        table.insert(tiles[y],
+            Tile(width, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
     end
 
     local map = TileMap(width, height)
