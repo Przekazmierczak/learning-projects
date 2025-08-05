@@ -23,6 +23,7 @@ function LevelMaker.generate(width, height)
     local topperset = math.random(20)
 
     local key_location = math.random(3, width - 2)
+    local key_color = math.random(4)
     local lock_location
     local lock_object
     repeat
@@ -46,7 +47,7 @@ function LevelMaker.generate(width, height)
     end
 
     -- column by column generation instead of row; sometimes better for platformers
-    for x = 2, width - 1 do
+    for x = 2, width - 2 do
         local tileID = TILE_ID_EMPTY
         
         -- lay out the empty space
@@ -76,20 +77,22 @@ function LevelMaker.generate(width, height)
                     height = 16,
 
                     -- make it a random variant
-                    frame = math.random(4),
+                    frame = key_color,
                     collidable = true,
                     consumable = true,
                     solid = false,
 
                     onConsume = function(player, object)
                         gSounds['pickup']:play()
+                        score = score + 50
                         
                         lock_object.collidable = true
                         lock_object.consumable = true
                         lock_object.solid = false
 
                         lock_object.onConsume = function(player, object)
-                            gSounds['pickup']:play()
+                            score = score + 50
+                            spawn_flag(objects, width, height)
                         end
                     end
                 }
@@ -113,7 +116,7 @@ function LevelMaker.generate(width, height)
                 height = 16,
 
                 -- make it a random variant
-                frame = math.random(5, 8),
+                frame = key_color + 4,
                 collidable = true,
                 hit = false,
                 solid = true,
@@ -225,7 +228,7 @@ function LevelMaker.generate(width, height)
                                         -- gem has its own function to add to the player's score
                                         onConsume = function(player, object)
                                             gSounds['pickup']:play()
-                                            player.score = player.score + 100
+                                            score = score + 100
                                         end
                                     }
                                     
@@ -250,18 +253,69 @@ function LevelMaker.generate(width, height)
     end
 
     -- last block
-    for y = 1, 6 do
-        table.insert(tiles[y],
-            Tile(width, y, TILE_ID_EMPTY, nil, tileset, topperset))
-    end
+    for x = width - 1, width do
+        for y = 1, 6 do
+            table.insert(tiles[y],
+                Tile(x, y, TILE_ID_EMPTY, nil, tileset, topperset))
+        end
 
-    for y = 7, height do
-        table.insert(tiles[y],
-            Tile(width, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
+        for y = 7, height do
+            table.insert(tiles[y],
+                Tile(x, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
+        end
     end
 
     local map = TileMap(width, height)
     map.tiles = tiles
     
     return GameLevel(entities, objects, map)
+end
+
+function spawn_flag(objects, width, height)
+    pole_color = math.random(6)
+    for x = 1, 3 do
+        table.insert(objects,
+            GameObject {
+                texture = 'flags',
+                x = (width - 2) * TILE_SIZE,
+                y = (2 + x) * TILE_SIZE,
+                width = 16,
+                height = 16,
+
+                -- make it a random variant
+                frame = (x - 1) * 9 + pole_color,
+                collidable = true,
+                consumable = true,
+                solid = false,
+
+                onConsume = function(player, object)
+                    length = length + 5
+                    score = score + 200
+                    gStateMachine:change('play')
+                end
+            }
+        )
+    end
+
+    table.insert(objects,
+        GameObject {
+            texture = 'flags',
+            x = (width - 2) * TILE_SIZE + 0.55 * TILE_SIZE,
+            y = 3 * TILE_SIZE + 0.25 * TILE_SIZE,
+            width = 16,
+            height = 16,
+
+            -- make it a random variant
+            frame = 7,
+            collidable = true,
+            consumable = true,
+            solid = false,
+
+            onConsume = function(player, object)
+                length = length + 5
+                score = score + 200
+                gStateMachine:change('play')
+            end
+        }
+    )
 end

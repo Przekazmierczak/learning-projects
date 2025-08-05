@@ -82,7 +82,7 @@ function PlayerFallingState:update(dt)
         if entity:collides(self.player) then
             gSounds['kill']:play()
             gSounds['kill2']:play()
-            self.player.score = self.player.score + 100
+            score = score + 100
             table.remove(self.player.level.entities, k)
         end
     end
