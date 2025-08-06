@@ -157,8 +157,25 @@ function Room:update(dt)
         local entity = self.entities[i]
 
         -- remove entity from the table if health is <= 0
-        if entity.health <= 0 then
+        if entity.health <= 0 and entity.dead ~= true then
             entity.dead = true
+            if math.random(1) == 1 then
+                local heart = GameObject(
+                    GAME_OBJECT_DEFS['heart'],
+                    entity.x,
+                    entity.y
+                )
+
+                -- define a function for the switch that will open all doors in the room
+                heart.onConsume = function()
+                    self.player.health = math.min(self.player.health + 2, 6)
+                    gSounds['pick-up']:play()
+                    heart.removed = true
+                end
+
+                table.insert(self.objects, heart)
+            end
+
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -176,12 +193,20 @@ function Room:update(dt)
         end
     end
 
-    for k, object in pairs(self.objects) do
+    for i = #self.objects, 1, -1  do
+        local object = self.objects[i]
         object:update(dt)
 
         -- trigger collision callback on object
-        if self.player:collides(object) then
+        if self.player:collides(object) and object.collidable then
             object:onCollide()
+        end
+
+        if self.player:collides(object) and object.consumable and self.player.health < 6 then
+            object:onConsume()
+        end
+        if object.removed then
+            table.remove(self.objects, i)
         end
     end
 end

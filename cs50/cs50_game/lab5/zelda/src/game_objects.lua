@@ -15,6 +15,7 @@ GAME_OBJECT_DEFS = {
         height = 16,
         solid = false,
         defaultState = 'unpressed',
+        collidable = true,
         states = {
             ['unpressed'] = {
                 frame = 2
@@ -26,5 +27,14 @@ GAME_OBJECT_DEFS = {
     },
     ['pot'] = {
         -- TODO
-    }
+    },
+    ['heart'] = {
+        type = 'heart',
+        texture = 'hearts',
+        frame = 5,
+        width = 10,
+        height = 10,
+        solid = false,
+        consumable = true
+    },
 }
