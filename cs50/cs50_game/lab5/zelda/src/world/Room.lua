@@ -104,6 +104,24 @@ function Room:generateObjects()
 
     -- add to list of objects in scene (only one switch for now)
     table.insert(self.objects, switch)
+
+    local pot = GameObject(
+        GAME_OBJECT_DEFS['pot'],
+        math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
+                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
+                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+    )
+
+    pot.onConsume = function()
+        self.player.carring = pot
+        gSounds['pick-up']:play()
+        pot.carried = true
+    end
+
+    table.insert(self.objects, heart)
+
+    table.insert(self.objects, pot)
 end
 
 --[[
@@ -153,13 +171,24 @@ function Room:update(dt)
 
     self.player:update(dt)
 
+    for i, thrown in pairs(self.player.thrown) do
+        if
+            thrown.x < MAP_RENDER_OFFSET_X + TILE_SIZE or
+            thrown.x > VIRTUAL_WIDTH - TILE_SIZE * 2 - 16 or
+            thrown.y < MAP_RENDER_OFFSET_Y + TILE_SIZE - 30 or
+            thrown.y > VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16
+        then
+            thrown.removed = true
+        end
+    end
+
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 and entity.dead ~= true then
             entity.dead = true
-            if math.random(1) == 1 then
+            if math.random(5) == 1 then
                 local heart = GameObject(
                     GAME_OBJECT_DEFS['heart'],
                     entity.x,
@@ -191,6 +220,14 @@ function Room:update(dt)
                 gStateMachine:change('game-over')
             end
         end
+
+        for i, thrown in pairs(self.player.thrown) do
+            if entity.flying ~= true and thrown.removed == false and thrown:collides(entity) then
+                gSounds['hit-player']:play()
+                entity:damage(1)
+                thrown.removed = true
+            end
+        end
     end
 
     for i = #self.objects, 1, -1  do
@@ -202,11 +239,15 @@ function Room:update(dt)
             object:onCollide()
         end
 
-        if self.player:collides(object) and object.consumable and self.player.health < 6 then
+        if self.player:collides(object) and object.consumable and object.flying == false then
             object:onConsume()
         end
         if object.removed then
             table.remove(self.objects, i)
+        end
+        if object.carried then
+            object.x = self.player.x
+            object.y = self.player.y - 11
         end
     end
 end
@@ -228,7 +269,9 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        if object.carried ~= true and object.flying ~= true then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     for k, entity in pairs(self.entities) do
@@ -259,6 +302,12 @@ function Room:render()
     
     if self.player then
         self.player:render()
+    end
+
+    for k, object in pairs(self.objects) do
+        if object.carried or object.flying then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     love.graphics.setStencilTest()

@@ -20,22 +20,56 @@ end
 function PlayerWalkState:update(dt)
     if love.keyboard.isDown('left') then
         self.entity.direction = 'left'
-        self.entity:changeAnimation('walk-left')
+        if self.entity.carring then
+            self.entity:changeAnimation('walk-pot-left')
+        else
+            self.entity:changeAnimation('walk-left')
+        end
     elseif love.keyboard.isDown('right') then
         self.entity.direction = 'right'
-        self.entity:changeAnimation('walk-right')
+        if self.entity.carring then
+            self.entity:changeAnimation('walk-pot-right')
+        else
+            self.entity:changeAnimation('walk-right')
+        end
     elseif love.keyboard.isDown('up') then
         self.entity.direction = 'up'
-        self.entity:changeAnimation('walk-up')
+        if self.entity.carring then
+            self.entity:changeAnimation('walk-pot-up')
+        else
+            self.entity:changeAnimation('walk-up')
+        end
     elseif love.keyboard.isDown('down') then
         self.entity.direction = 'down'
-        self.entity:changeAnimation('walk-down')
+        if self.entity.carring then
+            self.entity:changeAnimation('walk-pot-down')
+        else
+            self.entity:changeAnimation('walk-down')
+        end
     else
         self.entity:changeState('idle')
     end
 
     if love.keyboard.wasPressed('space') then
-        self.entity:changeState('swing-sword')
+        if self.entity.carring then
+            table.insert(self.entity.thrown, self.entity.carring)
+
+            if self.entity.direction == 'left' then
+                pot_tween(self.entity, self.entity.carring, self.entity.x - 64, self.entity.y + 5, self.entity.thrown)
+            elseif self.entity.direction == 'right' then
+                pot_tween(self.entity, self.entity.carring, self.entity.x + 64, self.entity.y + 5, self.entity.thrown)
+            elseif self.entity.direction == 'up' then
+                pot_tween(self.entity, self.entity.carring, self.entity.x, self.entity.y - 64 + 11, self.entity.thrown)
+            elseif self.entity.direction == 'down' then
+                pot_tween(self.entity, self.entity.carring, self.entity.x, self.entity.y + 64 - 11, self.entity.thrown)
+            end
+            
+            self.entity.carring.carried = false
+            self.entity.carring.flying = true 
+            self.entity.carring = false
+        else
+            self.entity:changeState('swing-sword')
+        end
     end
 
     -- perform base collision detection against walls
