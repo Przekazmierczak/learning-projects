@@ -26,7 +26,7 @@ function AlienLaunchMarker:init(world)
     self.launched = false
 
     -- our alien we will eventually spawn
-    self.alien = nil
+    self.aliens = {}
 end
 
 function AlienLaunchMarker:update(dt)
@@ -44,17 +44,18 @@ function AlienLaunchMarker:update(dt)
         -- if we release the mouse, launch an Alien
         elseif love.mouse.wasReleased(1) and self.aiming then
             self.launched = true
+            for i = -1, 1 do
+                -- spawn new alien in the world, passing in user data of player
+                alien = Alien(self.world, 'round', self.shiftedX + 30 * i, self.shiftedY + 30 * i, 'Player')
 
-            -- spawn new alien in the world, passing in user data of player
-            self.alien = Alien(self.world, 'round', self.shiftedX, self.shiftedY, 'Player')
+                -- apply the difference between current X,Y and base X,Y as launch vector impulse
+                alien.body:setLinearVelocity((self.baseX - self.shiftedX) * 10, (self.baseY - self.shiftedY) * 10)
 
-            -- apply the difference between current X,Y and base X,Y as launch vector impulse
-            self.alien.body:setLinearVelocity((self.baseX - self.shiftedX) * 10, (self.baseY - self.shiftedY) * 10)
-
-            -- make the alien pretty bouncy
-            self.alien.fixture:setRestitution(0.4)
-            self.alien.body:setAngularDamping(1)
-
+                -- make the alien pretty bouncy
+                alien.fixture:setRestitution(0.4)
+                alien.body:setAngularDamping(1)
+                table.insert(self.aliens, alien)
+            end
             -- we're no longer aiming
             self.aiming = false
 
@@ -103,6 +104,8 @@ function AlienLaunchMarker:render()
         
         love.graphics.setColor(1, 1, 1, 1)
     else
-        self.alien:render()
+        for i, alien in pairs(self.aliens) do
+            alien:render()
+        end
     end
 end
