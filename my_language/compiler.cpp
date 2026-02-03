@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stack>
 #include <memory>
+#include <iostream>
 
 struct Source {
     std::vector<std::string> source;
@@ -160,13 +161,90 @@ int interpreter(const std::unique_ptr<NodeAST>& node) {
         return left / right;
     }
 
-    // return 0;
+    return 0;
 }
+
+// IR
+
+enum class IROperation {
+    CONST,
+    ADD,
+    SUB,
+    MUL,
+    DIV
+};
+
+struct IRInstruction {
+    IROperation operation;
+    int dst;
+    int src1;
+    int src2;
+    int val;
+};
+
+std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
+{
+    if (inst.operation == IROperation::CONST) {
+        cout << "r" << inst.dst << " = " << inst.val << std::endl;
+    } else {
+        std::string op;
+        if (inst.operation == IROperation::ADD) op = "Add";
+        else if (inst.operation == IROperation::SUB) op = "Sub";
+        else if (inst.operation == IROperation::MUL) op = "Mul";
+        else if (inst.operation == IROperation::DIV) op = "Div";
+        cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
+    }
+    return cout;
+}
+
+struct RegisterIndex {
+    int curr = 0;
+
+    int getNext() {
+        return curr++;
+    }
+};
+
+struct IRGenerator {
+    std::vector<IRInstruction> instructions;
+    RegisterIndex index;
+
+    int generate(const std::unique_ptr<NodeAST>& node) {
+        IRInstruction newInstruction;
+        if (node->token.type == TokenType::Int) {
+            newInstruction.operation = IROperation::CONST;
+            newInstruction.dst = index.getNext();
+            newInstruction.val = node->token.val;
+            instructions.push_back(newInstruction);
+        } else {
+            if (node->token.type == TokenType::Add) newInstruction.operation = IROperation::ADD;
+            else if (node->token.type == TokenType::Sub) newInstruction.operation = IROperation::SUB;
+            else if (node->token.type == TokenType::Mul) newInstruction.operation = IROperation::MUL;
+            else if (node->token.type == TokenType::Div) newInstruction.operation = IROperation::DIV;
+            newInstruction.src1 = generate(node->left);
+            newInstruction.src2 = generate(node->right);
+            newInstruction.dst = index.getNext();
+            instructions.push_back(newInstruction);
+        }
+        return newInstruction.dst;
+    }
+
+    void print() {
+        for (int i = 0; i < instructions.size(); i++) {
+            std::cout << instructions[i];
+        }
+    }
+};
+
 
 int main() {
     Source source = lex("test.elil");
     std::vector<Token> tokens = parse(source);
     std::unique_ptr<NodeAST> ast = createAST(tokens);
+
+    IRGenerator irgenerator;
+    irgenerator.generate(ast);
+    irgenerator.print();
 
     // std::cout << ast->token.precedence << std::endl;
     // std::cout << ast->left->left->token.val << std::endl;
