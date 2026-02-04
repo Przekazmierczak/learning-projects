@@ -143,26 +143,26 @@ std::unique_ptr<NodeAST>createAST (std::vector<Token> tokens) {
     return std::move(stackValues.top());
 }
 
-int interpreter(const std::unique_ptr<NodeAST>& node) {
-    if (node->token.type == TokenType::Int) {
-        return node->token.val;
-    }
+// int interpreter(const std::unique_ptr<NodeAST>& node) {
+//     if (node->token.type == TokenType::Int) {
+//         return node->token.val;
+//     }
 
-    int left = interpreter(node->left);
-    int right = interpreter(node->right);
+//     int left = interpreter(node->left);
+//     int right = interpreter(node->right);
 
-    if (node->token.type == TokenType::Add) {
-        return left + right;
-    } else if (node->token.type == TokenType::Sub) {
-        return left - right;
-    } else if (node->token.type == TokenType::Mul) {
-        return left * right;
-    } else if (node->token.type == TokenType::Div) {
-        return left / right;
-    }
+//     if (node->token.type == TokenType::Add) {
+//         return left + right;
+//     } else if (node->token.type == TokenType::Sub) {
+//         return left - right;
+//     } else if (node->token.type == TokenType::Mul) {
+//         return left * right;
+//     } else if (node->token.type == TokenType::Div) {
+//         return left / right;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 // IR
 
@@ -236,6 +236,55 @@ struct IRGenerator {
     }
 };
 
+struct VM {
+    std::vector<int> registers;
+    int pc = 0;
+    int result;
+
+    void resizeReg(int dst) {
+        if (dst >= registers.size()) {
+            registers.resize(dst + 1);
+        }
+    }
+
+    void run(std::vector<IRInstruction> instructions) {
+        while (pc < instructions.size()) {
+            switch (instructions[pc].operation)
+            {
+            case IROperation::CONST:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = instructions[pc].val;
+                pc++;
+                break;
+            case IROperation::ADD:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = registers[instructions[pc].src1] + registers[instructions[pc].src2];
+                pc++;
+                break;
+            case IROperation::SUB:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = registers[instructions[pc].src1] - registers[instructions[pc].src2];
+                pc++;
+                break;
+            case IROperation::MUL:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = registers[instructions[pc].src1] * registers[instructions[pc].src2];
+                pc++;
+                break;
+            case IROperation::DIV:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = registers[instructions[pc].src1] / registers[instructions[pc].src2];
+                pc++;
+                break;
+            default:
+                std::cout << "error message" << std::endl;
+                break;
+            }
+        }
+        result = registers.back();
+    }
+};
+
 
 int main() {
     Source source = lex("test.elil");
@@ -246,14 +295,11 @@ int main() {
     irgenerator.generate(ast);
     irgenerator.print();
 
-    // std::cout << ast->token.precedence << std::endl;
-    // std::cout << ast->left->left->token.val << std::endl;
-    // std::cout << ast->left->right->token.val << std::endl;
-    // std::cout << ast->right->token.val << std::endl;
-    // std::cout << ast->right->left->token.val << std::endl;
-    // std::cout << ast->right->right->token.val << std::endl;
+    VM vm;
+    vm.run(irgenerator.instructions);
+    std::cout << vm.result << std::endl;
 
-    std::cout << interpreter(ast) << std::endl;
+    // std::cout << interpreter(ast) << std::endl;
 
     return 0;
 }
