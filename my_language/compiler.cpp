@@ -8,6 +8,15 @@
 
 struct Source {
     std::vector<std::string> source;
+    std::vector<int> line;
+    std::vector<int> position;
+
+    void print() {
+        for (int i = 0; i < source.size(); i++) {
+            std::cout << "(" << source[i] << "[" << line[i] << ", " << position[i] << "]" << "), ";
+        }
+        std::cout << std::endl;
+    }
 };
 
 struct Token {
@@ -18,13 +27,17 @@ struct Token {
         Mul,
         Div,
         Lpar,
-        Rpar
+        Rpar,
+        Var
     };
 
     Type type;
     bool operant = false;
     int precedence = 0;
     int val = 0;
+    std::string name = "";
+    int line;
+    int position;
 };
 
 Source lex(std::string code) {
@@ -33,21 +46,32 @@ Source lex(std::string code) {
     std::string line;
     std::string current;
 
+    int currLine = 1;
     while (std::getline(file, line)) {
+        int currPosition = 1;
         for (char c : line) {
-        if (c == ' ') {
-            if (!current.empty()) {
-                result.source.push_back(current);
-                current.clear();
+            if (c == ' ') {
+                if (!current.empty()) {
+                    result.source.push_back(current);
+                    result.line.push_back(currLine);
+                    result.position.push_back(currPosition);
+                    currPosition += current.size() + 1;
+                    current.clear();
+                }
+            } else {
+                current += c;
             }
-        } else {
-            current += c;
         }
-    }
 
-    if (!current.empty())
-        result.source.push_back(current);
+        if (!current.empty()) {
+            result.source.push_back(current);
+            result.line.push_back(currLine);
+            result.position.push_back(currPosition);
+        }
+        current.clear();
+        currLine++;
     }
+    result.print();
     return result;
 }
 
@@ -59,29 +83,48 @@ std::vector<Token> parse(Source source) {
             current.type = Token::Type::Add;
             current.operant = true;
             current.precedence = 20;
+            current.line = source.line[i];
+            current.position = source.position[i];
         } else if (source.source[i] == "-") {
             current.type = Token::Type::Sub;
             current.operant = true;
             current.precedence = 20;
+            current.line = source.line[i];
+            current.position = source.position[i];
         } else if (source.source[i] == "*") {
             current.type = Token::Type::Mul;
             current.operant = true;
             current.precedence = 30;
+            current.line = source.line[i];
+            current.position = source.position[i];
         } else if (source.source[i] == "/") {
             current.type = Token::Type::Div;
             current.operant = true;
             current.precedence = 30;
+            current.line = source.line[i];
+            current.position = source.position[i];
         } else if (source.source[i] == "(") {
             current.type = Token::Type::Lpar;
             current.operant = true;
             current.precedence = 40;
+            current.line = source.line[i];
+            current.position = source.position[i];
         } else if (source.source[i] == ")") {
             current.type = Token::Type::Rpar;
             current.operant = true;
             current.precedence = 10;
-        } else {
+            current.line = source.line[i];
+            current.position = source.position[i];
+        } else if (std::isdigit(source.source[i][0]) || source.source[i][0] == '-') {
             current.type = Token::Type::Int;
             current.val = std::stoi(source.source[i]);
+            current.line = source.line[i];
+            current.position = source.position[i];
+        } else {
+            current.type = Token::Type::Var;
+            current.name = source.source[i];
+            current.line = source.line[i];
+            current.position = source.position[i];
         }
         tokens.push_back(current);
     }
@@ -89,9 +132,11 @@ std::vector<Token> parse(Source source) {
 }
 
 struct NodeAST {
+    bool block;
     Token token;
     std::unique_ptr<NodeAST> left;
     std::unique_ptr<NodeAST> right;
+    std::vector<std::unique_ptr<NodeAST>> statements;
 
     NodeAST(Token newToken) : token(newToken) {}
 };
@@ -185,7 +230,7 @@ struct IRGenerator {
             return curr++;
         }
     };
-    
+
     std::vector<IRInstruction> instructions;
     RegisterIndex index;
 
