@@ -10,29 +10,21 @@ struct Source {
     std::vector<std::string> source;
 };
 
-enum class TokenType {
-    Int,
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Lpar,
-    Rpar
-};
-
 struct Token {
-    TokenType type;
+    enum class Type {
+        Int,
+        Add,
+        Sub,
+        Mul,
+        Div,
+        Lpar,
+        Rpar
+    };
+
+    Type type;
     bool operant = false;
     int precedence = 0;
     int val = 0;
-};
-
-struct NodeAST {
-    Token token;
-    std::unique_ptr<NodeAST> left;
-    std::unique_ptr<NodeAST> right;
-
-    NodeAST(Token newToken) : token(newToken) {}
 };
 
 Source lex(std::string code) {
@@ -64,37 +56,45 @@ std::vector<Token> parse(Source source) {
     for (int i = 0; i < source.source.size(); i++) {
         Token current;
         if (source.source[i] == "+") {
-            current.type = TokenType::Add;
+            current.type = Token::Type::Add;
             current.operant = true;
             current.precedence = 20;
         } else if (source.source[i] == "-") {
-            current.type = TokenType::Sub;
+            current.type = Token::Type::Sub;
             current.operant = true;
             current.precedence = 20;
         } else if (source.source[i] == "*") {
-            current.type = TokenType::Mul;
+            current.type = Token::Type::Mul;
             current.operant = true;
             current.precedence = 30;
         } else if (source.source[i] == "/") {
-            current.type = TokenType::Div;
+            current.type = Token::Type::Div;
             current.operant = true;
             current.precedence = 30;
         } else if (source.source[i] == "(") {
-            current.type = TokenType::Lpar;
+            current.type = Token::Type::Lpar;
             current.operant = true;
             current.precedence = 40;
         } else if (source.source[i] == ")") {
-            current.type = TokenType::Rpar;
+            current.type = Token::Type::Rpar;
             current.operant = true;
             current.precedence = 10;
         } else {
-            current.type = TokenType::Int;
+            current.type = Token::Type::Int;
             current.val = std::stoi(source.source[i]);
         }
         tokens.push_back(current);
     }
     return tokens;
 }
+
+struct NodeAST {
+    Token token;
+    std::unique_ptr<NodeAST> left;
+    std::unique_ptr<NodeAST> right;
+
+    NodeAST(Token newToken) : token(newToken) {}
+};
 
 void reduce(std::stack<std::unique_ptr<NodeAST>>& stackValues, std::stack<Token>& stackOperants) {
     std::unique_ptr<NodeAST> current = std::make_unique<NodeAST>(stackOperants.top());
@@ -117,19 +117,19 @@ std::unique_ptr<NodeAST>createAST (std::vector<Token> tokens) {
             stackValues.push(std::make_unique<NodeAST>(tokens[i]));
         }
         
-        else if (tokens[i].type == TokenType::Lpar) {
+        else if (tokens[i].type == Token::Type::Lpar) {
             stackOperants.push(tokens[i]);
         }
         
-        else if (tokens[i].type == TokenType::Rpar) {
-            while (!stackOperants.empty() && stackOperants.top().type != TokenType::Lpar) {
+        else if (tokens[i].type == Token::Type::Rpar) {
+            while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar) {
                 reduce(stackValues, stackOperants);
             }
             stackOperants.pop();
         }
         
         else {
-            while (!stackOperants.empty() && stackOperants.top().type != TokenType::Lpar && stackOperants.top().precedence >= tokens[i].precedence) {
+            while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar && stackOperants.top().precedence >= tokens[i].precedence) {
                 reduce(stackValues, stackOperants);
             }
             
@@ -143,39 +143,19 @@ std::unique_ptr<NodeAST>createAST (std::vector<Token> tokens) {
     return std::move(stackValues.top());
 }
 
-// int interpreter(const std::unique_ptr<NodeAST>& node) {
-//     if (node->token.type == TokenType::Int) {
-//         return node->token.val;
-//     }
-
-//     int left = interpreter(node->left);
-//     int right = interpreter(node->right);
-
-//     if (node->token.type == TokenType::Add) {
-//         return left + right;
-//     } else if (node->token.type == TokenType::Sub) {
-//         return left - right;
-//     } else if (node->token.type == TokenType::Mul) {
-//         return left * right;
-//     } else if (node->token.type == TokenType::Div) {
-//         return left / right;
-//     }
-
-//     return 0;
-// }
-
 // IR
 
-enum class IROperation {
-    CONST,
-    ADD,
-    SUB,
-    MUL,
-    DIV
-};
 
 struct IRInstruction {
-    IROperation operation;
+    enum class OP {
+        Const,
+        Add,
+        Sub,
+        Mul,
+        Div
+    };
+
+    OP operation;
     int dst;
     int src1;
     int src2;
@@ -184,43 +164,43 @@ struct IRInstruction {
 
 std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
 {
-    if (inst.operation == IROperation::CONST) {
+    if (inst.operation == IRInstruction::OP::Const) {
         cout << "r" << inst.dst << " = " << inst.val << std::endl;
     } else {
         std::string op;
-        if (inst.operation == IROperation::ADD) op = "Add";
-        else if (inst.operation == IROperation::SUB) op = "Sub";
-        else if (inst.operation == IROperation::MUL) op = "Mul";
-        else if (inst.operation == IROperation::DIV) op = "Div";
+        if (inst.operation == IRInstruction::OP::Add) op = "Add";
+        else if (inst.operation == IRInstruction::OP::Sub) op = "Sub";
+        else if (inst.operation == IRInstruction::OP::Mul) op = "Mul";
+        else if (inst.operation == IRInstruction::OP::Div) op = "Div";
         cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
     }
     return cout;
 }
 
-struct RegisterIndex {
-    int curr = 0;
-
-    int getNext() {
-        return curr++;
-    }
-};
-
 struct IRGenerator {
+    struct RegisterIndex {
+        int curr = 0;
+
+        int getNext() {
+            return curr++;
+        }
+    };
+    
     std::vector<IRInstruction> instructions;
     RegisterIndex index;
 
     int generate(const std::unique_ptr<NodeAST>& node) {
         IRInstruction newInstruction;
-        if (node->token.type == TokenType::Int) {
-            newInstruction.operation = IROperation::CONST;
+        if (node->token.type == Token::Type::Int) {
+            newInstruction.operation = IRInstruction::OP::Const;
             newInstruction.dst = index.getNext();
             newInstruction.val = node->token.val;
             instructions.push_back(newInstruction);
         } else {
-            if (node->token.type == TokenType::Add) newInstruction.operation = IROperation::ADD;
-            else if (node->token.type == TokenType::Sub) newInstruction.operation = IROperation::SUB;
-            else if (node->token.type == TokenType::Mul) newInstruction.operation = IROperation::MUL;
-            else if (node->token.type == TokenType::Div) newInstruction.operation = IROperation::DIV;
+            if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
+            else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
+            else if (node->token.type == Token::Type::Mul) newInstruction.operation = IRInstruction::OP::Mul;
+            else if (node->token.type == Token::Type::Div) newInstruction.operation = IRInstruction::OP::Div;
             newInstruction.src1 = generate(node->left);
             newInstruction.src2 = generate(node->right);
             newInstruction.dst = index.getNext();
@@ -251,27 +231,27 @@ struct VM {
         while (pc < instructions.size()) {
             switch (instructions[pc].operation)
             {
-            case IROperation::CONST:
+            case IRInstruction::OP::Const:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = instructions[pc].val;
                 pc++;
                 break;
-            case IROperation::ADD:
+            case IRInstruction::OP::Add:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] + registers[instructions[pc].src2];
                 pc++;
                 break;
-            case IROperation::SUB:
+            case IRInstruction::OP::Sub:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] - registers[instructions[pc].src2];
                 pc++;
                 break;
-            case IROperation::MUL:
+            case IRInstruction::OP::Mul:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] * registers[instructions[pc].src2];
                 pc++;
                 break;
-            case IROperation::DIV:
+            case IRInstruction::OP::Div:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] / registers[instructions[pc].src2];
                 pc++;
@@ -298,8 +278,6 @@ int main() {
     VM vm;
     vm.run(irgenerator.instructions);
     std::cout << vm.result << std::endl;
-
-    // std::cout << interpreter(ast) << std::endl;
 
     return 0;
 }
