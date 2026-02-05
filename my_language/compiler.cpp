@@ -13,7 +13,7 @@ struct Source {
 
     void print() {
         for (int i = 0; i < source.size(); i++) {
-            std::cout << "(" << source[i] << "[" << line[i] << ", " << position[i] << "]" << "), ";
+            std::cout << "(\"" << source[i] << "\", [" << line[i] << ", " << position[i] << "]" << "), ";
         }
         std::cout << std::endl;
     }
@@ -28,17 +28,43 @@ struct Token {
         Div,
         Lpar,
         Rpar,
-        Var
+        Var,
+        NewL,
+        Ind,
+        Ded,
+        Block
     };
 
     Type type;
     bool operant = false;
     int precedence = 0;
+
     int val = 0;
+
     std::string name = "";
+
     int line;
     int position;
 };
+
+std::ostream& operator << (std::ostream& cout, Token& token)
+{
+    if (token.type == Token::Type::Int) {
+        cout << "(Int, " << token.val << ", [" << token.line << ", " << token.position << "])";
+    } else if (token.type == Token::Type::Var) {
+        cout << "(Var, \"" << token.name << "\", [" << token.line << ", " << token.position << "])";
+    } else {
+        std::string op;
+        if (token.type == Token::Type::Add) op = "(Add";
+        else if (token.type == Token::Type::Sub) op = "(Sub";
+        else if (token.type == Token::Type::Mul) op = "(Mul";
+        else if (token.type == Token::Type::Div) op = "(Div";
+        else if (token.type == Token::Type::Lpar) op = "(Lpar";
+        else if (token.type == Token::Type::Rpar) op = "(Rpar";
+        cout << op << ", [" << token.line << ", " << token.position << "])";
+    }
+    return cout;
+}
 
 Source lex(std::string code) {
     Source result;
@@ -68,7 +94,15 @@ Source lex(std::string code) {
             result.line.push_back(currLine);
             result.position.push_back(currPosition);
         }
+        currPosition += current.size();
         current.clear();
+
+        result.source.push_back("*NEWLINE*");
+        result.line.push_back(currLine);
+        result.position.push_back(currPosition);
+
+        current.clear();
+
         currLine++;
     }
     result.print();
@@ -115,6 +149,12 @@ std::vector<Token> parse(Source source) {
             current.precedence = 10;
             current.line = source.line[i];
             current.position = source.position[i];
+        } else if (source.source[i][0] == '*') {
+            if (source.source[i] == "*NEWLINE*") {
+                current.type = Token::Type::NewL;
+                current.line = source.line[i];
+                current.position = source.position[i];
+            }
         } else if (std::isdigit(source.source[i][0]) || source.source[i][0] == '-') {
             current.type = Token::Type::Int;
             current.val = std::stoi(source.source[i]);
@@ -128,65 +168,98 @@ std::vector<Token> parse(Source source) {
         }
         tokens.push_back(current);
     }
+
+    for (int i = 0; i < tokens.size(); i++) {
+        std::cout << tokens[i] << ", ";
+    }
+    std::cout << std::endl;
+
     return tokens;
 }
 
-struct NodeAST {
-    bool block;
-    Token token;
-    std::unique_ptr<NodeAST> left;
-    std::unique_ptr<NodeAST> right;
-    std::vector<std::unique_ptr<NodeAST>> statements;
+struct Parser {
+    struct NodeAST {
+        Token token;
+        std::unique_ptr<NodeAST> left;
+        std::unique_ptr<NodeAST> right;
+        std::vector<std::unique_ptr<NodeAST>> statements;
+    
+        NodeAST(Token newToken) : token(newToken) {}
+    };
 
-    NodeAST(Token newToken) : token(newToken) {}
-};
+    Parser(std::vector<Token> newTokens) : tokens(newTokens) {}
 
-void reduce(std::stack<std::unique_ptr<NodeAST>>& stackValues, std::stack<Token>& stackOperants) {
-    std::unique_ptr<NodeAST> current = std::make_unique<NodeAST>(stackOperants.top());
-    stackOperants.pop();
+    std::vector<Token> tokens;
+    int index = 0;
+    std::unique_ptr<NodeAST> ASTroot;
+    
+    void createAST() {
+        ASTroot = std::move(createBlock());
+    }
+    
+    std::unique_ptr<NodeAST>createBlock() {
+        Token newBlock;
+        newBlock.type = Token::Type::Block;
+        auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
-    current->right = std::move(stackValues.top());
-    stackValues.pop();
-    current->left = std::move(stackValues.top());
-    stackValues.pop();
-
-    stackValues.push(std::move(current));
-}
-
-std::unique_ptr<NodeAST>createAST (std::vector<Token> tokens) {
-    std::stack<std::unique_ptr<NodeAST>> stackValues;
-    std::stack<Token> stackOperants;
-
-    for (int i = 0; i < tokens.size(); i++) {
-        if (!tokens[i].operant) {
-            stackValues.push(std::make_unique<NodeAST>(tokens[i]));
+        while (index < tokens.size()) {
+            newBlockAST->statements.push_back(std::move(createExpresion()));
+            index++;
         }
-        
-        else if (tokens[i].type == Token::Type::Lpar) {
-            stackOperants.push(tokens[i]);
-        }
-        
-        else if (tokens[i].type == Token::Type::Rpar) {
-            while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar) {
-                reduce(stackValues, stackOperants);
-            }
-            stackOperants.pop();
-        }
-        
-        else {
-            while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar && stackOperants.top().precedence >= tokens[i].precedence) {
-                reduce(stackValues, stackOperants);
+
+        return std::move(newBlockAST);
+    }
+    
+    std::unique_ptr<NodeAST> createExpresion() {
+        std::stack<std::unique_ptr<NodeAST>> stackValues;
+        std::stack<Token> stackOperants;
+    
+        while (index < tokens.size() && tokens[index].type != Token::Type::NewL) {
+            if (!tokens[index].operant) {
+                stackValues.push(std::make_unique<NodeAST>(tokens[index]));
             }
             
-            stackOperants.push(tokens[i]);
+            else if (tokens[index].type == Token::Type::Lpar) {
+                stackOperants.push(tokens[index]);
+            }
+            
+            else if (tokens[index].type == Token::Type::Rpar) {
+                while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar) {
+                    reduce(stackValues, stackOperants);
+                }
+                stackOperants.pop();
+            }
+            
+            else {
+                while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar && stackOperants.top().precedence >= tokens[index].precedence) {
+                    reduce(stackValues, stackOperants);
+                }
+                
+                stackOperants.push(tokens[index]);
+            }
+
+            index++;
         }
-    }
-    while (!stackOperants.empty()) {
-        reduce(stackValues, stackOperants);
+        while (!stackOperants.empty()) {
+            reduce(stackValues, stackOperants);
+        }
+    
+        return std::move(stackValues.top());
     }
 
-    return std::move(stackValues.top());
-}
+    void reduce(std::stack<std::unique_ptr<NodeAST>>& stackValues, std::stack<Token>& stackOperants) {
+        std::unique_ptr<NodeAST> current = std::make_unique<NodeAST>(stackOperants.top());
+        stackOperants.pop();
+    
+        current->right = std::move(stackValues.top());
+        stackValues.pop();
+        current->left = std::move(stackValues.top());
+        stackValues.pop();
+    
+        stackValues.push(std::move(current));
+    }
+};
+
 
 // IR
 
@@ -234,13 +307,18 @@ struct IRGenerator {
     std::vector<IRInstruction> instructions;
     RegisterIndex index;
 
-    int generate(const std::unique_ptr<NodeAST>& node) {
+    int generate(const std::unique_ptr<Parser::NodeAST>& node) {
         IRInstruction newInstruction;
         if (node->token.type == Token::Type::Int) {
             newInstruction.operation = IRInstruction::OP::Const;
             newInstruction.dst = index.getNext();
             newInstruction.val = node->token.val;
             instructions.push_back(newInstruction);
+        } else if (node->token.type == Token::Type::Block) {
+            for (int i = 0; i < node->statements.size(); i++) {
+                generate(node->statements[i]);
+            }
+            return -1;
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
             else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
@@ -306,23 +384,25 @@ struct VM {
                 break;
             }
         }
-        result = registers.back();
     }
 };
-
 
 int main() {
     Source source = lex("test.elil");
     std::vector<Token> tokens = parse(source);
-    std::unique_ptr<NodeAST> ast = createAST(tokens);
+    Parser parser(tokens);
+    parser.createAST();
 
     IRGenerator irgenerator;
-    irgenerator.generate(ast);
+    irgenerator.generate(parser.ASTroot);
     irgenerator.print();
 
     VM vm;
     vm.run(irgenerator.instructions);
-    std::cout << vm.result << std::endl;
 
+    for (int i = 0; i < vm.registers.size(); i++) {
+        std::cout << vm.registers[i] << ", ";
+    }
+    std::cout << std::endl;
     return 0;
 }
