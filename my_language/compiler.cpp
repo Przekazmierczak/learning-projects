@@ -6,19 +6,6 @@
 #include <memory>
 #include <iostream>
 
-struct Source {
-    std::vector<std::string> source;
-    std::vector<int> line;
-    std::vector<int> position;
-
-    void print() {
-        for (int i = 0; i < source.size(); i++) {
-            std::cout << "(\"" << source[i] << "\", [" << line[i] << ", " << position[i] << "]" << "), ";
-        }
-        std::cout << std::endl;
-    }
-};
-
 struct Token {
     enum class Type {
         Int,
@@ -45,6 +32,89 @@ struct Token {
 
     int line;
     int position;
+
+    static Token createAdd(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Add;
+        newToken.operant = true;
+        newToken.precedence = 20;
+        newToken.line = line;
+        return newToken;
+    }
+
+    static Token createSub(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Sub;
+        newToken.operant = true;
+        newToken.precedence = 20;
+        newToken.line = line;
+        return newToken;
+    }
+
+    static Token createMul(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Mul;
+        newToken.operant = true;
+        newToken.precedence = 30;
+        newToken.line = line;
+        return newToken;
+    }
+
+    static Token createDiv(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Div;
+        newToken.operant = true;
+        newToken.precedence = 30;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
+
+    static Token createLpar(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Lpar;
+        newToken.operant = true;
+        newToken.precedence = 40;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
+
+    static Token createRpar(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::Rpar;
+        newToken.operant = true;
+        newToken.precedence = 10;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
+
+    static Token createNewL(int line, int position) {
+        Token newToken;
+        newToken.type = Token::Type::NewL;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
+    
+    static Token createInt(int line, int position, int val) {
+        Token newToken;
+        newToken.type = Token::Type::Int;
+        newToken.val = val;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
+
+    static Token createVar(int line, int position, std::string name) {
+        Token newToken;
+        newToken.type = Token::Type::Var;
+        newToken.name = name;
+        newToken.line = line;
+        newToken.position = position;
+        return newToken;
+    }
 };
 
 std::ostream& operator << (std::ostream& cout, Token& token)
@@ -61,13 +131,23 @@ std::ostream& operator << (std::ostream& cout, Token& token)
         else if (token.type == Token::Type::Div) op = "(Div";
         else if (token.type == Token::Type::Lpar) op = "(Lpar";
         else if (token.type == Token::Type::Rpar) op = "(Rpar";
+        else if (token.type == Token::Type::NewL) op = "(NewL";
         cout << op << ", [" << token.line << ", " << token.position << "])";
     }
     return cout;
 }
 
-Source lex(std::string code) {
-    Source result;
+void pushNonOperant(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
+    if (std::isdigit(current[0])) {
+        tokens.push_back(Token::createInt(currLine, currPosition, std::stoi(current)));
+    } else {
+        tokens.push_back(Token::createVar(currLine, currPosition, current));
+    }
+    current.clear();
+}
+
+std::vector<Token> lex(std::string code) {
+    std::vector<Token> tokens;
     std::ifstream file(code);
     std::string line;
     std::string current;
@@ -77,96 +157,36 @@ Source lex(std::string code) {
         int currPosition = 1;
         for (char c : line) {
             if (c == ' ') {
-                if (!current.empty()) {
-                    result.source.push_back(current);
-                    result.line.push_back(currLine);
-                    result.position.push_back(currPosition);
-                    currPosition += current.size() + 1;
-                    current.clear();
-                }
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+            } else if (c == '+') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createAdd(currLine, currPosition));
+            } else if (c == '-') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createSub(currLine, currPosition));
+            } else if (c == '*') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createMul(currLine, currPosition));
+            } else if (c == '/') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createDiv(currLine, currPosition));
+            } else if (c == '(') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createLpar(currLine, currPosition));
+            } else if (c == ')') {
+                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                tokens.push_back(Token::createRpar(currLine, currPosition));
             } else {
                 current += c;
             }
         }
 
-        if (!current.empty()) {
-            result.source.push_back(current);
-            result.line.push_back(currLine);
-            result.position.push_back(currPosition);
-        }
+        if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
         currPosition += current.size();
         current.clear();
-
-        result.source.push_back("*NEWLINE*");
-        result.line.push_back(currLine);
-        result.position.push_back(currPosition);
-
-        current.clear();
-
+        
+        tokens.push_back(Token::createNewL(currLine, currPosition));
         currLine++;
-    }
-    result.print();
-    return result;
-}
-
-std::vector<Token> parse(Source source) {
-    std::vector<Token> tokens;
-    for (int i = 0; i < source.source.size(); i++) {
-        Token current;
-        if (source.source[i] == "+") {
-            current.type = Token::Type::Add;
-            current.operant = true;
-            current.precedence = 20;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i] == "-") {
-            current.type = Token::Type::Sub;
-            current.operant = true;
-            current.precedence = 20;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i] == "*") {
-            current.type = Token::Type::Mul;
-            current.operant = true;
-            current.precedence = 30;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i] == "/") {
-            current.type = Token::Type::Div;
-            current.operant = true;
-            current.precedence = 30;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i] == "(") {
-            current.type = Token::Type::Lpar;
-            current.operant = true;
-            current.precedence = 40;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i] == ")") {
-            current.type = Token::Type::Rpar;
-            current.operant = true;
-            current.precedence = 10;
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else if (source.source[i][0] == '*') {
-            if (source.source[i] == "*NEWLINE*") {
-                current.type = Token::Type::NewL;
-                current.line = source.line[i];
-                current.position = source.position[i];
-            }
-        } else if (std::isdigit(source.source[i][0]) || source.source[i][0] == '-') {
-            current.type = Token::Type::Int;
-            current.val = std::stoi(source.source[i]);
-            current.line = source.line[i];
-            current.position = source.position[i];
-        } else {
-            current.type = Token::Type::Var;
-            current.name = source.source[i];
-            current.line = source.line[i];
-            current.position = source.position[i];
-        }
-        tokens.push_back(current);
     }
 
     for (int i = 0; i < tokens.size(); i++) {
@@ -262,8 +282,6 @@ struct Parser {
 
 
 // IR
-
-
 struct IRInstruction {
     enum class OP {
         Const,
@@ -388,8 +406,8 @@ struct VM {
 };
 
 int main() {
-    Source source = lex("test.elil");
-    std::vector<Token> tokens = parse(source);
+    //Source source = lex("test.elil");
+    std::vector<Token> tokens = lex("test.elil");
     Parser parser(tokens);
     parser.createAST();
 
