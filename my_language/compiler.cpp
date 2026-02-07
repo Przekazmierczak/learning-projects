@@ -137,65 +137,72 @@ std::ostream& operator << (std::ostream& cout, Token& token)
     return cout;
 }
 
-void pushNonOperant(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
-    if (std::isdigit(current[0])) {
-        tokens.push_back(Token::createInt(currLine, currPosition, std::stoi(current)));
-    } else {
-        tokens.push_back(Token::createVar(currLine, currPosition, current));
-    }
-    current.clear();
-}
-
-std::vector<Token> lex(std::string code) {
+struct Lexer {
+    std::string code;
     std::vector<Token> tokens;
-    std::ifstream file(code);
     std::string line;
     std::string current;
 
-    int currLine = 1;
-    while (std::getline(file, line)) {
-        int currPosition = 1;
-        for (char c : line) {
-            if (c == ' ') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-            } else if (c == '+') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createAdd(currLine, currPosition));
-            } else if (c == '-') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createSub(currLine, currPosition));
-            } else if (c == '*') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createMul(currLine, currPosition));
-            } else if (c == '/') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createDiv(currLine, currPosition));
-            } else if (c == '(') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createLpar(currLine, currPosition));
-            } else if (c == ')') {
-                if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-                tokens.push_back(Token::createRpar(currLine, currPosition));
-            } else {
-                current += c;
+    Lexer(std::string codeURL) : code(codeURL) {
+        lex();
+    }
+
+    void lex() {
+        std::ifstream file(code);
+
+        int currLine = 1;
+        while (std::getline(file, line)) {
+            int currPosition = 1;
+            for (char c : line) {
+                if (c == ' ') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                } else if (c == '+') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createAdd(currLine, currPosition));
+                } else if (c == '-') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createSub(currLine, currPosition));
+                } else if (c == '*') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createMul(currLine, currPosition));
+                } else if (c == '/') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createDiv(currLine, currPosition));
+                } else if (c == '(') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createLpar(currLine, currPosition));
+                } else if (c == ')') {
+                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token::createRpar(currLine, currPosition));
+                } else {
+                    current += c;
+                }
             }
+    
+            if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+            currPosition += current.size();
+            current.clear();
+            
+            tokens.push_back(Token::createNewL(currLine, currPosition));
+            currLine++;
         }
 
-        if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
-        currPosition += current.size();
+        for (int i = 0; i < tokens.size(); i++) {
+            std::cout << tokens[i] << ", ";
+        }
+        std::cout << std::endl;
+    }
+
+    void pushNonOperant(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
+        if (std::isdigit(current[0])) {
+            tokens.push_back(Token::createInt(currLine, currPosition, std::stoi(current)));
+        } else {
+            tokens.push_back(Token::createVar(currLine, currPosition, current));
+        }
         current.clear();
-        
-        tokens.push_back(Token::createNewL(currLine, currPosition));
-        currLine++;
     }
 
-    for (int i = 0; i < tokens.size(); i++) {
-        std::cout << tokens[i] << ", ";
-    }
-    std::cout << std::endl;
-
-    return tokens;
-}
+};
 
 struct Parser {
     struct NodeAST {
@@ -207,7 +214,9 @@ struct Parser {
         NodeAST(Token newToken) : token(newToken) {}
     };
 
-    Parser(std::vector<Token> newTokens) : tokens(newTokens) {}
+    Parser(std::vector<Token> newTokens) : tokens(newTokens) {
+        createAST();
+    }
 
     std::vector<Token> tokens;
     int index = 0;
@@ -322,6 +331,10 @@ struct IRGenerator {
         }
     };
 
+    IRGenerator(const std::unique_ptr<Parser::NodeAST>& node) {
+        generate(node);
+    }
+
     std::vector<IRInstruction> instructions;
     RegisterIndex index;
 
@@ -361,6 +374,10 @@ struct VM {
     std::vector<int> registers;
     int pc = 0;
     int result;
+
+    VM(std::vector<IRInstruction> instructions) {
+        run(instructions);
+    }
 
     void resizeReg(int dst) {
         if (dst >= registers.size()) {
@@ -406,21 +423,19 @@ struct VM {
 };
 
 int main() {
-    //Source source = lex("test.elil");
-    std::vector<Token> tokens = lex("test.elil");
-    Parser parser(tokens);
-    parser.createAST();
+    Lexer lexer("test.elil");
 
-    IRGenerator irgenerator;
-    irgenerator.generate(parser.ASTroot);
+    Parser parser(lexer.tokens);
+
+    IRGenerator irgenerator(parser.ASTroot);
     irgenerator.print();
 
-    VM vm;
-    vm.run(irgenerator.instructions);
+    VM vm(irgenerator.instructions);
 
     for (int i = 0; i < vm.registers.size(); i++) {
         std::cout << vm.registers[i] << ", ";
     }
+    
     std::cout << std::endl;
     return 0;
 }
