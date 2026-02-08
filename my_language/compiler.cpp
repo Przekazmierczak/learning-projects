@@ -5,6 +5,7 @@
 #include <stack>
 #include <memory>
 #include <iostream>
+#include <stdexcept>
 
 struct Token {
     enum class Type {
@@ -19,7 +20,8 @@ struct Token {
         NewL,
         Ind,
         Ded,
-        Block
+        Block,
+        Neg
     };
 
     Type type;
@@ -211,7 +213,15 @@ struct Parser {
         std::unique_ptr<NodeAST> right;
         std::vector<std::unique_ptr<NodeAST>> statements;
     
-        NodeAST(Token newToken) : token(newToken) {}
+        NodeAST(Token newToken) :
+            token(newToken) {}
+        NodeAST(Token newToken, std::unique_ptr<NodeAST> newLeft) :
+            token(newToken),
+            left(std::move(newLeft)) {}
+        NodeAST(Token newToken, std::unique_ptr<NodeAST> newLeft, std::unique_ptr<NodeAST> newRight) :
+            token(newToken),
+            left(std::move(newLeft)),
+            right(std::move(newRight)) {}
     };
 
     Parser(std::vector<Token> newTokens) : tokens(newTokens) {
@@ -221,74 +231,94 @@ struct Parser {
     std::vector<Token> tokens;
     int index = 0;
     std::unique_ptr<NodeAST> ASTroot;
-    
+
     void createAST() {
         ASTroot = std::move(createBlock());
     }
-    
-    std::unique_ptr<NodeAST>createBlock() {
+
+    std::unique_ptr<NodeAST> createBlock() {
         Token newBlock;
         newBlock.type = Token::Type::Block;
         auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
         while (index < tokens.size()) {
-            newBlockAST->statements.push_back(std::move(createExpresion()));
-            index++;
+            if (tokens[index].type == Token::Type::NewL) {
+                index++;
+            }
+            if (index < tokens.size()) {
+                newBlockAST->statements.push_back(std::move(createStatement()));
+            }
         }
 
         return std::move(newBlockAST);
     }
-    
-    std::unique_ptr<NodeAST> createExpresion() {
-        std::stack<std::unique_ptr<NodeAST>> stackValues;
-        std::stack<Token> stackOperants;
-    
-        while (index < tokens.size() && tokens[index].type != Token::Type::NewL) {
-            if (!tokens[index].operant) {
-                stackValues.push(std::make_unique<NodeAST>(tokens[index]));
-            }
-            
-            else if (tokens[index].type == Token::Type::Lpar) {
-                stackOperants.push(tokens[index]);
-            }
-            
-            else if (tokens[index].type == Token::Type::Rpar) {
-                while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar) {
-                    reduce(stackValues, stackOperants);
-                }
-                stackOperants.pop();
-            }
-            
-            else {
-                while (!stackOperants.empty() && stackOperants.top().type != Token::Type::Lpar && stackOperants.top().precedence >= tokens[index].precedence) {
-                    reduce(stackValues, stackOperants);
-                }
-                
-                stackOperants.push(tokens[index]);
-            }
 
+    std::unique_ptr<NodeAST> createStatement() {
+        return createExpression();
+    }
+
+    std::unique_ptr<NodeAST> createExpression() {
+        return parseAddSub();
+    }
+    
+    std::unique_ptr<NodeAST> parseAddSub() {
+        std::unique_ptr<NodeAST> left = parseMulDiv();
+        while (index < tokens.size() && (tokens[index].type == Token::Type::Add || tokens[index].type == Token::Type::Sub)) {
+            Token currToken = tokens[index];
             index++;
+            std::unique_ptr<NodeAST> right = parseMulDiv();
+            left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
         }
-        while (!stackOperants.empty()) {
-            reduce(stackValues, stackOperants);
-        }
-    
-        return std::move(stackValues.top());
+        return left;
     }
 
-    void reduce(std::stack<std::unique_ptr<NodeAST>>& stackValues, std::stack<Token>& stackOperants) {
-        std::unique_ptr<NodeAST> current = std::make_unique<NodeAST>(stackOperants.top());
-        stackOperants.pop();
-    
-        current->right = std::move(stackValues.top());
-        stackValues.pop();
-        current->left = std::move(stackValues.top());
-        stackValues.pop();
-    
-        stackValues.push(std::move(current));
+    std::unique_ptr<NodeAST> parseMulDiv() {
+        std::unique_ptr<NodeAST> left = parseNeg();
+        while (index < tokens.size() && (tokens[index].type == Token::Type::Mul || tokens[index].type == Token::Type::Div)) {
+            Token currToken = tokens[index];
+            index++;
+            std::unique_ptr<NodeAST> right = parseNeg();
+            left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+        }
+        return left;
     }
+
+    std::unique_ptr<NodeAST> parseNeg() {
+        if (index < tokens.size() && tokens[index].type == Token::Type::Sub) {
+            index++;
+            std::unique_ptr<NodeAST> left = parseNeg();
+            Token negToken;
+            negToken.type = Token::Type::Neg;
+            left = std::make_unique<NodeAST>(NodeAST(negToken, std::move(left)));
+            return left;
+        }
+        return parsePrimary();
+    }
+
+    std::unique_ptr<NodeAST> parsePrimary() {
+        if (index < tokens.size() && (tokens[index].type == Token::Type::Int) || tokens[index].type == Token::Type::Var) {
+            auto node = std::make_unique<NodeAST>(NodeAST(tokens[index]));
+            index++;
+            return node;
+        }
+
+        if (index < tokens.size() && tokens[index].type == Token::Type::Lpar) {
+            index++; // consume "("
+            std::unique_ptr<NodeAST> expression = createExpression();
+            if (index >= tokens.size() || tokens[index].type != Token::Type::Rpar) {
+                std::cout << "Right parenthesis is missing" << std::endl;
+                throw std::invalid_argument( "Right parenthesis is missing" );
+            }
+            index++; // consume ")"
+            return expression;
+        }
+
+        std::cout << "Unknown primary" << std::endl;
+        throw std::invalid_argument( "Unknown primary" );
+        return nullptr;
+    }
+    
 };
-
 
 // IR
 struct IRInstruction {
@@ -297,7 +327,8 @@ struct IRInstruction {
         Add,
         Sub,
         Mul,
-        Div
+        Div,
+        Neg
     };
 
     OP operation;
@@ -311,6 +342,8 @@ std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
 {
     if (inst.operation == IRInstruction::OP::Const) {
         cout << "r" << inst.dst << " = " << inst.val << std::endl;
+    } else if (inst.operation == IRInstruction::OP::Neg) {
+        cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
     } else {
         std::string op;
         if (inst.operation == IRInstruction::OP::Add) op = "Add";
@@ -350,6 +383,11 @@ struct IRGenerator {
                 generate(node->statements[i]);
             }
             return -1;
+        } else if (node->token.type == Token::Type::Neg) {
+            newInstruction.operation = IRInstruction::OP::Neg;
+            newInstruction.src1 = generate(node->left);
+            newInstruction.dst = index.getNext();
+            instructions.push_back(newInstruction);
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
             else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
@@ -414,8 +452,14 @@ struct VM {
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] / registers[instructions[pc].src2];
                 pc++;
                 break;
+            case IRInstruction::OP::Neg:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = -registers[instructions[pc].src1];
+                pc++;
+                break;
             default:
-                std::cout << "error message" << std::endl;
+                std::cout << "Unknown opperant" << std::endl;
+                throw std::invalid_argument( "Unknown opperant" );
                 break;
             }
         }
