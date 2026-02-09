@@ -21,105 +21,29 @@ struct Token {
         Ind,
         Ded,
         Block,
-        Neg
+        Neg,
+        Assign
     };
 
     Type type;
-    bool operand = false;
-    int precedence = 0;
 
     int val = 0;
-
     std::string name = "";
 
-    int line;
-    int position;
+    int line = -1;
+    int position = -1;
 
-    static Token createAdd(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Add;
-        newToken.operand = true;
-        newToken.precedence = 20;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
+    Token(Type newType)
+        : type(newType) {}
 
-    static Token createSub(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Sub;
-        newToken.operand = true;
-        newToken.precedence = 20;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
+    Token(Type newType, int newLine, int newPosition)
+        : type(newType), line(newLine), position(newPosition) {}
 
-    static Token createMul(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Mul;
-        newToken.operand = true;
-        newToken.precedence = 30;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
+    Token(Type newType, int newVal, int newLine, int newPosition)
+        : type(newType),  val(newVal), line(newLine), position(newPosition) {}
 
-    static Token createDiv(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Div;
-        newToken.operand = true;
-        newToken.precedence = 30;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
-
-    static Token createLpar(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Lpar;
-        newToken.operand = true;
-        newToken.precedence = 40;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
-
-    static Token createRpar(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::Rpar;
-        newToken.operand = true;
-        newToken.precedence = 10;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
-
-    static Token createNewL(int line, int position) {
-        Token newToken;
-        newToken.type = Token::Type::NewL;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
-    
-    static Token createInt(int line, int position, int val) {
-        Token newToken;
-        newToken.type = Token::Type::Int;
-        newToken.val = val;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
-
-    static Token createVar(int line, int position, std::string name) {
-        Token newToken;
-        newToken.type = Token::Type::Var;
-        newToken.name = name;
-        newToken.line = line;
-        newToken.position = position;
-        return newToken;
-    }
+    Token(Type newType, std::string newName, int newLine, int newPosition)
+        : type(newType),  name(newName), line(newLine), position(newPosition) {}
 };
 
 std::ostream& operator << (std::ostream& cout, Token& token)
@@ -163,22 +87,22 @@ struct Lexer {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                 } else if (c == '+') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createAdd(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
                 } else if (c == '-') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createSub(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Sub ,currLine, currPosition));
                 } else if (c == '*') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createMul(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Mul ,currLine, currPosition));
                 } else if (c == '/') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createDiv(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Div ,currLine, currPosition));
                 } else if (c == '(') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createLpar(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Lpar ,currLine, currPosition));
                 } else if (c == ')') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
-                    tokens.push_back(Token::createRpar(currLine, currPosition));
+                    tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
                 } else {
                     current += c;
                 }
@@ -189,7 +113,7 @@ struct Lexer {
             currPosition += current.size();
             current.clear();
             
-            tokens.push_back(Token::createNewL(currLine, currPosition));
+            tokens.push_back(Token(Token::Type::NewL ,currLine, currPosition));
             currLine++;
         }
 
@@ -211,9 +135,9 @@ struct Lexer {
                     throw std::invalid_argument(errorMsg);
                 }
             }
-            tokens.push_back(Token::createInt(currLine, currPosition, std::stoi(current)));
+            tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
         } else {
-            tokens.push_back(Token::createVar(currLine, currPosition, current));
+            tokens.push_back(Token(Token::Type::Var, current, currLine, currPosition));
         }
         current.clear();
     }
@@ -251,8 +175,7 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> createBlock() {
-        Token newBlock;
-        newBlock.type = Token::Type::Block;
+        Token newBlock = Token(Token::Type::Block);
         auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
         while (index < tokens.size()) {
@@ -309,8 +232,7 @@ struct Parser {
         if (index < tokens.size() && tokens[index].type == Token::Type::Sub) {
             index++;
             std::unique_ptr<NodeAST> left = parseNeg();
-            Token negToken;
-            negToken.type = Token::Type::Neg;
+            Token negToken = Token(Token::Type::Neg);
             left = std::make_unique<NodeAST>(NodeAST(negToken, std::move(left)));
             return left;
         }
@@ -407,7 +329,6 @@ struct IRGenerator {
         } else if (node->token.type == Token::Type::Block) {
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
-                std::cout << "block" << std::endl;
             }
             return -1;
         } else if (node->token.type == Token::Type::Neg) {
