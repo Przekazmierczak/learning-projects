@@ -6,6 +6,7 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <unordered_map>
 
 struct Token {
     enum class Type {
@@ -61,6 +62,7 @@ std::ostream& operator << (std::ostream& cout, Token& token)
         else if (token.type == Token::Type::Lpar) op = "(Lpar";
         else if (token.type == Token::Type::Rpar) op = "(Rpar";
         else if (token.type == Token::Type::NewL) op = "(NewL";
+        else if (token.type == Token::Type::Assign) op = "(Assign";
         cout << op << ", [" << token.line << ", " << token.position << "])";
     }
     return cout;
@@ -103,6 +105,9 @@ struct Lexer {
                 } else if (c == ')') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
+                } else if (c == '=') {
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
                 } else {
                     current += c;
                 }
@@ -191,15 +196,29 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> createStatement() {
-        auto expr = createExpression();
-        if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
-            return expr;
-        } else {
-            std::string errorMsg = "New line symbol is missing; Line: " + std::to_string(tokens[index].line)
-                + ", Position :" + std::to_string(tokens[index].position);
-            std::cerr << errorMsg << std::endl;
-            throw std::invalid_argument(errorMsg);
+        // auto expr = createExpression();
+        // if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
+        //     return expr;
+        // } else {
+        //     std::string errorMsg = "New line symbol is missing; Line: " + std::to_string(tokens[index].line)
+        //         + ", Position :" + std::to_string(tokens[index].position);
+        //     std::cerr << errorMsg << std::endl;
+        //     throw std::invalid_argument(errorMsg);
+        // }
+        std::unique_ptr<NodeAST> left = createExpression();
+        if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
+            if (left->token.type == Token::Type::Var) {
+                Token currToken = tokens[index];
+                index++;
+                std::unique_ptr<NodeAST> right = createExpression();
+                left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+            } else {
+                std::string errorMsg = "Incorrect left value; Line:" + std::to_string(tokens[index].line);
+                std::cerr << errorMsg << std::endl;
+                throw std::invalid_argument(errorMsg);
+            }
         }
+        return left;
     }
 
     std::unique_ptr<NodeAST> createExpression() {
@@ -276,7 +295,9 @@ struct IRInstruction {
         Sub,
         Mul,
         Div,
-        Neg
+        Neg,
+        Assign,
+        Load
     };
 
     OP operation;
@@ -284,6 +305,7 @@ struct IRInstruction {
     int src1;
     int src2;
     int val;
+    std::string name;
 };
 
 std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
@@ -292,6 +314,10 @@ std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
         cout << "r" << inst.dst << " = " << inst.val << std::endl;
     } else if (inst.operation == IRInstruction::OP::Neg) {
         cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
+    } else if (inst.operation == IRInstruction::OP::Assign) {
+        cout << "\"" << inst.name << "\" <-> r" << inst.dst << std::endl;
+    } else if (inst.operation == IRInstruction::OP::Load) {
+        cout << "r" << inst.dst << " = \"" << inst.name << "\"" << std::endl;
     } else {
         std::string op;
         if (inst.operation == IRInstruction::OP::Add) op = "Add";
@@ -336,6 +362,17 @@ struct IRGenerator {
             newInstruction.src1 = generate(node->left);
             newInstruction.dst = index.getNext();
             instructions.push_back(newInstruction);
+        } else if (node->token.type == Token::Type::Assign) {
+            newInstruction.operation = IRInstruction::OP::Assign;
+            newInstruction.dst = generate(node->right);
+            newInstruction.name = node->left->token.name;
+            instructions.push_back(newInstruction);
+            return -1;
+        } else if (node->token.type == Token::Type::Var) {
+            newInstruction.operation = IRInstruction::OP::Load;
+            newInstruction.dst = index.getNext();
+            newInstruction.name = node->token.name;
+            instructions.push_back(newInstruction);
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
             else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
@@ -358,6 +395,8 @@ struct IRGenerator {
 
 struct VM {
     std::vector<int> registers;
+    std::unordered_map<std::string, int> map;
+
     int pc = 0;
     int result;
 
@@ -405,9 +444,24 @@ struct VM {
                 registers[instructions[pc].dst] = -registers[instructions[pc].src1];
                 pc++;
                 break;
+            case IRInstruction::OP::Assign:
+                map.insert({instructions[pc].name, instructions[pc].dst});
+                pc++;
+                break;
+            case IRInstruction::OP::Load:
+                if (map.find(instructions[pc].name) != map.end()) {
+                    resizeReg(instructions[pc].dst);
+                    registers[instructions[pc].dst] = registers[map[instructions[pc].name]];
+                    pc++;
+                } else {
+                    std::string errorMsg = "Unknown variable name: \"" + instructions[pc].name + "\"";
+                    std::cerr << errorMsg << std::endl;
+                    throw std::invalid_argument(errorMsg);
+                }
+                break;
             default:
                 std::cerr << "Unknown opperation" << std::endl;
-                throw std::invalid_argument( "Unknown opperation" );
+                throw std::invalid_argument("Unknown opperation");
                 break;
             }
         }
