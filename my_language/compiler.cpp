@@ -25,7 +25,7 @@ struct Token {
     };
 
     Type type;
-    bool operant = false;
+    bool operand = false;
     int precedence = 0;
 
     int val = 0;
@@ -38,34 +38,37 @@ struct Token {
     static Token createAdd(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Add;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 20;
         newToken.line = line;
+        newToken.position = position;
         return newToken;
     }
 
     static Token createSub(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Sub;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 20;
         newToken.line = line;
+        newToken.position = position;
         return newToken;
     }
 
     static Token createMul(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Mul;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 30;
         newToken.line = line;
+        newToken.position = position;
         return newToken;
     }
 
     static Token createDiv(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Div;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 30;
         newToken.line = line;
         newToken.position = position;
@@ -75,7 +78,7 @@ struct Token {
     static Token createLpar(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Lpar;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 40;
         newToken.line = line;
         newToken.position = position;
@@ -85,7 +88,7 @@ struct Token {
     static Token createRpar(int line, int position) {
         Token newToken;
         newToken.type = Token::Type::Rpar;
-        newToken.operant = true;
+        newToken.operand = true;
         newToken.precedence = 10;
         newToken.line = line;
         newToken.position = position;
@@ -157,31 +160,32 @@ struct Lexer {
             int currPosition = 1;
             for (char c : line) {
                 if (c == ' ') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                 } else if (c == '+') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createAdd(currLine, currPosition));
                 } else if (c == '-') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createSub(currLine, currPosition));
                 } else if (c == '*') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createMul(currLine, currPosition));
                 } else if (c == '/') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createDiv(currLine, currPosition));
                 } else if (c == '(') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createLpar(currLine, currPosition));
                 } else if (c == ')') {
-                    if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token::createRpar(currLine, currPosition));
                 } else {
                     current += c;
                 }
+                currPosition++;
             }
     
-            if (!current.empty()) pushNonOperant(currLine, currPosition, tokens, current);
+            if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
             currPosition += current.size();
             current.clear();
             
@@ -195,8 +199,18 @@ struct Lexer {
         std::cout << std::endl;
     }
 
-    void pushNonOperant(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
-        if (std::isdigit(current[0])) {
+    void pushNonOperand(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
+        currPosition = currPosition - current.size();
+        if (std::isdigit(static_cast<unsigned char>(current[0]))) {
+            for (char c : current) {
+                if (!std::isdigit(static_cast<unsigned char>(c))) {
+                    std::string errorMsg = "Incorrect variable name: \"" + current
+                        + "\"; Line: " + std::to_string(currLine)
+                        + ", Position: " + std::to_string(currPosition);
+                    std::cerr << errorMsg << std::endl;
+                    throw std::invalid_argument(errorMsg);
+                }
+            }
             tokens.push_back(Token::createInt(currLine, currPosition, std::stoi(current)));
         } else {
             tokens.push_back(Token::createVar(currLine, currPosition, current));
@@ -242,7 +256,7 @@ struct Parser {
         auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
         while (index < tokens.size()) {
-            if (tokens[index].type == Token::Type::NewL) {
+            while (tokens[index].type == Token::Type::NewL) {
                 index++;
             }
             if (index < tokens.size()) {
@@ -254,7 +268,15 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> createStatement() {
-        return createExpression();
+        auto expr = createExpression();
+        if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
+            return expr;
+        } else {
+            std::string errorMsg = "New line symbol is missing; Line: " + std::to_string(tokens[index].line)
+                + ", Position :" + std::to_string(tokens[index].position);
+            std::cerr << errorMsg << std::endl;
+            throw std::invalid_argument(errorMsg);
+        }
     }
 
     std::unique_ptr<NodeAST> createExpression() {
@@ -296,7 +318,7 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> parsePrimary() {
-        if (index < tokens.size() && (tokens[index].type == Token::Type::Int) || tokens[index].type == Token::Type::Var) {
+        if (index < tokens.size() && (tokens[index].type == Token::Type::Int || tokens[index].type == Token::Type::Var)) {
             auto node = std::make_unique<NodeAST>(NodeAST(tokens[index]));
             index++;
             return node;
@@ -306,16 +328,20 @@ struct Parser {
             index++; // consume "("
             std::unique_ptr<NodeAST> expression = createExpression();
             if (index >= tokens.size() || tokens[index].type != Token::Type::Rpar) {
-                std::cout << "Right parenthesis is missing" << std::endl;
-                throw std::invalid_argument( "Right parenthesis is missing" );
+                std::string errorMsg = "Right parenthesis is missing; Line: " + std::to_string(tokens[index].line);
+                std::cerr << errorMsg << std::endl;
+                throw std::invalid_argument(errorMsg);
             }
             index++; // consume ")"
             return expression;
         }
 
-        std::cout << "Unknown primary" << std::endl;
-        throw std::invalid_argument( "Unknown primary" );
-        return nullptr;
+        std::string errorMsg = "Syntax error; Line: "
+                    + std::to_string(tokens[index].line)
+                    + ", Position: "
+                    + std::to_string(tokens[index].position);
+        std::cerr << errorMsg << std::endl;
+        throw std::invalid_argument(errorMsg);
     }
     
 };
@@ -381,6 +407,7 @@ struct IRGenerator {
         } else if (node->token.type == Token::Type::Block) {
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
+                std::cout << "block" << std::endl;
             }
             return -1;
         } else if (node->token.type == Token::Type::Neg) {
@@ -458,8 +485,8 @@ struct VM {
                 pc++;
                 break;
             default:
-                std::cout << "Unknown opperant" << std::endl;
-                throw std::invalid_argument( "Unknown opperant" );
+                std::cerr << "Unknown opperation" << std::endl;
+                throw std::invalid_argument( "Unknown opperation" );
                 break;
             }
         }
