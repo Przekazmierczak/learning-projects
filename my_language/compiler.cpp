@@ -196,15 +196,6 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> createStatement() {
-        // auto expr = createExpression();
-        // if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
-        //     return expr;
-        // } else {
-        //     std::string errorMsg = "New line symbol is missing; Line: " + std::to_string(tokens[index].line)
-        //         + ", Position :" + std::to_string(tokens[index].position);
-        //     std::cerr << errorMsg << std::endl;
-        //     throw std::invalid_argument(errorMsg);
-        // }
         std::unique_ptr<NodeAST> left = createExpression();
         if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
             if (left->token.type == Token::Type::Var) {
@@ -217,6 +208,13 @@ struct Parser {
                 std::cerr << errorMsg << std::endl;
                 throw std::invalid_argument(errorMsg);
             }
+        } else if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
+            
+        } else {
+            std::string errorMsg = "Incorrect symbol after expression; Line: " + std::to_string(tokens[index].line)
+                + ", Position :" + std::to_string(tokens[index].position);
+            std::cerr << errorMsg << std::endl;
+            throw std::invalid_argument(errorMsg);
         }
         return left;
     }
@@ -311,13 +309,13 @@ struct IRInstruction {
 std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
 {
     if (inst.operation == IRInstruction::OP::Const) {
-        cout << "r" << inst.dst << " = " << inst.val << std::endl;
+        cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
     } else if (inst.operation == IRInstruction::OP::Neg) {
         cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
     } else if (inst.operation == IRInstruction::OP::Assign) {
-        cout << "\"" << inst.name << "\" <-> r" << inst.dst << std::endl;
+        cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
     } else if (inst.operation == IRInstruction::OP::Load) {
-        cout << "r" << inst.dst << " = \"" << inst.name << "\"" << std::endl;
+        cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
     } else {
         std::string op;
         if (inst.operation == IRInstruction::OP::Add) op = "Add";
@@ -445,7 +443,7 @@ struct VM {
                 pc++;
                 break;
             case IRInstruction::OP::Assign:
-                map.insert({instructions[pc].name, instructions[pc].dst});
+                map[instructions[pc].name] = instructions[pc].dst;
                 pc++;
                 break;
             case IRInstruction::OP::Load:
@@ -460,8 +458,8 @@ struct VM {
                 }
                 break;
             default:
-                std::cerr << "Unknown opperation" << std::endl;
-                throw std::invalid_argument("Unknown opperation");
+                std::cerr << "Unknown operation" << std::endl;
+                throw std::invalid_argument("Unknown operation");
                 break;
             }
         }
@@ -479,7 +477,7 @@ int main() {
     VM vm(irgenerator.instructions);
 
     for (int i = 0; i < vm.registers.size(); i++) {
-        std::cout << vm.registers[i] << ", ";
+        std::cout << "(r" << i << "=" << vm.registers[i] << "),";
     }
     
     std::cout << std::endl;
