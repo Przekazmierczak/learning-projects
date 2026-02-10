@@ -23,7 +23,10 @@ struct Token {
         Ded,
         Block,
         Neg,
-        Assign
+        Assign,
+        If,
+        Else,
+        Scolon
     };
 
     Type type;
@@ -65,6 +68,9 @@ std::ostream& operator << (std::ostream& cout, Token& token)
         else if (token.type == Token::Type::Assign) op = "(Assign";
         else if (token.type == Token::Type::Ind) op = "(Ind";
         else if (token.type == Token::Type::Ded) op = "(Ded";
+        else if (token.type == Token::Type::If) op = "(If";
+        else if (token.type == Token::Type::Else) op = "(Else";
+        else if (token.type == Token::Type::Scolon) op = "(Scolon";
         cout << op << ", [" << token.line << ", " << token.position << "])";
     }
     return cout;
@@ -110,7 +116,17 @@ struct Lexer {
             
             for (; index < line.size(); index++) {
                 if (line[index] == ' ') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) {
+                        if (current == "if") {
+                            tokens.push_back(Token(Token::Type::If ,currLine, currPosition));
+                            current.clear();
+                        } else if (current == "else") {
+                            tokens.push_back(Token(Token::Type::Else ,currLine, currPosition));
+                            current.clear();
+                        } else {
+                            pushNonOperand(currLine, currPosition, tokens, current);
+                        }
+                    }
                 } else if (line[index] == '+') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
@@ -132,6 +148,9 @@ struct Lexer {
                 } else if (line[index] == '=') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
+                } else if (line[index] == ';') {
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
                 } else {
                     current += line[index];
                 }
@@ -180,9 +199,10 @@ struct Lexer {
 struct Parser {
     struct NodeAST {
         Token token;
-        std::unique_ptr<NodeAST> left;
-        std::unique_ptr<NodeAST> right;
+        std::unique_ptr<NodeAST> left = nullptr;
+        std::unique_ptr<NodeAST> right = nullptr;
         std::vector<std::unique_ptr<NodeAST>> statements;
+        std::unique_ptr<NodeAST> condition = nullptr;
     
         NodeAST(Token newToken) :
             token(newToken) {}
@@ -191,6 +211,11 @@ struct Parser {
             left(std::move(newLeft)) {}
         NodeAST(Token newToken, std::unique_ptr<NodeAST> newLeft, std::unique_ptr<NodeAST> newRight) :
             token(newToken),
+            left(std::move(newLeft)),
+            right(std::move(newRight)) {}
+        NodeAST(Token newToken, std::unique_ptr<NodeAST> newCondition, std::unique_ptr<NodeAST> newLeft, std::unique_ptr<NodeAST> newRight) :
+            token(newToken),
+            condition(std::move(newCondition)),
             left(std::move(newLeft)),
             right(std::move(newRight)) {}
     };
@@ -212,10 +237,20 @@ struct Parser {
         auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
         while (index < tokens.size()) {
-            while (tokens[index].type == Token::Type::NewL) {
+            while (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
                 index++;
             }
-            if (index < tokens.size()) {
+
+            if (index >= tokens.size()) break;
+
+            // if (tokens[index].type == Token::Type::Ind) {
+            //     index++; // consume Ind
+            //     newBlockAST->statements.push_back(std::move(createBlock()));
+            // } else 
+            if (tokens[index].type == Token::Type::Ded) {
+                index++; // consume Ded
+                break;
+            } else {
                 newBlockAST->statements.push_back(std::move(createStatement()));
             }
         }
@@ -224,6 +259,44 @@ struct Parser {
     }
 
     std::unique_ptr<NodeAST> createStatement() {
+        if (index < tokens.size() && tokens[index].type == Token::Type::If) {
+            Token ifToken = tokens[index];
+            index++; // consume if
+            std::unique_ptr<NodeAST> condition = createExpression();
+
+            if (index >= tokens.size() || tokens[index].type != Token::Type::Scolon) {
+                std::string errorMsg = "\";\" is missing after if statemant; Line: "
+                    + std::to_string(tokens[index].line)
+                    + ", Position: "
+                    + std::to_string(tokens[index].position);
+                std::cerr << errorMsg << std::endl;
+                throw std::invalid_argument(errorMsg);
+            }
+            index++; // consume ;
+
+            if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
+                std::string errorMsg = "New line is missing after if statemant; Line: "
+                    + std::to_string(tokens[index].line)
+                    + ", Position: "
+                    + std::to_string(tokens[index].position);
+                std::cerr << errorMsg << std::endl;
+                throw std::invalid_argument(errorMsg);
+            }
+            index++; // consume NewL
+
+            if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
+                std::string errorMsg = "Indentation is missing after if statemant; Line: "
+                    + std::to_string(tokens[index].line)
+                    + ", Position: "
+                    + std::to_string(tokens[index].position);
+                std::cerr << errorMsg << std::endl;
+                throw std::invalid_argument(errorMsg);
+            }
+            index++; // consume Ind
+
+            return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(createBlock()), nullptr));
+        }
+
         std::unique_ptr<NodeAST> left = createExpression();
         if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
             if (left->token.type == Token::Type::Var) {
@@ -237,7 +310,7 @@ struct Parser {
                 throw std::invalid_argument(errorMsg);
             }
         } else if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
-            
+    
         } else {
             std::string errorMsg = "Incorrect symbol after expression; Line: " + std::to_string(tokens[index].line)
                 + ", Position :" + std::to_string(tokens[index].position);
