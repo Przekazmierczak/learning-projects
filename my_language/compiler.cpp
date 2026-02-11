@@ -396,7 +396,10 @@ struct IRInstruction {
         Div,
         Neg,
         Assign,
-        Load
+        Load,
+        Cmp,
+        JmpZ,
+        JmpNZ
     };
 
     OP operation;
@@ -417,12 +420,15 @@ std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
         cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
     } else if (inst.operation == IRInstruction::OP::Load) {
         cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
+    } else if (inst.operation == IRInstruction::OP::JmpZ) {
+        cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
     } else {
         std::string op;
         if (inst.operation == IRInstruction::OP::Add) op = "Add";
         else if (inst.operation == IRInstruction::OP::Sub) op = "Sub";
         else if (inst.operation == IRInstruction::OP::Mul) op = "Mul";
         else if (inst.operation == IRInstruction::OP::Div) op = "Div";
+        else if (inst.operation == IRInstruction::OP::Cmp) op = "Cmp";
         cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
     }
     return cout;
@@ -455,7 +461,7 @@ struct IRGenerator {
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
-            return -1;
+            return instructions.size();
         } else if (node->token.type == Token::Type::Neg) {
             newInstruction.operation = IRInstruction::OP::Neg;
             newInstruction.src1 = generate(node->left);
@@ -472,6 +478,27 @@ struct IRGenerator {
             newInstruction.dst = index.getNext();
             newInstruction.name = node->token.name;
             instructions.push_back(newInstruction);
+        } else if (node->token.type == Token::Type::If) {
+            IRInstruction cmp;
+            IRInstruction mov0;
+
+            cmp.operation = IRInstruction::OP::Cmp;
+            cmp.src1 = generate(node->condition);
+
+            mov0.operation = IRInstruction::OP::Const;
+            mov0.dst = index.getNext();
+            mov0.val = 0;
+            instructions.push_back(mov0);
+
+            cmp.src2 = mov0.dst;
+            cmp.dst = index.getNext();
+            instructions.push_back(cmp);
+
+            newInstruction.operation = IRInstruction::OP::JmpZ;
+            newInstruction.src1 = cmp.dst;
+            int pc = instructions.size();
+            instructions.push_back(newInstruction);
+            instructions[pc].dst = generate(node->left);
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
             else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
@@ -487,7 +514,7 @@ struct IRGenerator {
 
     void print() {
         for (int i = 0; i < instructions.size(); i++) {
-            std::cout << instructions[i];
+            std::cout << i << ". " << instructions[i];
         }
     }
 };
@@ -556,6 +583,17 @@ struct VM {
                     std::string errorMsg = "Unknown variable name: \"" + instructions[pc].name + "\"";
                     std::cerr << errorMsg << std::endl;
                     throw std::invalid_argument(errorMsg);
+                }
+                break;
+            case IRInstruction::OP::Cmp:
+                registers[instructions[pc].dst] = registers[instructions[pc].src1] - registers[instructions[pc].src2];
+                pc++;
+                break;
+            case IRInstruction::OP::JmpZ:
+                if (registers[instructions[pc].src1] != 0) {
+                    pc++;
+                } else {
+                    pc = instructions[pc].dst;
                 }
                 break;
             default:
