@@ -116,17 +116,7 @@ struct Lexer {
             
             for (; index < line.size(); index++) {
                 if (line[index] == ' ') {
-                    if (!current.empty()) {
-                        if (current == "if") {
-                            tokens.push_back(Token(Token::Type::If ,currLine, currPosition));
-                            current.clear();
-                        } else if (current == "else") {
-                            tokens.push_back(Token(Token::Type::Else ,currLine, currPosition));
-                            current.clear();
-                        } else {
-                            pushNonOperand(currLine, currPosition, tokens, current);
-                        }
-                    }
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                 } else if (line[index] == '+') {
                     if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
                     tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
@@ -177,7 +167,11 @@ struct Lexer {
 
     void pushNonOperand(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
         currPosition = currPosition - current.size();
-        if (std::isdigit(static_cast<unsigned char>(current[0]))) {
+        if (current == "if") {
+            tokens.push_back(Token(Token::Type::If ,currLine, currPosition));
+        } else if (current == "else") {
+            tokens.push_back(Token(Token::Type::Else ,currLine, currPosition));
+        } else if (std::isdigit(static_cast<unsigned char>(current[0]))) {
             for (char c : current) {
                 if (!std::isdigit(static_cast<unsigned char>(c))) {
                     std::string errorMsg = "Incorrect variable name: \"" + current
@@ -272,7 +266,7 @@ struct Parser {
                 std::cerr << errorMsg << std::endl;
                 throw std::invalid_argument(errorMsg);
             }
-            index++; // consume ;
+            index++; // consume ";"
 
             if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
                 std::string errorMsg = "New line is missing after if statemant; Line: "
@@ -294,7 +288,44 @@ struct Parser {
             }
             index++; // consume Ind
 
-            return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(createBlock()), nullptr));
+            std::unique_ptr<NodeAST> ifBlock = createBlock();
+            std::unique_ptr<NodeAST> elseBlock = nullptr;
+            if (index < tokens.size() && tokens[index].type == Token::Type::Else) {
+                index++; // consume else
+                if (index < tokens.size() && tokens[index].type == Token::Type::Scolon) {
+                    index++; // consume ";"
+                } else {
+                    std::string errorMsg = "\";\" is missing after else statemant; Line: "
+                        + std::to_string(tokens[index].line)
+                        + ", Position: "
+                        + std::to_string(tokens[index].position);
+                    std::cerr << errorMsg << std::endl;
+                    throw std::invalid_argument(errorMsg);
+                }
+
+                if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
+                    std::string errorMsg = "New line is missing after if statemant; Line: "
+                        + std::to_string(tokens[index].line)
+                        + ", Position: "
+                        + std::to_string(tokens[index].position);
+                    std::cerr << errorMsg << std::endl;
+                    throw std::invalid_argument(errorMsg);
+                }
+                index++; // consume NewL
+
+                if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
+                    std::string errorMsg = "Indentation is missing after if statemant; Line: "
+                        + std::to_string(tokens[index].line)
+                        + ", Position: "
+                        + std::to_string(tokens[index].position);
+                    std::cerr << errorMsg << std::endl;
+                    throw std::invalid_argument(errorMsg);
+                }
+                index++; // consume Ind
+
+                elseBlock = createBlock();
+            }
+            return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
         }
 
         std::unique_ptr<NodeAST> left = createExpression();
@@ -398,6 +429,7 @@ struct IRInstruction {
         Assign,
         Load,
         Cmp,
+        Jmp,
         JmpZ,
         JmpNZ
     };
@@ -420,6 +452,8 @@ std::ostream& operator << (std::ostream& cout, IRInstruction& inst)
         cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
     } else if (inst.operation == IRInstruction::OP::Load) {
         cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
+    } else if (inst.operation == IRInstruction::OP::Jmp) {
+        cout << "Jmp pc" << inst.dst << std::endl;
     } else if (inst.operation == IRInstruction::OP::JmpZ) {
         cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
     } else {
@@ -481,6 +515,8 @@ struct IRGenerator {
         } else if (node->token.type == Token::Type::If) {
             IRInstruction cmp;
             IRInstruction mov0;
+            IRInstruction JmpZ;
+            IRInstruction Jmp;
 
             cmp.operation = IRInstruction::OP::Cmp;
             cmp.src1 = generate(node->condition);
@@ -494,11 +530,23 @@ struct IRGenerator {
             cmp.dst = index.getNext();
             instructions.push_back(cmp);
 
-            newInstruction.operation = IRInstruction::OP::JmpZ;
-            newInstruction.src1 = cmp.dst;
+            JmpZ.operation = IRInstruction::OP::JmpZ;
+            
+            JmpZ.src1 = cmp.dst;
+            
             int pc = instructions.size();
-            instructions.push_back(newInstruction);
-            instructions[pc].dst = generate(node->left);
+            instructions.push_back(JmpZ);
+            if (node->right) {
+                instructions[pc].dst = generate(node->left) + 1;
+                
+                Jmp.operation = IRInstruction::OP::Jmp;
+                pc = instructions.size();
+                instructions.push_back(Jmp);
+                instructions[pc].dst = generate(node->right);
+            } else {
+                instructions[pc].dst = generate(node->left);
+            }
+            return -1;
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
             else if (node->token.type == Token::Type::Sub) newInstruction.operation = IRInstruction::OP::Sub;
@@ -588,6 +636,9 @@ struct VM {
             case IRInstruction::OP::Cmp:
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] - registers[instructions[pc].src2];
                 pc++;
+                break;
+            case IRInstruction::OP::Jmp:
+                pc = instructions[pc].dst;
                 break;
             case IRInstruction::OP::JmpZ:
                 if (registers[instructions[pc].src1] != 0) {
