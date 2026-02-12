@@ -234,13 +234,13 @@ struct Parser {
             right(std::move(newRight)) {}
     };
 
-    Parser(std::vector<Token> newTokens) : tokens(newTokens) {
-        createAST();
-    }
-
     std::vector<Token> tokens;
     int index = 0;
     std::unique_ptr<NodeAST> ASTroot;
+
+    Parser(std::vector<Token> newTokens) : tokens(newTokens) {
+        createAST();
+    }
 
     void createAST() {
         ASTroot = std::move(createBlock());
@@ -257,10 +257,6 @@ struct Parser {
 
             if (index >= tokens.size()) break;
 
-            // if (tokens[index].type == Token::Type::Ind) {
-            //     index++; // consume Ind
-            //     newBlockAST->statements.push_back(std::move(createBlock()));
-            // } else 
             if (tokens[index].type == Token::Type::Ded) {
                 index++; // consume Ded
                 break;
@@ -274,48 +270,7 @@ struct Parser {
 
     std::unique_ptr<NodeAST> createStatement() {
         if (index < tokens.size() && tokens[index].type == Token::Type::If) {
-            Token ifToken = tokens[index];
-            index++; // consume if
-            std::unique_ptr<NodeAST> condition = createExpression();
-
-            if (index >= tokens.size() || tokens[index].type != Token::Type::Scolon) {
-                throwError("\";\" is missing after if statemant", tokens[index].line, tokens[index].position);
-            }
-            index++; // consume ";"
-
-            if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
-                throwError("New line is missing after if statemant", tokens[index].line, tokens[index].position);
-            }
-            index++; // consume NewL
-
-            if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
-                throwError("Indentation is missing after if statemant", tokens[index].line, tokens[index].position);
-            }
-            index++; // consume Ind
-
-            std::unique_ptr<NodeAST> ifBlock = createBlock();
-            std::unique_ptr<NodeAST> elseBlock = nullptr;
-            if (index < tokens.size() && tokens[index].type == Token::Type::Else) {
-                index++; // consume else
-                if (index < tokens.size() && tokens[index].type == Token::Type::Scolon) {
-                    index++; // consume ";"
-                } else {
-                    throwError("\";\" is missing after else statemant", tokens[index].line, tokens[index].position);
-                }
-
-                if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
-                    throwError("New line is missing after else statemant", tokens[index].line, tokens[index].position);
-                }
-                index++; // consume NewL
-
-                if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
-                    throwError("Indentation is missing after else statemant", tokens[index].line, tokens[index].position);
-                }
-                index++; // consume Ind
-
-                elseBlock = createBlock();
-            }
-            return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
+            return createIfStatement();
         }
 
         std::unique_ptr<NodeAST> left = createExpression();
@@ -390,6 +345,41 @@ struct Parser {
             return expression;
         }
         throwError("Syntax error", tokens[index].line, tokens[index].position);
+    }
+
+    std::unique_ptr<NodeAST> createIfStatement() {
+        Token ifToken = tokens[index];
+        index++; // consume if
+        std::unique_ptr<NodeAST> condition = createExpression();
+        consumeSNI();
+        std::unique_ptr<NodeAST> ifBlock = createBlock();
+
+        std::unique_ptr<NodeAST> elseBlock = nullptr;
+        if (index < tokens.size() && tokens[index].type == Token::Type::Else) {
+            index++; // consume else
+            consumeSNI();
+            elseBlock = createBlock();
+        }
+
+        return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
+    }
+
+    // Check and consume Semicolon, New line and Indentation tokens
+    void consumeSNI() {
+        if (index >= tokens.size() || tokens[index].type != Token::Type::Scolon) {
+            throwError("\";\" is missing after if statemant", tokens[index].line, tokens[index].position);
+        }
+        index++; // consume ";"
+
+        if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
+            throwError("New line is missing after if statemant", tokens[index].line, tokens[index].position);
+        }
+        index++; // consume NewL
+
+        if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
+            throwError("Indentation is missing after if statemant", tokens[index].line, tokens[index].position);
+        }
+        index++; // consume Ind
     }
 };
 
