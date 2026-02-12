@@ -8,6 +8,23 @@
 #include <stdexcept>
 #include <unordered_map>
 
+[[noreturn]] void throwError(std::string errorMsg) {
+    std::cerr << errorMsg << std::endl;
+    throw std::invalid_argument(errorMsg);
+}
+
+[[noreturn]] void throwError(std::string errorMsg, int line) {
+    std::string newErrorMsg = errorMsg + "; Line: " + std::to_string(line);
+    std::cerr << newErrorMsg << std::endl;
+    throw std::invalid_argument(newErrorMsg);
+}
+
+[[noreturn]] void throwError(std::string errorMsg, int line, int position) {
+    std::string newErrorMsg = errorMsg + "; Line: " + std::to_string(line) + ", Position: " + std::to_string(position);
+    std::cerr << newErrorMsg << std::endl;
+    throw std::invalid_argument(newErrorMsg);
+}
+
 struct Token {
     enum class Type {
         Int,
@@ -107,9 +124,7 @@ struct Lexer {
                     indents.pop_back();
                     tokens.push_back(Token(Token::Type::Ded, currLine, 1));
                     if (indents.empty()) {
-                        std::string errorMsg = "Incorrect indent; Line: " + std::to_string(currLine);
-                        std::cerr << errorMsg << std::endl;
-                        throw std::invalid_argument(errorMsg);
+                        throwError("Incorrect indentation", currLine);
                     }
                 }
             }
@@ -174,11 +189,7 @@ struct Lexer {
         } else if (std::isdigit(static_cast<unsigned char>(current[0]))) {
             for (char c : current) {
                 if (!std::isdigit(static_cast<unsigned char>(c))) {
-                    std::string errorMsg = "Incorrect variable name: \"" + current
-                        + "\"; Line: " + std::to_string(currLine)
-                        + ", Position: " + std::to_string(currPosition);
-                    std::cerr << errorMsg << std::endl;
-                    throw std::invalid_argument(errorMsg);
+                    throwError("Incorrect variable name", currLine, currPosition);
                 }
             }
             tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
@@ -259,32 +270,17 @@ struct Parser {
             std::unique_ptr<NodeAST> condition = createExpression();
 
             if (index >= tokens.size() || tokens[index].type != Token::Type::Scolon) {
-                std::string errorMsg = "\";\" is missing after if statemant; Line: "
-                    + std::to_string(tokens[index].line)
-                    + ", Position: "
-                    + std::to_string(tokens[index].position);
-                std::cerr << errorMsg << std::endl;
-                throw std::invalid_argument(errorMsg);
+                throwError("\";\" is missing after if statemant", tokens[index].line, tokens[index].position);
             }
             index++; // consume ";"
 
             if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
-                std::string errorMsg = "New line is missing after if statemant; Line: "
-                    + std::to_string(tokens[index].line)
-                    + ", Position: "
-                    + std::to_string(tokens[index].position);
-                std::cerr << errorMsg << std::endl;
-                throw std::invalid_argument(errorMsg);
+                throwError("New line is missing after if statemant", tokens[index].line, tokens[index].position);
             }
             index++; // consume NewL
 
             if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
-                std::string errorMsg = "Indentation is missing after if statemant; Line: "
-                    + std::to_string(tokens[index].line)
-                    + ", Position: "
-                    + std::to_string(tokens[index].position);
-                std::cerr << errorMsg << std::endl;
-                throw std::invalid_argument(errorMsg);
+                throwError("Indentation is missing after if statemant", tokens[index].line, tokens[index].position);
             }
             index++; // consume Ind
 
@@ -295,31 +291,16 @@ struct Parser {
                 if (index < tokens.size() && tokens[index].type == Token::Type::Scolon) {
                     index++; // consume ";"
                 } else {
-                    std::string errorMsg = "\";\" is missing after else statemant; Line: "
-                        + std::to_string(tokens[index].line)
-                        + ", Position: "
-                        + std::to_string(tokens[index].position);
-                    std::cerr << errorMsg << std::endl;
-                    throw std::invalid_argument(errorMsg);
+                    throwError("\";\" is missing after else statemant", tokens[index].line, tokens[index].position);
                 }
 
                 if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
-                    std::string errorMsg = "New line is missing after if statemant; Line: "
-                        + std::to_string(tokens[index].line)
-                        + ", Position: "
-                        + std::to_string(tokens[index].position);
-                    std::cerr << errorMsg << std::endl;
-                    throw std::invalid_argument(errorMsg);
+                    throwError("New line is missing after else statemant", tokens[index].line, tokens[index].position);
                 }
                 index++; // consume NewL
 
                 if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
-                    std::string errorMsg = "Indentation is missing after if statemant; Line: "
-                        + std::to_string(tokens[index].line)
-                        + ", Position: "
-                        + std::to_string(tokens[index].position);
-                    std::cerr << errorMsg << std::endl;
-                    throw std::invalid_argument(errorMsg);
+                    throwError("Indentation is missing after else statemant", tokens[index].line, tokens[index].position);
                 }
                 index++; // consume Ind
 
@@ -336,17 +317,12 @@ struct Parser {
                 std::unique_ptr<NodeAST> right = createExpression();
                 left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
             } else {
-                std::string errorMsg = "Incorrect left value; Line:" + std::to_string(tokens[index].line);
-                std::cerr << errorMsg << std::endl;
-                throw std::invalid_argument(errorMsg);
+                throwError("Incorrect left value", tokens[index].line);
             }
         } else if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
     
         } else {
-            std::string errorMsg = "Incorrect symbol after expression; Line: " + std::to_string(tokens[index].line)
-                + ", Position :" + std::to_string(tokens[index].position);
-            std::cerr << errorMsg << std::endl;
-            throw std::invalid_argument(errorMsg);
+            throwError("Incorrect symbol after expression", tokens[index].line, tokens[index].position);
         }
         return left;
     }
@@ -399,22 +375,13 @@ struct Parser {
             index++; // consume "("
             std::unique_ptr<NodeAST> expression = createExpression();
             if (index >= tokens.size() || tokens[index].type != Token::Type::Rpar) {
-                std::string errorMsg = "Right parenthesis is missing; Line: " + std::to_string(tokens[index].line);
-                std::cerr << errorMsg << std::endl;
-                throw std::invalid_argument(errorMsg);
+                throwError("Right parenthesis is missing", tokens[index].line, tokens[index].position);
             }
             index++; // consume ")"
             return expression;
         }
-
-        std::string errorMsg = "Syntax error; Line: "
-                    + std::to_string(tokens[index].line)
-                    + ", Position: "
-                    + std::to_string(tokens[index].position);
-        std::cerr << errorMsg << std::endl;
-        throw std::invalid_argument(errorMsg);
+        throwError("Syntax error", tokens[index].line, tokens[index].position);
     }
-    
 };
 
 // IR
@@ -628,9 +595,7 @@ struct VM {
                     registers[instructions[pc].dst] = registers[map[instructions[pc].name]];
                     pc++;
                 } else {
-                    std::string errorMsg = "Unknown variable name: \"" + instructions[pc].name + "\"";
-                    std::cerr << errorMsg << std::endl;
-                    throw std::invalid_argument(errorMsg);
+                    throwError("Unknown variable name: \"" + instructions[pc].name + "\"");
                 }
                 break;
             case IRInstruction::OP::Cmp:
@@ -648,8 +613,7 @@ struct VM {
                 }
                 break;
             default:
-                std::cerr << "Unknown operation" << std::endl;
-                throw std::invalid_argument("Unknown operation");
+                throwError("Unknown operation");
                 break;
             }
         }
