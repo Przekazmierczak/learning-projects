@@ -1,12 +1,11 @@
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iostream>
-#include <stack>
 #include <memory>
-#include <iostream>
 #include <stdexcept>
 #include <unordered_map>
+#include <regex>
 
 [[noreturn]] void throwError(std::string errorMsg) {
     std::cerr << errorMsg << std::endl;
@@ -96,9 +95,8 @@ std::ostream& operator << (std::ostream& cout, Token& token)
 struct Lexer {
     std::string code;
     std::vector<Token> tokens;
-    std::string line;
-    std::string current;
-    std::vector<int> indents;
+    std::regex patternInt{R"(^\d+$)"};
+    std::regex patternName{R"(^[a-zA-Z_][a-zA-Z0-9_]*$)"};
 
     Lexer(std::string codeURL) : code(codeURL) {
         lex();
@@ -106,6 +104,9 @@ struct Lexer {
 
     void lex() {
         std::ifstream file(code);
+        std::string current;
+        std::string line;
+        std::vector<int> indents;
 
         indents.push_back(0);
         int currLine = 1;
@@ -113,9 +114,15 @@ struct Lexer {
             int currPosition = 1;
             int index = 0;
 
+            // Check current indentation
             while (line[index] == ' ') {
                 index++;
             };
+
+            // Ignore empty line
+            if (index >= line.size()) continue;
+
+            // Add Ind, Ded if indantation changed
             if (indents.empty() || index > indents.back()) {
                 indents.push_back(index);
                 tokens.push_back(Token(Token::Type::Ind, currLine, 1));
@@ -128,33 +135,34 @@ struct Lexer {
                     }
                 }
             }
+            currPosition += index;
             
             for (; index < line.size(); index++) {
                 if (line[index] == ' ') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                 } else if (line[index] == '+') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
                 } else if (line[index] == '-') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Sub ,currLine, currPosition));
                 } else if (line[index] == '*') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Mul ,currLine, currPosition));
                 } else if (line[index] == '/') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Div ,currLine, currPosition));
                 } else if (line[index] == '(') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Lpar ,currLine, currPosition));
                 } else if (line[index] == ')') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
                 } else if (line[index] == '=') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
                 } else if (line[index] == ';') {
-                    if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
                     tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
                 } else {
                     current += line[index];
@@ -162,41 +170,42 @@ struct Lexer {
                 currPosition++;
             }
     
-            if (!current.empty()) pushNonOperand(currLine, currPosition, tokens, current);
+            if (!current.empty()) pushNonOperand(currLine, currPosition, current);
             currPosition += current.size();
             current.clear();
             
             tokens.push_back(Token(Token::Type::NewL ,currLine, currPosition));
             currLine++;
         }
+
+        // Add missing Ded to close indentation
         while (indents.size() > 1) {
             indents.pop_back();
             tokens.push_back(Token(Token::Type::Ded, currLine, 1));
         }
+    }
 
+    void pushNonOperand(int currLine, int currPosition, std::string& current) {
+        currPosition = currPosition - current.size();
+        if (current == "if") {
+            tokens.push_back(Token(Token::Type::If, currLine, currPosition));
+        } else if (current == "else") {
+            tokens.push_back(Token(Token::Type::Else, currLine, currPosition));
+        } else if (std::regex_match(current, patternInt)) {
+            tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
+        } else if (std::regex_match(current, patternName)) {
+            tokens.push_back(Token(Token::Type::Var, current, currLine, currPosition));
+        } else {
+            throwError("Incorrect name \"" + current + "\"", currLine, currPosition);
+        }
+        current.clear();
+    }
+
+    void printTokens() {
         for (int i = 0; i < tokens.size(); i++) {
             std::cout << tokens[i] << ", ";
         }
         std::cout << std::endl;
-    }
-
-    void pushNonOperand(int currLine, int currPosition, std::vector<Token>& tokens, std::string& current) {
-        currPosition = currPosition - current.size();
-        if (current == "if") {
-            tokens.push_back(Token(Token::Type::If ,currLine, currPosition));
-        } else if (current == "else") {
-            tokens.push_back(Token(Token::Type::Else ,currLine, currPosition));
-        } else if (std::isdigit(static_cast<unsigned char>(current[0]))) {
-            for (char c : current) {
-                if (!std::isdigit(static_cast<unsigned char>(c))) {
-                    throwError("Incorrect variable name", currLine, currPosition);
-                }
-            }
-            tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
-        } else {
-            tokens.push_back(Token(Token::Type::Var, current, currLine, currPosition));
-        }
-        current.clear();
     }
 
 };
@@ -622,6 +631,7 @@ struct VM {
 
 int main() {
     Lexer lexer("test.elil");
+    lexer.printTokens();
 
     Parser parser(lexer.tokens);
 
