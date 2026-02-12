@@ -27,21 +27,15 @@
 struct Token {
     enum class Type {
         Int,
-        Add,
-        Sub,
-        Mul,
-        Div,
-        Lpar,
-        Rpar,
+        Add, Sub, Mul, Div,
+        Lpar, Rpar,
         Var,
         NewL,
-        Ind,
-        Ded,
+        Ind, Ded,
         Block,
         Neg,
         Assign,
-        If,
-        Else,
+        If, Else,
         Scolon
     };
 
@@ -66,28 +60,28 @@ struct Token {
         : type(newType),  name(newName), line(newLine), position(newPosition) {}
 };
 
-std::ostream& operator << (std::ostream& cout, Token& token)
+static const char* names[] = {
+    "Int",
+    "Add", "Sub", "Mul", "Div",
+    "Lpar", "Rpar",
+    "Var",
+    "NewL",
+    "Ind", "Ded",
+    "Block",
+    "Neg",
+    "Assign",
+    "If", "Else",
+    "Scolon",
+};
+
+std::ostream& operator << (std::ostream& cout, const Token& token)
 {
     if (token.type == Token::Type::Int) {
-        cout << "(Int, " << token.val << ", [" << token.line << ", " << token.position << "])";
+        cout << "(" << names[static_cast<int>(token.type)] << ", " << token.val << ", [" << token.line << ", " << token.position << "])";
     } else if (token.type == Token::Type::Var) {
-        cout << "(Var, \"" << token.name << "\", [" << token.line << ", " << token.position << "])";
+        cout << "(" << names[static_cast<int>(token.type)] << ", \"" << token.name << "\", [" << token.line << ", " << token.position << "])";
     } else {
-        std::string op;
-        if (token.type == Token::Type::Add) op = "(Add";
-        else if (token.type == Token::Type::Sub) op = "(Sub";
-        else if (token.type == Token::Type::Mul) op = "(Mul";
-        else if (token.type == Token::Type::Div) op = "(Div";
-        else if (token.type == Token::Type::Lpar) op = "(Lpar";
-        else if (token.type == Token::Type::Rpar) op = "(Rpar";
-        else if (token.type == Token::Type::NewL) op = "(NewL";
-        else if (token.type == Token::Type::Assign) op = "(Assign";
-        else if (token.type == Token::Type::Ind) op = "(Ind";
-        else if (token.type == Token::Type::Ded) op = "(Ded";
-        else if (token.type == Token::Type::If) op = "(If";
-        else if (token.type == Token::Type::Else) op = "(Else";
-        else if (token.type == Token::Type::Scolon) op = "(Scolon";
-        cout << op << ", [" << token.line << ", " << token.position << "])";
+        cout << "(" << names[static_cast<int>(token.type)] << ", [" << token.line << ", " << token.position << "])";
     }
     return cout;
 }
@@ -115,7 +109,7 @@ struct Lexer {
             int index = 0;
 
             // Check current indentation
-            while (line[index] == ' ') {
+            while (index < line.size() && line[index] == ' ') {
                 index++;
             };
 
@@ -238,7 +232,7 @@ struct Parser {
     int index = 0;
     std::unique_ptr<NodeAST> ASTroot;
 
-    Parser(std::vector<Token> newTokens) : tokens(newTokens) {
+    Parser(const std::vector<Token>& newTokens) : tokens(newTokens) {
         createAST();
     }
 
@@ -319,9 +313,9 @@ struct Parser {
 
     std::unique_ptr<NodeAST> parseNeg() {
         if (index < tokens.size() && tokens[index].type == Token::Type::Sub) {
+            Token negToken = Token(Token::Type::Neg, tokens[index].line, tokens[index].position);
             index++;
             std::unique_ptr<NodeAST> left = parseNeg();
-            Token negToken = Token(Token::Type::Neg, tokens[index].line, tokens[index].position);
             left = std::make_unique<NodeAST>(NodeAST(negToken, std::move(left)));
             return left;
         }
@@ -387,17 +381,11 @@ struct Parser {
 struct IRInstruction {
     enum class OP {
         Const,
-        Add,
-        Sub,
-        Mul,
-        Div,
+        Add, Sub, Mul, Div,
         Neg,
-        Assign,
-        Load,
+        Assign, Load,
         Cmp,
-        Jmp,
-        JmpZ,
-        JmpNZ
+        Jmp, JmpZ, JmpNZ
     };
 
     OP operation;
@@ -479,39 +467,7 @@ struct IRGenerator {
             newInstruction.name = node->token.name;
             instructions.push_back(newInstruction);
         } else if (node->token.type == Token::Type::If) {
-            IRInstruction cmp;
-            IRInstruction mov0;
-            IRInstruction JmpZ;
-            IRInstruction Jmp;
-
-            cmp.operation = IRInstruction::OP::Cmp;
-            cmp.src1 = generate(node->condition);
-
-            mov0.operation = IRInstruction::OP::Const;
-            mov0.dst = index.getNext();
-            mov0.val = 0;
-            instructions.push_back(mov0);
-
-            cmp.src2 = mov0.dst;
-            cmp.dst = index.getNext();
-            instructions.push_back(cmp);
-
-            JmpZ.operation = IRInstruction::OP::JmpZ;
-            
-            JmpZ.src1 = cmp.dst;
-            
-            int pc = instructions.size();
-            instructions.push_back(JmpZ);
-            if (node->right) {
-                instructions[pc].dst = generate(node->left) + 1;
-                
-                Jmp.operation = IRInstruction::OP::Jmp;
-                pc = instructions.size();
-                instructions.push_back(Jmp);
-                instructions[pc].dst = generate(node->right);
-            } else {
-                instructions[pc].dst = generate(node->left);
-            }
+            addIfInstructions(node);
             return -1;
         } else {
             if (node->token.type == Token::Type::Add) newInstruction.operation = IRInstruction::OP::Add;
@@ -524,6 +480,42 @@ struct IRGenerator {
             instructions.push_back(newInstruction);
         }
         return newInstruction.dst;
+    }
+
+    void addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+        IRInstruction cmp;
+        cmp.operation = IRInstruction::OP::Cmp;
+        cmp.src1 = generate(node->condition);
+        cmp.src2 = addConst(0);;
+        cmp.dst = index.getNext();
+        instructions.push_back(cmp);
+
+        IRInstruction JmpZ;
+        JmpZ.operation = IRInstruction::OP::JmpZ;
+        JmpZ.src1 = cmp.dst;
+        
+        int pc = instructions.size(); // Save Jmpz location
+        instructions.push_back(JmpZ);
+        instructions[pc].dst = generate(node->left);
+
+        if (node->right) {
+            instructions[pc].dst++; // Pass over new Jmp instruction
+
+            IRInstruction Jmp;
+            Jmp.operation = IRInstruction::OP::Jmp;
+            pc = instructions.size();
+            instructions.push_back(Jmp);
+            instructions[pc].dst = generate(node->right);
+        }
+    }
+
+    int addConst(int val) {
+        IRInstruction mov;
+        mov.operation = IRInstruction::OP::Const;
+        mov.dst = index.getNext();
+        mov.val = val;
+        instructions.push_back(mov);
+        return mov.dst;
     }
 
     void print() {
@@ -550,7 +542,7 @@ struct VM {
         }
     }
 
-    void run(std::vector<IRInstruction> instructions) {
+    void run(const std::vector<IRInstruction>& instructions) {
         while (pc < instructions.size()) {
             switch (instructions[pc].operation)
             {
@@ -576,6 +568,7 @@ struct VM {
                 break;
             case IRInstruction::OP::Div:
                 resizeReg(instructions[pc].dst);
+                if (registers[instructions[pc].src2] == 0) throwError("Divide by zero error");
                 registers[instructions[pc].dst] = registers[instructions[pc].src1] / registers[instructions[pc].src2];
                 pc++;
                 break;
