@@ -2,30 +2,7 @@
 #define TOKEN_H
 
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <vector>
-#include <memory>
-#include <stdexcept>
-#include <unordered_map>
-#include <regex>
-
-[[noreturn]] void throwError(std::string errorMsg) {
-    std::cerr << errorMsg << std::endl;
-    throw std::invalid_argument(errorMsg);
-}
-
-[[noreturn]] void throwError(std::string errorMsg, int line) {
-    std::string newErrorMsg = errorMsg + "; Line: " + std::to_string(line);
-    std::cerr << newErrorMsg << std::endl;
-    throw std::invalid_argument(newErrorMsg);
-}
-
-[[noreturn]] void throwError(std::string errorMsg, int line, int position) {
-    std::string newErrorMsg = errorMsg + "; Line: " + std::to_string(line) + ", Position: " + std::to_string(position);
-    std::cerr << newErrorMsg << std::endl;
-    throw std::invalid_argument(newErrorMsg);
-}
 
 struct Token {
     enum class Type {
@@ -77,16 +54,6 @@ static const char* names[] = {
     "Scolon",
 };
 
-std::ostream& operator << (std::ostream& cout, const Token& token)
-{
-    if (token.type == Token::Type::Int) {
-        cout << "(" << names[static_cast<int>(token.type)] << ", " << token.val << ", [" << token.line << ", " << token.position << "])";
-    } else if (token.type == Token::Type::Var) {
-        cout << "(" << names[static_cast<int>(token.type)] << ", \"" << token.name << "\", [" << token.line << ", " << token.position << "])";
-    } else {
-        cout << "(" << names[static_cast<int>(token.type)] << ", [" << token.line << ", " << token.position << "])";
-    }
-    return cout;
-}
+std::ostream& operator << (std::ostream& cout, const Token& token);
 
 #endif
