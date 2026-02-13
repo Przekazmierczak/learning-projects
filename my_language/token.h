@@ -16,7 +16,8 @@ struct Token {
         Neg,
         Assign,
         If, Else,
-        Scolon
+        Scolon,
+        Eq, NotEq
     };
 
     Type type;
@@ -52,6 +53,7 @@ static const char* names[] = {
     "Assign",
     "If", "Else",
     "Scolon",
+    "Eq", "NotEq"
 };
 
 std::ostream& operator << (std::ostream& cout, const Token& token);

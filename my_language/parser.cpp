@@ -46,7 +46,14 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
-    return parseAddSub();
+    std::unique_ptr<Parser::NodeAST> left = parseAddSub();
+    while (index < tokens.size() && (tokens[index].type == Token::Type::Eq || tokens[index].type == Token::Type::NotEq)) {
+        Token currToken = tokens[index];
+        index++;
+        std::unique_ptr<NodeAST> right = parseAddSub();
+        left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+    }
+    return left;
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::parseAddSub() {

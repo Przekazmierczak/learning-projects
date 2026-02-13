@@ -58,9 +58,25 @@ void Lexer::lex() {
                 tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
             } else if (line[index] == '=') {
                 if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
+                if (index + 1 < line.size() && line[index + 1] == '=') {
+                    tokens.push_back(Token(Token::Type::Eq ,currLine, currPosition));
+                    index++;
+                    currPosition++;
+                } else {
+                    tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
+                }
             } else if (line[index] == ';') {
                 if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
+            } else if (line[index] == '!') {
+                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                if (index + 1 < line.size() && line[index + 1] == '=') {
+                    tokens.push_back(Token(Token::Type::NotEq ,currLine, currPosition));
+                    index++;
+                    currPosition++;
+                } else {
+                    throwError("Invalid symbol \"!\"", currLine, currPosition);
+                }
                 tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
             } else {
                 current += line[index];
