@@ -5,12 +5,12 @@
 #include "vm.h"
 
 int main() {
-    Lexer lexer("test.elil");
+    Lexer lexer("code.mylang");
     lexer.printTokens();
 
     Parser parser(lexer.tokens);
 
-    IRGenerator irgenerator(parser.ASTroot);
+    IR irgenerator(parser.ASTroot);
     irgenerator.print();
 
     VM vm(irgenerator.instructions);
