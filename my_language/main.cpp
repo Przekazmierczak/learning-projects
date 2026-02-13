@@ -1,4 +1,3 @@
-#include "token.h"
 #include "lexer.h"
 #include "parser.h"
 #include "ir.h"
