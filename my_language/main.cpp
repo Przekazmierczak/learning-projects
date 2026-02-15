@@ -3,8 +3,10 @@
 #include "ir.h"
 #include "vm.h"
 
+// Ducklingua
+
 int main() {
-    Lexer lexer("code.mylang");
+    Lexer lexer("code.duck");
     lexer.printTokens();
 
     Parser parser(lexer.tokens);
