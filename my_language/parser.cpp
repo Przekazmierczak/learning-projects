@@ -47,7 +47,17 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
 
 std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
     std::unique_ptr<Parser::NodeAST> left = parseAddSub();
-    while (index < tokens.size() && (tokens[index].type == Token::Type::Eq || tokens[index].type == Token::Type::NotEq)) {
+    while (
+        index < tokens.size() &&
+        (
+            tokens[index].type == Token::Type::CmpEq ||
+            tokens[index].type == Token::Type::CmpNEq  ||
+            tokens[index].type == Token::Type::CmpGt ||
+            tokens[index].type == Token::Type::CmpLs ||
+            tokens[index].type == Token::Type::CmpGtEq ||
+            tokens[index].type == Token::Type::CmpLsEq
+        )
+    ) {
         Token currToken = tokens[index];
         index++;
         std::unique_ptr<NodeAST> right = parseAddSub();

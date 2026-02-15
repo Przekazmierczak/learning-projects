@@ -15,7 +15,7 @@ struct IR {
             Add, Sub, Mul, Div,
             Neg,
             Assign, Load,
-            Cmp,
+            CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
             Jmp, JmpZ, JmpNZ
         };
 

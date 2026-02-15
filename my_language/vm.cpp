@@ -48,8 +48,34 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 throwError("Unknown variable name: \"" + instructions[pc].name + "\"");
             }
             break;
-        case IR::OP::Type::Cmp:
-            registers[instructions[pc].dst] = registers[instructions[pc].src1] - registers[instructions[pc].src2];
+        case IR::OP::Type::CmpEq:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] == registers[instructions[pc].src2]);
+            pc++;
+            break;
+        case IR::OP::Type::CmpNEq:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] != registers[instructions[pc].src2]);
+            pc++;
+            break;
+        case IR::OP::Type::CmpGt:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] > registers[instructions[pc].src2]);
+            pc++;
+            break;
+        case IR::OP::Type::CmpLs:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] < registers[instructions[pc].src2]);
+            pc++;
+            break;
+        case IR::OP::Type::CmpGtEq:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] >= registers[instructions[pc].src2]);
+            pc++;
+            break;
+        case IR::OP::Type::CmpLsEq:
+            resizeReg(instructions[pc].dst);
+            registers[instructions[pc].dst] = int(registers[instructions[pc].src1] <= registers[instructions[pc].src2]);
             pc++;
             break;
         case IR::OP::Type::Jmp:
@@ -57,6 +83,13 @@ void VM::run(const std::vector<IR::OP>& instructions) {
             break;
         case IR::OP::Type::JmpZ:
             if (registers[instructions[pc].src1] != 0) {
+                pc++;
+            } else {
+                pc = instructions[pc].dst;
+            }
+            break;
+        case IR::OP::Type::JmpNZ:
+            if (registers[instructions[pc].src1] == 0) {
                 pc++;
             } else {
                 pc = instructions[pc].dst;

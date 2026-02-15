@@ -36,6 +36,12 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         else if (node->token.type == Token::Type::Sub) newInstruction.operation = OP::Type::Sub;
         else if (node->token.type == Token::Type::Mul) newInstruction.operation = OP::Type::Mul;
         else if (node->token.type == Token::Type::Div) newInstruction.operation = OP::Type::Div;
+        else if (node->token.type == Token::Type::CmpEq) newInstruction.operation = OP::Type::CmpEq;
+        else if (node->token.type == Token::Type::CmpNEq) newInstruction.operation = OP::Type::CmpNEq;
+        else if (node->token.type == Token::Type::CmpGt) newInstruction.operation = OP::Type::CmpGt;
+        else if (node->token.type == Token::Type::CmpLs) newInstruction.operation = OP::Type::CmpLs;
+        else if (node->token.type == Token::Type::CmpGtEq) newInstruction.operation = OP::Type::CmpGtEq;
+        else if (node->token.type == Token::Type::CmpLsEq) newInstruction.operation = OP::Type::CmpLsEq;
         newInstruction.src1 = generate(node->left);
         newInstruction.src2 = generate(node->right);
         newInstruction.dst = index.getNext();
@@ -46,18 +52,18 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 
 void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     OP cmp;
-    cmp.operation = OP::Type::Cmp;
+    cmp.operation = OP::Type::CmpEq;
     cmp.src1 = generate(node->condition);
     cmp.src2 = addConst(0);;
     cmp.dst = index.getNext();
     instructions.push_back(cmp);
 
-    OP JmpZ;
-    JmpZ.operation = OP::Type::JmpZ;
-    JmpZ.src1 = cmp.dst;
+    OP JmpNZ;
+    JmpNZ.operation = OP::Type::JmpNZ;
+    JmpNZ.src1 = cmp.dst;
     
-    int pc = instructions.size(); // Save Jmpz location
-    instructions.push_back(JmpZ);
+    int pc = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpNZ);
     instructions[pc].dst = generate(node->left);
 
     if (node->right) {
@@ -100,13 +106,20 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         cout << "Jmp pc" << inst.dst << std::endl;
     } else if (inst.operation == IR::OP::Type::JmpZ) {
         cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
+    } else if (inst.operation == IR::OP::Type::JmpNZ) {
+        cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
     } else {
         std::string op;
         if (inst.operation == IR::OP::Type::Add) op = "Add";
         else if (inst.operation == IR::OP::Type::Sub) op = "Sub";
         else if (inst.operation == IR::OP::Type::Mul) op = "Mul";
         else if (inst.operation == IR::OP::Type::Div) op = "Div";
-        else if (inst.operation == IR::OP::Type::Cmp) op = "Cmp";
+        else if (inst.operation == IR::OP::Type::CmpEq) op = "CmpEq";
+        else if (inst.operation == IR::OP::Type::CmpNEq) op = "CmpNEq";
+        else if (inst.operation == IR::OP::Type::CmpGt) op = "CmpGt";
+        else if (inst.operation == IR::OP::Type::CmpLs) op = "CmpLs";
+        else if (inst.operation == IR::OP::Type::CmpGtEq) op = "CmpGtEq";
+        else if (inst.operation == IR::OP::Type::CmpLsEq) op = "CmpLsEq";
         cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
     }
     return cout;
