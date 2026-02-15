@@ -27,6 +27,10 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         return createIfStatement();
     }
 
+    if (index < tokens.size() && tokens[index].type == Token::Type::While) {
+        return createWhileStatement();
+    }
+
     std::unique_ptr<NodeAST> left = createExpression();
     if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
         if (left->token.type == Token::Type::Var) {
@@ -133,6 +137,16 @@ std::unique_ptr<Parser::NodeAST> Parser::createIfStatement() {
     }
 
     return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
+}
+
+std::unique_ptr<Parser::NodeAST> Parser::createWhileStatement() {
+    Token whileToken = tokens[index];
+    index++; // consume while
+    std::unique_ptr<NodeAST> condition = createExpression();
+    consumeSNI();
+    std::unique_ptr<NodeAST> whileBlock = createBlock();
+
+    return std::make_unique<NodeAST>(NodeAST(whileToken, std::move(condition), std::move(whileBlock), nullptr));
 }
 
 // Check and consume Semicolon, New line and Indentation tokens

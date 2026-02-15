@@ -53,6 +53,7 @@ struct Parser {
     std::unique_ptr<NodeAST> parsePrimary();
     
     std::unique_ptr<NodeAST> createIfStatement();
+    std::unique_ptr<NodeAST> createWhileStatement();
     void consumeSNI();
 };
 

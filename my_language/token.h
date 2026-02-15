@@ -18,6 +18,7 @@ struct Token {
         If, Else,
         Scolon,
         CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
+        While,
     };
 
     Type type;
@@ -54,6 +55,7 @@ static const char* names[] = {
     "If", "Else",
     "Scolon",
     "CmpEq", "CmpNEq", "CmpGt", "CmpLs", "CmpGtEq", "CmpLsEq",
+    "While"
 };
 
 std::ostream& operator << (std::ostream& cout, const Token& token);

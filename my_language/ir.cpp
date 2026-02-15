@@ -31,6 +31,9 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     } else if (node->token.type == Token::Type::If) {
         addIfInstructions(node);
         return -1;
+    } else if (node->token.type == Token::Type::While) {
+        addWhileInstructions(node);
+        return -1;
     } else {
         if (node->token.type == Token::Type::Add) newInstruction.operation = OP::Type::Add;
         else if (node->token.type == Token::Type::Sub) newInstruction.operation = OP::Type::Sub;
@@ -75,6 +78,29 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
         instructions.push_back(Jmp);
         instructions[pc].dst = generate(node->right);
     }
+}
+
+void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP cmp;
+    int pcBack = instructions.size();
+    cmp.operation = OP::Type::CmpEq;
+    cmp.src1 = generate(node->condition);
+    cmp.src2 = addConst(0);;
+    cmp.dst = index.getNext();
+    instructions.push_back(cmp);
+
+    OP JmpNZ;
+    JmpNZ.operation = OP::Type::JmpNZ;
+    JmpNZ.src1 = cmp.dst;
+    
+    int pcLeave = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpNZ);
+    instructions[pcLeave].dst = generate(node->left) + 1; // +1 to pass over new Jmp instruction
+
+    OP Jmp;
+    Jmp.operation = OP::Type::Jmp;
+    Jmp.dst = pcBack;
+    instructions.push_back(Jmp);
 }
 
 int IR::addConst(int val) {

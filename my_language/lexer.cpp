@@ -122,6 +122,8 @@ void Lexer::pushNonOperand(int currLine, int currPosition, std::string& current)
         tokens.push_back(Token(Token::Type::If, currLine, currPosition));
     } else if (current == "else") {
         tokens.push_back(Token(Token::Type::Else, currLine, currPosition));
+    } else if (current == "while") {
+        tokens.push_back(Token(Token::Type::While, currLine, currPosition));
     } else if (std::regex_match(current, patternInt)) {
         tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
     } else if (std::regex_match(current, patternName)) {
