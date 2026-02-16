@@ -31,7 +31,25 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         return createWhileStatement();
     }
 
+    // CHECK !!!!!
+    if (index < tokens.size() && tokens[index].type == Token::Type::Dec) {
+        index++;
+        if (index >= tokens.size() || tokens[index].type != Token::Type::Var) {
+            throwError("Declaration without variable", tokens[index].line, tokens[index].position);
+        }
+        if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::NewL) {
+            return std::make_unique<NodeAST>(NodeAST(tokens[index].type, parsePrimary()));
+        } else if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::Assign) {
+            Token currToken = tokens[index];
+            std::unique_ptr<NodeAST> left = createExpression();
+            index++; // skip =
+            std::unique_ptr<NodeAST> right = createExpression();
+            return std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+        }
+    }
+
     std::unique_ptr<NodeAST> left = createExpression();
+
     if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
         if (left->token.type == Token::Type::Var) {
             Token currToken = tokens[index];

@@ -124,8 +124,8 @@ void Lexer::lex() {
                 default:
                     current += line[index];
                     break;
-                currPosition++;
-            }
+                }
+            currPosition++;
         }
 
         if (!current.empty()) pushNonOperand(currLine, currPosition, current);
@@ -151,6 +151,8 @@ void Lexer::pushNonOperand(int currLine, int currPosition, std::string& current)
         tokens.push_back(Token(Token::Type::Else, currLine, currPosition));
     } else if (current == "while") {
         tokens.push_back(Token(Token::Type::While, currLine, currPosition));
+    } else if (current == "dec") {
+        tokens.push_back(Token(Token::Type::Dec, currLine, currPosition));
     } else if (std::regex_match(current, patternInt)) {
         tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
     } else if (std::regex_match(current, patternName)) {

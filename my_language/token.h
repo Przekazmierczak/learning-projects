@@ -6,6 +6,7 @@
 
 struct Token {
     enum class Type {
+        Dec,
         Int,
         Add, Sub, Mul, Div,
         Lpar, Rpar,
@@ -43,6 +44,7 @@ struct Token {
 };
 
 static const char* names[] = {
+    "Dec",
     "Int",
     "Add", "Sub", "Mul", "Div",
     "Lpar", "Rpar",
