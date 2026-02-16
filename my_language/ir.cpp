@@ -2,54 +2,70 @@
 
 int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     OP newInstruction;
-    if (node->token.type == Token::Type::Int) {
-        newInstruction.operation = OP::Type::Const;
-        newInstruction.dst = index.getNext();
-        newInstruction.val = node->token.val;
-        instructions.push_back(newInstruction);
-    } else if (node->token.type == Token::Type::Block) {
-        for (int i = 0; i < node->statements.size(); i++) {
-            generate(node->statements[i]);
-        }
-        return -1;
-    } else if (node->token.type == Token::Type::Neg) {
-        newInstruction.operation = OP::Type::Neg;
-        newInstruction.src1 = generate(node->left);
-        newInstruction.dst = index.getNext();
-        instructions.push_back(newInstruction);
-    } else if (node->token.type == Token::Type::Assign) {
-        newInstruction.operation = OP::Type::Assign;
-        newInstruction.dst = generate(node->right);
-        newInstruction.name = node->left->token.name;
-        instructions.push_back(newInstruction);
-        return -1;
-    } else if (node->token.type == Token::Type::Var) {
-        newInstruction.operation = OP::Type::Load;
-        newInstruction.dst = index.getNext();
-        newInstruction.name = node->token.name;
-        instructions.push_back(newInstruction);
-    } else if (node->token.type == Token::Type::If) {
-        addIfInstructions(node);
-        return -1;
-    } else if (node->token.type == Token::Type::While) {
-        addWhileInstructions(node);
-        return -1;
-    } else {
-        if (node->token.type == Token::Type::Add) newInstruction.operation = OP::Type::Add;
-        else if (node->token.type == Token::Type::Sub) newInstruction.operation = OP::Type::Sub;
-        else if (node->token.type == Token::Type::Mul) newInstruction.operation = OP::Type::Mul;
-        else if (node->token.type == Token::Type::Div) newInstruction.operation = OP::Type::Div;
-        else if (node->token.type == Token::Type::CmpEq) newInstruction.operation = OP::Type::CmpEq;
-        else if (node->token.type == Token::Type::CmpNEq) newInstruction.operation = OP::Type::CmpNEq;
-        else if (node->token.type == Token::Type::CmpGt) newInstruction.operation = OP::Type::CmpGt;
-        else if (node->token.type == Token::Type::CmpLs) newInstruction.operation = OP::Type::CmpLs;
-        else if (node->token.type == Token::Type::CmpGtEq) newInstruction.operation = OP::Type::CmpGtEq;
-        else if (node->token.type == Token::Type::CmpLsEq) newInstruction.operation = OP::Type::CmpLsEq;
-        newInstruction.src1 = generate(node->left);
-        newInstruction.src2 = generate(node->right);
-        newInstruction.dst = index.getNext();
-        instructions.push_back(newInstruction);
+
+    switch (node->token.type) {
+        
+        case Token::Type::Int:
+            newInstruction.operation = OP::Type::Const;
+            newInstruction.dst = index.getNext();
+            newInstruction.val = node->token.val;
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
+
+        case Token::Type::Block:
+            for (int i = 0; i < node->statements.size(); i++) {
+                generate(node->statements[i]);
+            }
+            return -1;
+
+        case Token::Type::Neg:
+            newInstruction.operation = OP::Type::Neg;
+            newInstruction.src1 = generate(node->left);
+            newInstruction.dst = index.getNext();
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
+
+        case Token::Type::Assign:
+            newInstruction.operation = OP::Type::Assign;
+            newInstruction.dst = generate(node->right);
+            newInstruction.name = node->left->token.name;
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
+
+        case Token::Type::Var:
+            newInstruction.operation = OP::Type::Load;
+            newInstruction.dst = index.getNext();
+            newInstruction.name = node->token.name;
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
+
+        case Token::Type::If:
+            addIfInstructions(node);
+            return -1;
+
+        case Token::Type::While:
+            addWhileInstructions(node);
+            return -1;
+
+        case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
+        case Token::Type::Sub: newInstruction.operation = OP::Type::Sub; break;
+        case Token::Type::Mul: newInstruction.operation = OP::Type::Mul; break;
+        case Token::Type::Div: newInstruction.operation = OP::Type::Div; break;
+        case Token::Type::CmpEq: newInstruction.operation = OP::Type::CmpEq; break;
+        case Token::Type::CmpNEq: newInstruction.operation = OP::Type::CmpNEq; break;
+        case Token::Type::CmpGt: newInstruction.operation = OP::Type::CmpGt; break;
+        case Token::Type::CmpLs: newInstruction.operation = OP::Type::CmpLs; break;
+        case Token::Type::CmpGtEq: newInstruction.operation = OP::Type::CmpGtEq; break;
+        case Token::Type::CmpLsEq: newInstruction.operation = OP::Type::CmpLsEq; break;
+
+        default:
+            throwError("Unsupported token in IR generation", node->token.line, node->token.position);
     }
+
+    newInstruction.src1 = generate(node->left);
+    newInstruction.src2 = generate(node->right);
+    newInstruction.dst = index.getNext();
+    instructions.push_back(newInstruction);
     return newInstruction.dst;
 }
 
@@ -65,27 +81,27 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     JmpZ.operation = OP::Type::JmpZ;
     JmpZ.src1 = cmp.dst;
     
-    int pcJmpnz = instructions.size(); // Save Jmpnz location
+    int pcSkipIf = instructions.size(); // Save Jmpnz location
     instructions.push_back(JmpZ);
     generate(node->left);
-    instructions[pcJmpnz].dst = instructions.size();
+    instructions[pcSkipIf].dst = instructions.size();
 
     if (node->right) {
         OP Jmp;
         Jmp.operation = OP::Type::Jmp;
-        int pcJmp = instructions.size(); // Save Jmp location
+        int pcSkipElse = instructions.size(); // Save Jmp location
         instructions.push_back(Jmp);
 
-        instructions[pcJmpnz].dst = instructions.size(); // Fix jmpnz location
+        instructions[pcSkipIf].dst = instructions.size(); // Fix jmpnz location
 
         generate(node->right);
-        instructions[pcJmp].dst = instructions.size();
+        instructions[pcSkipElse].dst = instructions.size();
     }
 }
 
 void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP cmp;
     int pcStart = instructions.size();
+    OP cmp;
     cmp.operation = OP::Type::CmpNEq;
     cmp.src1 = generate(node->condition);
     cmp.src2 = addConst(0);;

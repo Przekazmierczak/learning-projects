@@ -36,69 +36,96 @@ void Lexer::lex() {
         currPosition += index;
         
         for (; index < line.size(); index++) {
-            if (line[index] == ' ') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-            } else if (line[index] == '+') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
-            } else if (line[index] == '-') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Sub ,currLine, currPosition));
-            } else if (line[index] == '*') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Mul ,currLine, currPosition));
-            } else if (line[index] == '/') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Div ,currLine, currPosition));
-            } else if (line[index] == '(') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Lpar ,currLine, currPosition));
-            } else if (line[index] == ')') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
-            } else if (line[index] == '=') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                if (index + 1 < line.size() && line[index + 1] == '=') {
-                    tokens.push_back(Token(Token::Type::CmpEq ,currLine, currPosition));
-                    index++;
-                    currPosition++;
-                } else {
-                    tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
-                }
-            } else if (line[index] == '!') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                if (index + 1 < line.size() && line[index + 1] == '=') {
-                    tokens.push_back(Token(Token::Type::CmpNEq ,currLine, currPosition));
-                    index++;
-                    currPosition++;
-                } else {
-                    throwError("Invalid symbol \"!\"", currLine, currPosition);
-                }
-            } else if (line[index] == '>') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                if (index + 1 < line.size() && line[index + 1] == '=') {
-                    tokens.push_back(Token(Token::Type::CmpGtEq ,currLine, currPosition));
-                    index++;
-                    currPosition++;
-                } else {
-                    tokens.push_back(Token(Token::Type::CmpGt ,currLine, currPosition));
-                }
-            } else if (line[index] == '<') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                if (index + 1 < line.size() && line[index + 1] == '=') {
-                    tokens.push_back(Token(Token::Type::CmpLsEq ,currLine, currPosition));
-                    index++;
-                    currPosition++;
-                } else {
-                    tokens.push_back(Token(Token::Type::CmpLs ,currLine, currPosition));
-                }
-            } else if (line[index] == ';') {
-                if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-                tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
-            } else {
-                current += line[index];
+            switch (line[index]) {
+
+                case ' ':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    break;
+                
+                case '+':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
+                    break;
+                
+                case '-':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Sub ,currLine, currPosition));
+                    break;
+                
+                case '*':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Mul ,currLine, currPosition));
+                    break;
+                
+                case '/':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Div ,currLine, currPosition));
+                    break;
+                
+                case '(':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Lpar ,currLine, currPosition));
+                    break;
+                
+                case ')':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
+                    break;
+                
+                case '=':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '=') {
+                        tokens.push_back(Token(Token::Type::CmpEq ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
+                    }
+                    break;
+                
+                case '!':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '=') {
+                        tokens.push_back(Token(Token::Type::CmpNEq ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        throwError("Invalid symbol \"!\"", currLine, currPosition);
+                    }
+                    break;
+                
+                case '>':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '=') {
+                        tokens.push_back(Token(Token::Type::CmpGtEq ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        tokens.push_back(Token(Token::Type::CmpGt ,currLine, currPosition));
+                    }
+                    break;
+                
+                case '<':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '=') {
+                        tokens.push_back(Token(Token::Type::CmpLsEq ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        tokens.push_back(Token(Token::Type::CmpLs ,currLine, currPosition));
+                    }
+                    break;
+                
+                case ';':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
+                    break;
+                
+                default:
+                    current += line[index];
+                    break;
+                currPosition++;
             }
-            currPosition++;
         }
 
         if (!current.empty()) pushNonOperand(currLine, currPosition, current);
