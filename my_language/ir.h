@@ -19,8 +19,11 @@ struct IR {
             Jmp, JmpZ, JmpNZ
         };
 
+        // mandatory
         Type operation;
         int dst;
+
+        // optional
         int src1;
         int src2;
         int val;
