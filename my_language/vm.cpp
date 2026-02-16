@@ -82,17 +82,17 @@ void VM::run(const std::vector<IR::OP>& instructions) {
             pc = instructions[pc].dst;
             break;
         case IR::OP::Type::JmpZ:
-            if (registers[instructions[pc].src1] != 0) {
-                pc++;
-            } else {
+            if (registers[instructions[pc].src1] == 0) {
                 pc = instructions[pc].dst;
+            } else {
+                pc++;
             }
             break;
         case IR::OP::Type::JmpNZ:
-            if (registers[instructions[pc].src1] == 0) {
-                pc++;
-            } else {
+            if (registers[instructions[pc].src1] != 0) {
                 pc = instructions[pc].dst;
+            } else {
+                pc++;
             }
             break;
         default:

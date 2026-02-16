@@ -11,7 +11,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         for (int i = 0; i < node->statements.size(); i++) {
             generate(node->statements[i]);
         }
-        return instructions.size();
+        return -1;
     } else if (node->token.type == Token::Type::Neg) {
         newInstruction.operation = OP::Type::Neg;
         newInstruction.src1 = generate(node->left);
@@ -55,52 +55,57 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 
 void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     OP cmp;
-    cmp.operation = OP::Type::CmpEq;
+    cmp.operation = OP::Type::CmpNEq;
     cmp.src1 = generate(node->condition);
     cmp.src2 = addConst(0);;
     cmp.dst = index.getNext();
     instructions.push_back(cmp);
 
-    OP JmpNZ;
-    JmpNZ.operation = OP::Type::JmpNZ;
-    JmpNZ.src1 = cmp.dst;
+    OP JmpZ;
+    JmpZ.operation = OP::Type::JmpZ;
+    JmpZ.src1 = cmp.dst;
     
-    int pc = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpNZ);
-    instructions[pc].dst = generate(node->left);
+    int pcJmpnz = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpZ);
+    generate(node->left);
+    instructions[pcJmpnz].dst = instructions.size();
 
     if (node->right) {
-        instructions[pc].dst++; // Pass over new Jmp instruction
-
         OP Jmp;
         Jmp.operation = OP::Type::Jmp;
-        pc = instructions.size();
+        int pcJmp = instructions.size(); // Save Jmp location
         instructions.push_back(Jmp);
-        instructions[pc].dst = generate(node->right);
+
+        instructions[pcJmpnz].dst = instructions.size(); // Fix jmpnz location
+
+        generate(node->right);
+        instructions[pcJmp].dst = instructions.size();
     }
 }
 
 void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     OP cmp;
-    int pcBack = instructions.size();
-    cmp.operation = OP::Type::CmpEq;
+    int pcStart = instructions.size();
+    cmp.operation = OP::Type::CmpNEq;
     cmp.src1 = generate(node->condition);
     cmp.src2 = addConst(0);;
     cmp.dst = index.getNext();
     instructions.push_back(cmp);
 
-    OP JmpNZ;
-    JmpNZ.operation = OP::Type::JmpNZ;
-    JmpNZ.src1 = cmp.dst;
+    OP JmpZ;
+    JmpZ.operation = OP::Type::JmpZ;
+    JmpZ.src1 = cmp.dst;
     
-    int pcLeave = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpNZ);
-    instructions[pcLeave].dst = generate(node->left) + 1; // +1 to pass over new Jmp instruction
+    int pcEnd = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpZ);
+    generate(node->left);
 
     OP Jmp;
     Jmp.operation = OP::Type::Jmp;
-    Jmp.dst = pcBack;
+    Jmp.dst = pcStart;
     instructions.push_back(Jmp);
+
+    instructions[pcEnd].dst = instructions.size();
 }
 
 int IR::addConst(int val) {
