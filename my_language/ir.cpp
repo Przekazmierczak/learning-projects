@@ -6,7 +6,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     switch (node->token.type) {
         
         case Token::Type::Int:
-            newInstruction.operation = OP::Type::Const;
+            newInstruction.operation = OP::Type::Int;
             newInstruction.dst = index.getNext();
             newInstruction.val = node->token.val;
             instructions.push_back(newInstruction);
@@ -126,7 +126,7 @@ void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
 int IR::addConst(int val) {
     OP mov;
-    mov.operation = OP::Type::Const;
+    mov.operation = OP::Type::Int;
     mov.dst = index.getNext();
     mov.val = val;
     instructions.push_back(mov);
@@ -144,7 +144,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
     std::string op;
     switch (inst.operation) {
 
-        case IR::OP::Type::Const:
+        case IR::OP::Type::Int:
             cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
             return cout;
 
@@ -182,7 +182,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         case IR::OP::Type::CmpLs: op = "CmpLs"; break;
         case IR::OP::Type::CmpGtEq: op = "CmpGtEq"; break;
         case IR::OP::Type::CmpLsEq: op = "CmpLsEq"; break;
-        
+
         default:
             throwError("Unsupported token in << overload");
     }

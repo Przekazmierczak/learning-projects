@@ -4,7 +4,7 @@ void VM::run(const std::vector<IR::OP>& instructions) {
     while (pc < instructions.size()) {
         switch (instructions[pc].operation) {
 
-            case IR::OP::Type::Const:
+            case IR::OP::Type::Int:
                 resizeReg(instructions[pc].dst);
                 registers[instructions[pc].dst] = instructions[pc].val;
                 pc++;
