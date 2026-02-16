@@ -141,33 +141,51 @@ void IR::print() {
 
 std::ostream& operator << (std::ostream& cout, IR::OP& inst)
 {
-    if (inst.operation == IR::OP::Type::Const) {
-        cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
-    } else if (inst.operation == IR::OP::Type::Neg) {
-        cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
-    } else if (inst.operation == IR::OP::Type::Assign) {
-        cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
-    } else if (inst.operation == IR::OP::Type::Load) {
-        cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
-    } else if (inst.operation == IR::OP::Type::Jmp) {
-        cout << "Jmp pc" << inst.dst << std::endl;
-    } else if (inst.operation == IR::OP::Type::JmpZ) {
-        cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
-    } else if (inst.operation == IR::OP::Type::JmpNZ) {
-        cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
-    } else {
-        std::string op;
-        if (inst.operation == IR::OP::Type::Add) op = "Add";
-        else if (inst.operation == IR::OP::Type::Sub) op = "Sub";
-        else if (inst.operation == IR::OP::Type::Mul) op = "Mul";
-        else if (inst.operation == IR::OP::Type::Div) op = "Div";
-        else if (inst.operation == IR::OP::Type::CmpEq) op = "CmpEq";
-        else if (inst.operation == IR::OP::Type::CmpNEq) op = "CmpNEq";
-        else if (inst.operation == IR::OP::Type::CmpGt) op = "CmpGt";
-        else if (inst.operation == IR::OP::Type::CmpLs) op = "CmpLs";
-        else if (inst.operation == IR::OP::Type::CmpGtEq) op = "CmpGtEq";
-        else if (inst.operation == IR::OP::Type::CmpLsEq) op = "CmpLsEq";
-        cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
+    std::string op;
+    switch (inst.operation) {
+
+        case IR::OP::Type::Const:
+            cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
+            return cout;
+
+        case IR::OP::Type::Neg:
+            cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
+            return cout;
+
+        case IR::OP::Type::Assign:
+            cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
+            return cout;
+
+        case IR::OP::Type::Load:
+            cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
+            return cout;
+
+        case IR::OP::Type::Jmp:
+            cout << "Jmp pc" << inst.dst << std::endl;
+            return cout;
+
+        case IR::OP::Type::JmpZ:
+            cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
+            return cout;
+
+        case IR::OP::Type::JmpNZ:
+            cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
+            return cout;
+
+        case IR::OP::Type::Add: op = "Add"; break;
+        case IR::OP::Type::Sub: op = "Sub"; break;
+        case IR::OP::Type::Mul: op = "Mul"; break;
+        case IR::OP::Type::Div: op = "Div"; break;
+        case IR::OP::Type::CmpEq: op = "CmpEq"; break;
+        case IR::OP::Type::CmpNEq: op = "CmpNEq"; break;
+        case IR::OP::Type::CmpGt: op = "CmpGt"; break;
+        case IR::OP::Type::CmpLs: op = "CmpLs"; break;
+        case IR::OP::Type::CmpGtEq: op = "CmpGtEq"; break;
+        case IR::OP::Type::CmpLsEq: op = "CmpLsEq"; break;
+        
+        default:
+            throwError("Unsupported token in << overload");
     }
+    cout << op << " r" << inst.dst << ", r" << inst.src1 << ", r" << inst.src2 << std::endl;
     return cout;
 }
