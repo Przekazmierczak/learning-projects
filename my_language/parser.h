@@ -54,10 +54,10 @@ struct Parser {
     
     bool match(Token::Type type);
 
-    std::unique_ptr<NodeAST> createIfStatement();
-    std::unique_ptr<NodeAST> createWhileStatement();
-    std::unique_ptr<NodeAST> createDeclaration();
-    std::unique_ptr<NodeAST> createAssignment(std::unique_ptr<NodeAST> left);
+    std::unique_ptr<NodeAST> createIfNode();
+    std::unique_ptr<NodeAST> createWhileNode();
+    std::unique_ptr<NodeAST> createDeclarationNode();
+    std::unique_ptr<NodeAST> createAssignmentNode(std::unique_ptr<NodeAST> left);
     void consumeSNI();
 };
 

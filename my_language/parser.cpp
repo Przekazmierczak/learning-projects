@@ -5,18 +5,16 @@ std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
     auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
     while (index < tokens.size()) {
-        while (match(Token::Type::NewL)) {
-            index++;
-        }
+        while (match(Token::Type::NewL)) index++;
 
         if (index >= tokens.size()) break;
 
         if (match(Token::Type::Ded)) {
             index++; // consume Ded
             break;
-        } else {
-            newBlockAST->statements.push_back(std::move(createStatement()));
         }
+
+        newBlockAST->statements.push_back(createStatement());
     }
 
     return std::move(newBlockAST);
@@ -24,21 +22,21 @@ std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
 
 std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
     if (match(Token::Type::If)) {
-        return createIfStatement();
+        return createIfNode();
     }
 
     if (match(Token::Type::While)) {
-        return createWhileStatement();
+        return createWhileNode();
     }
 
     if (match(Token::Type::Dec)) {
-        return createDeclaration();
+        return createDeclarationNode();
     }
 
     std::unique_ptr<NodeAST> left = createExpression();
     
     if (match(Token::Type::Assign)) {
-        return createAssignment(std::move(left));
+        return createAssignmentNode(std::move(left));
     }
 
     if (match(Token::Type::NewL)) {
@@ -93,8 +91,7 @@ std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
         Token negToken = Token(Token::Type::Neg, tokens[index].line, tokens[index].position);
         index++;
         std::unique_ptr<NodeAST> left = parseNeg();
-        left = std::make_unique<NodeAST>(NodeAST(negToken, std::move(left)));
-        return left;
+        return std::make_unique<NodeAST>(NodeAST(negToken, std::move(left)));
     }
     return parsePrimary();
 }
@@ -125,7 +122,7 @@ bool Parser::match(Token::Type type) {
     return false;
 }
 
-std::unique_ptr<Parser::NodeAST> Parser::createIfStatement() {
+std::unique_ptr<Parser::NodeAST> Parser::createIfNode() {
     Token ifToken = tokens[index];
     index++; // consume if
     std::unique_ptr<NodeAST> condition = createExpression();
@@ -142,7 +139,7 @@ std::unique_ptr<Parser::NodeAST> Parser::createIfStatement() {
     return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
 }
 
-std::unique_ptr<Parser::NodeAST> Parser::createWhileStatement() {
+std::unique_ptr<Parser::NodeAST> Parser::createWhileNode() {
     Token whileToken = tokens[index];
     index++; // consume while
     std::unique_ptr<NodeAST> condition = createExpression();
@@ -152,7 +149,7 @@ std::unique_ptr<Parser::NodeAST> Parser::createWhileStatement() {
     return std::make_unique<NodeAST>(NodeAST(whileToken, std::move(condition), std::move(whileBlock), nullptr));
 }
 
-std::unique_ptr<Parser::NodeAST> Parser::createDeclaration() {
+std::unique_ptr<Parser::NodeAST> Parser::createDeclarationNode() {
     index++;
     if (!match(Token::Type::Var)) {
         throwError("Declaration without variable", tokens[index].line, tokens[index].position);
@@ -169,7 +166,7 @@ std::unique_ptr<Parser::NodeAST> Parser::createDeclaration() {
     throwError("Incorrect declaration statement", tokens[index].line);
 }
 
-std::unique_ptr<Parser::NodeAST> Parser::createAssignment(std::unique_ptr<NodeAST> left) {
+std::unique_ptr<Parser::NodeAST> Parser::createAssignmentNode(std::unique_ptr<NodeAST> left) {
     if (left->token.type == Token::Type::Var) {
         Token currToken = tokens[index];
         index++;
