@@ -32,7 +32,7 @@ int tests() {
     Parser parser1(lexer1.tokens);
     IR irgenerator1(parser1.ASTroot);
     VM vm1(irgenerator1.instructions);
-    int res1[] = {1, 23, 24, 45, 4, 41, 4, 5, 20, 7, 7, 1};
+    int res1[] = {1, 23, 24, 45, 4, 41, 4, 5, 20, 7, 7, 1, 2, -2, 3, -3, 3};
 
     for (int i = 0; i < vm1.registers.size(); i++) {
         assert(vm1.registers[i] == res1[i]);
