@@ -11,6 +11,7 @@
 struct IR {
     struct OP {
         enum class Type {
+            Dec,
             Int,
             Add, Sub, Mul, Div,
             Neg,

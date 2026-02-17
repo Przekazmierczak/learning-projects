@@ -4,7 +4,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     OP newInstruction;
 
     switch (node->token.type) {
-        
+
         case Token::Type::Int:
             newInstruction.operation = OP::Type::Int;
             newInstruction.dst = index.getNext();
@@ -30,7 +30,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             newInstruction.dst = generate(node->right);
             newInstruction.name = node->left->token.name;
             instructions.push_back(newInstruction);
-            return newInstruction.dst;
+            return -1;
 
         case Token::Type::Var:
             newInstruction.operation = OP::Type::Load;
@@ -45,6 +45,19 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 
         case Token::Type::While:
             addWhileInstructions(node);
+            return -1;
+
+        case Token::Type::Dec:
+            newInstruction.operation = OP::Type::Dec;
+            newInstruction.name = node->left->token.name;
+            instructions.push_back(newInstruction);
+            if (node->right != nullptr) {
+                OP assign;
+                assign.operation = OP::Type::Assign;
+                assign.dst = generate(node->right);
+                assign.name = newInstruction.name;
+                instructions.push_back(assign);
+            }
             return -1;
 
         case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
@@ -170,6 +183,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
 
         case IR::OP::Type::JmpNZ:
             cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
+            return cout;
+        
+        case IR::OP::Type::Dec:
+            cout << "Dec \"" << inst.name << "\"" << std::endl;
             return cout;
 
         case IR::OP::Type::Add: op = "Add"; break;

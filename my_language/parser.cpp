@@ -38,13 +38,12 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
             throwError("Declaration without variable", tokens[index].line, tokens[index].position);
         }
         if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::NewL) {
-            return std::make_unique<NodeAST>(NodeAST(tokens[index].type, parsePrimary()));
+            return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, parsePrimary()));
         } else if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::Assign) {
-            Token currToken = tokens[index];
             std::unique_ptr<NodeAST> left = createExpression();
             index++; // skip =
             std::unique_ptr<NodeAST> right = createExpression();
-            return std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+            return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left), std::move(right)));
         }
     }
 
