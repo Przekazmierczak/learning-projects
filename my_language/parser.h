@@ -52,8 +52,12 @@ struct Parser {
     std::unique_ptr<NodeAST> parseNeg();
     std::unique_ptr<NodeAST> parsePrimary();
     
+    bool match(Token::Type type);
+
     std::unique_ptr<NodeAST> createIfStatement();
     std::unique_ptr<NodeAST> createWhileStatement();
+    std::unique_ptr<NodeAST> createDeclaration();
+    std::unique_ptr<NodeAST> createAssignment(std::unique_ptr<NodeAST> left);
     void consumeSNI();
 };
 

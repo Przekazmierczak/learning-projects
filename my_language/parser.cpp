@@ -5,13 +5,13 @@ std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
     auto newBlockAST = std::make_unique<NodeAST>(newBlock);
 
     while (index < tokens.size()) {
-        while (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
+        while (match(Token::Type::NewL)) {
             index++;
         }
 
         if (index >= tokens.size()) break;
 
-        if (tokens[index].type == Token::Type::Ded) {
+        if (match(Token::Type::Ded)) {
             index++; // consume Ded
             break;
         } else {
@@ -23,61 +23,40 @@ std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
-    if (index < tokens.size() && tokens[index].type == Token::Type::If) {
+    if (match(Token::Type::If)) {
         return createIfStatement();
     }
 
-    if (index < tokens.size() && tokens[index].type == Token::Type::While) {
+    if (match(Token::Type::While)) {
         return createWhileStatement();
     }
 
-    // CHECK !!!!!
-    if (index < tokens.size() && tokens[index].type == Token::Type::Dec) {
-        index++;
-        if (index >= tokens.size() || tokens[index].type != Token::Type::Var) {
-            throwError("Declaration without variable", tokens[index].line, tokens[index].position);
-        }
-        if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::NewL) {
-            return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, parsePrimary()));
-        } else if (index + 1 < tokens.size() && tokens[index + 1].type == Token::Type::Assign) {
-            std::unique_ptr<NodeAST> left = createExpression();
-            index++; // skip =
-            std::unique_ptr<NodeAST> right = createExpression();
-            return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left), std::move(right)));
-        }
+    if (match(Token::Type::Dec)) {
+        return createDeclaration();
     }
 
     std::unique_ptr<NodeAST> left = createExpression();
-
-    if (index < tokens.size() && tokens[index].type == Token::Type::Assign) {
-        if (left->token.type == Token::Type::Var) {
-            Token currToken = tokens[index];
-            index++;
-            std::unique_ptr<NodeAST> right = createExpression();
-            left = std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
-        } else {
-            throwError("Incorrect left value", tokens[index].line);
-        }
-    } else if (index < tokens.size() && tokens[index].type == Token::Type::NewL) {
-
-    } else {
-        throwError("Incorrect symbol after expression", tokens[index].line, tokens[index].position);
+    
+    if (match(Token::Type::Assign)) {
+        return createAssignment(std::move(left));
     }
-    return left;
+
+    if (match(Token::Type::NewL)) {
+        return left;
+    }
+
+    throwError("Incorrect symbol after expression", tokens[index].line, tokens[index].position);
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
     std::unique_ptr<Parser::NodeAST> left = parseAddSub();
     while (
-        index < tokens.size() &&
-        (
-            tokens[index].type == Token::Type::CmpEq ||
-            tokens[index].type == Token::Type::CmpNEq  ||
-            tokens[index].type == Token::Type::CmpGt ||
-            tokens[index].type == Token::Type::CmpLs ||
-            tokens[index].type == Token::Type::CmpGtEq ||
-            tokens[index].type == Token::Type::CmpLsEq
-        )
+        match(Token::Type::CmpEq) ||
+        match(Token::Type::CmpNEq)  ||
+        match(Token::Type::CmpGt) ||
+        match(Token::Type::CmpLs) ||
+        match(Token::Type::CmpGtEq) ||
+        match(Token::Type::CmpLsEq)
     ) {
         Token currToken = tokens[index];
         index++;
@@ -89,7 +68,7 @@ std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
 
 std::unique_ptr<Parser::NodeAST> Parser::parseAddSub() {
     std::unique_ptr<NodeAST> left = parseMulDiv();
-    while (index < tokens.size() && (tokens[index].type == Token::Type::Add || tokens[index].type == Token::Type::Sub)) {
+    while (match(Token::Type::Add) || match(Token::Type::Sub)) {
         Token currToken = tokens[index];
         index++;
         std::unique_ptr<NodeAST> right = parseMulDiv();
@@ -100,7 +79,7 @@ std::unique_ptr<Parser::NodeAST> Parser::parseAddSub() {
 
 std::unique_ptr<Parser::NodeAST> Parser::parseMulDiv() {
     std::unique_ptr<NodeAST> left = parseNeg();
-    while (index < tokens.size() && (tokens[index].type == Token::Type::Mul || tokens[index].type == Token::Type::Div)) {
+    while (match(Token::Type::Mul) || match(Token::Type::Div)) {
         Token currToken = tokens[index];
         index++;
         std::unique_ptr<NodeAST> right = parseNeg();
@@ -110,7 +89,7 @@ std::unique_ptr<Parser::NodeAST> Parser::parseMulDiv() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
-    if (index < tokens.size() && tokens[index].type == Token::Type::Sub) {
+    if (match(Token::Type::Sub)) {
         Token negToken = Token(Token::Type::Neg, tokens[index].line, tokens[index].position);
         index++;
         std::unique_ptr<NodeAST> left = parseNeg();
@@ -121,13 +100,13 @@ std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
-    if (index < tokens.size() && (tokens[index].type == Token::Type::Int || tokens[index].type == Token::Type::Var)) {
+    if (match(Token::Type::Int) || match(Token::Type::Var)) {
         auto node = std::make_unique<NodeAST>(NodeAST(tokens[index]));
         index++;
         return node;
     }
 
-    if (index < tokens.size() && tokens[index].type == Token::Type::Lpar) {
+    if (match(Token::Type::Lpar)) {
         index++; // consume "("
         std::unique_ptr<NodeAST> expression = createExpression();
         if (index >= tokens.size() || tokens[index].type != Token::Type::Rpar) {
@@ -137,6 +116,13 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
         return expression;
     }
     throwError("Syntax error", tokens[index].line, tokens[index].position);
+}
+
+bool Parser::match(Token::Type type) {
+    if (index < tokens.size() && tokens[index].type == type) {
+        return true;
+    }
+    return false;
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::createIfStatement() {
@@ -166,19 +152,47 @@ std::unique_ptr<Parser::NodeAST> Parser::createWhileStatement() {
     return std::make_unique<NodeAST>(NodeAST(whileToken, std::move(condition), std::move(whileBlock), nullptr));
 }
 
+std::unique_ptr<Parser::NodeAST> Parser::createDeclaration() {
+    index++;
+    if (!match(Token::Type::Var)) {
+        throwError("Declaration without variable", tokens[index].line, tokens[index].position);
+    }
+    std::unique_ptr<NodeAST> left = parsePrimary();
+    if (match(Token::Type::NewL)) {
+        return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left)));
+    }
+    if (match(Token::Type::Assign)) {
+        index++; // skip =
+        std::unique_ptr<NodeAST> right = createExpression();
+        return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left), std::move(right)));
+    }
+    throwError("Incorrect declaration statement", tokens[index].line);
+}
+
+std::unique_ptr<Parser::NodeAST> Parser::createAssignment(std::unique_ptr<NodeAST> left) {
+    if (left->token.type == Token::Type::Var) {
+        Token currToken = tokens[index];
+        index++;
+        std::unique_ptr<NodeAST> right = createExpression();
+        return std::make_unique<NodeAST>(NodeAST(currToken, std::move(left), std::move(right)));
+    } else {
+        throwError("Incorrect left value", tokens[index].line);
+    }
+}
+
 // Check and consume Semicolon, New line and Indentation tokens
 void Parser::consumeSNI() {
-    if (index >= tokens.size() || tokens[index].type != Token::Type::Scolon) {
+    if (!match(Token::Type::Scolon)) {
         throwError("\";\" is missing after if statemant", tokens[index].line, tokens[index].position);
     }
     index++; // consume ";"
 
-    if (index >= tokens.size() || tokens[index].type != Token::Type::NewL) {
+    if (!match(Token::Type::NewL)) {
         throwError("New line is missing after if statemant", tokens[index].line, tokens[index].position);
     }
     index++; // consume NewL
 
-    if (index >= tokens.size() || tokens[index].type != Token::Type::Ind) {
+    if (!match(Token::Type::Ind)) {
         throwError("Indentation is missing after if statemant", tokens[index].line, tokens[index].position);
     }
     index++; // consume Ind
