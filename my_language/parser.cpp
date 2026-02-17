@@ -151,18 +151,23 @@ std::unique_ptr<Parser::NodeAST> Parser::createWhileNode() {
 
 std::unique_ptr<Parser::NodeAST> Parser::createDeclarationNode() {
     index++;
+
     if (!match(Token::Type::Var)) {
         throwError("Declaration without variable", tokens[index].line, tokens[index].position);
     }
+
     std::unique_ptr<NodeAST> left = parsePrimary();
+
     if (match(Token::Type::NewL)) {
         return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left)));
     }
+
     if (match(Token::Type::Assign)) {
         index++; // skip =
         std::unique_ptr<NodeAST> right = createExpression();
         return std::make_unique<NodeAST>(NodeAST(Token::Type::Dec, std::move(left), std::move(right)));
     }
+    
     throwError("Incorrect declaration statement", tokens[index].line);
 }
 
