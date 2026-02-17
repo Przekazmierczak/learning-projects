@@ -54,7 +54,7 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 if (map.find(instructions[pc].name) != map.end()) {
                     map[instructions[pc].name] = instructions[pc].dst;
                 } else {
-                    throwError("Variable \"" + instructions[pc].name + "\" need to be declare first");
+                    throwError("Variable \"" + instructions[pc].name + "\" was never declared");
                 }
                 pc++;
                 break;
@@ -62,7 +62,7 @@ void VM::run(const std::vector<IR::OP>& instructions) {
             case IR::OP::Type::Load:
                 if (map.find(instructions[pc].name) != map.end()) {
                     if (map[instructions[pc].name] == -1) {
-                        throwError("Variable \"" + instructions[pc].name + "\" has no value");
+                        throwError("Variable \"" + instructions[pc].name + "\" was never initialized");
                     }
                     resizeReg(instructions[pc].dst);
                     registers[instructions[pc].dst] = registers[map[instructions[pc].name]];
