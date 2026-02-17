@@ -1,0 +1,7 @@
+dec a = 1
+dec b
+
+while a < 5;
+    a = a + 1
+
+b = a
