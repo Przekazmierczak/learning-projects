@@ -97,7 +97,11 @@ std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
-    if (match(Token::Type::Int) || match(Token::Type::Var)) {
+    if (
+        match(Token::Type::Int) ||
+        match(Token::Type::Bool) ||
+        match(Token::Type::Var)
+    ) {
         auto node = std::make_unique<NodeAST>(NodeAST(tokens[index]));
         index++;
         return node;

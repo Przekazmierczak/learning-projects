@@ -83,16 +83,9 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP cmp;
-    cmp.operation = OP::Type::CmpNEq;
-    cmp.src1 = generate(node->condition);
-    cmp.src2 = addConst(0);;
-    cmp.dst = index.getNext();
-    instructions.push_back(cmp);
-
     OP JmpZ;
     JmpZ.operation = OP::Type::JmpZ;
-    JmpZ.src1 = cmp.dst;
+    JmpZ.src1 = generate(node->condition);
     
     int pcSkipIf = instructions.size(); // Save Jmpnz location
     instructions.push_back(JmpZ);
@@ -114,16 +107,9 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
 void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     int pcStart = instructions.size();
-    OP cmp;
-    cmp.operation = OP::Type::CmpNEq;
-    cmp.src1 = generate(node->condition);
-    cmp.src2 = addConst(0);;
-    cmp.dst = index.getNext();
-    instructions.push_back(cmp);
-
     OP JmpZ;
     JmpZ.operation = OP::Type::JmpZ;
-    JmpZ.src1 = cmp.dst;
+    JmpZ.src1 = generate(node->condition);
     
     int pcEnd = instructions.size(); // Save Jmpnz location
     instructions.push_back(JmpZ);
