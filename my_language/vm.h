@@ -29,14 +29,16 @@ struct VM {
 
         bool operator==(const Variable& other) const {
             if (type == other.type) {
-                if (type == Type::Int) {
-                    return i == other.i;
-                }
-                if (type == Type::Bool) {
-                    return b == other.b;
-                }
-                if (type == Type::NaN) {
-                    return true;
+                switch (type) {
+                    
+                    case Type::Int:
+                        return i == other.i;
+
+                    case Type::Bool:
+                        return b == other.b;
+
+                    case Type::NaN:
+                        return true;
                 }
             }
             return false;
@@ -56,6 +58,7 @@ struct VM {
     void resizeReg(int dst);
     bool isInt(Variable var);
     bool isBool(Variable var);
+    void runCmp(const std::vector<IR::OP>& instructions);
 };
 
 

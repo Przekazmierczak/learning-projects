@@ -99,68 +99,13 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 break;
 
             case IR::OP::Type::CmpEq:
-                resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i == registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpEq");
-                }
-                pc++;
-                break;
-
             case IR::OP::Type::CmpNEq:
-                resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i != registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpNEq");
-                }
-                pc++;
-                break;
-
             case IR::OP::Type::CmpGt:
-                resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i > registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpGt");
-                }
-                pc++;
-                break;
-
             case IR::OP::Type::CmpLs:
-                resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i < registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpLs");
-                }
-                pc++;
-                break;
-            
             case IR::OP::Type::CmpGtEq:
-                resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i >= registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpGtEq");
-                }
-                pc++;
-                break;
-            
             case IR::OP::Type::CmpLsEq:
                 resizeReg(instructions[pc].dst);
-                if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
-                    registers[instructions[pc].dst].type = Type::Bool;
-                    registers[instructions[pc].dst].b = registers[instructions[pc].src1].i <= registers[instructions[pc].src2].i;
-                } else {
-                    throwError("Incorrect types for CmpLsEq");
-                }
+                runCmp(instructions);
                 pc++;
                 break;
             
@@ -225,4 +170,42 @@ bool VM::isInt(Variable var) {
 bool VM::isBool(Variable var) {
     if (var.type == Type::Bool) return true;
     return false;
+}
+
+void VM::runCmp(const std::vector<IR::OP>& instructions) {
+    if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {
+        registers[instructions[pc].dst].type = Type::Bool;
+
+        switch (instructions[pc].operation) {
+            
+            case IR::OP::Type::CmpEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i == registers[instructions[pc].src2].i;
+                break;
+
+            case IR::OP::Type::CmpNEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i != registers[instructions[pc].src2].i;
+                break;
+
+            case IR::OP::Type::CmpGt:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i > registers[instructions[pc].src2].i;
+                break;
+
+            case IR::OP::Type::CmpLs:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i < registers[instructions[pc].src2].i;
+                break;
+            
+            case IR::OP::Type::CmpGtEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i >= registers[instructions[pc].src2].i;
+                break;
+            
+            case IR::OP::Type::CmpLsEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].i <= registers[instructions[pc].src2].i;
+                break;
+
+            default:
+                throwError("Incorrect types for Cmp");
+        }
+    } else {
+        throwError("Incorrect types for Cmp");
+    }
 }
