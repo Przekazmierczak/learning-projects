@@ -9,7 +9,41 @@
 #include "helper.h"
 
 struct VM {
-    std::vector<int> registers;
+    enum class Type {
+        NaN,
+        Int,
+        Bool
+    };
+
+    struct Variable {
+        Type type = Type::NaN;
+
+        union {
+            int i;
+            bool b;
+        };
+
+        Variable() {};
+        Variable(int val) : type(Type::Int), i(val) {};
+        Variable(bool val) : type(Type::Bool), b(val) {};
+
+        bool operator==(const Variable& other) const {
+            if (type == other.type) {
+                if (type == Type::Int) {
+                    return i == other.i;
+                }
+                if (type == Type::Bool) {
+                    return b == other.b;
+                }
+                if (type == Type::NaN) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+
+    std::vector<Variable> registers;
     std::unordered_map<std::string, int> map;
 
     int pc = 0;
@@ -20,6 +54,10 @@ struct VM {
 
     void run(const std::vector<IR::OP>& instructions);
     void resizeReg(int dst);
+    bool isInt(Variable var);
+    bool isBool(Variable var);
 };
+
+
 
 #endif
