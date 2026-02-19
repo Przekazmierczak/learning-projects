@@ -50,6 +50,7 @@ struct IR {
     int generate(const std::unique_ptr<Parser::NodeAST>& node);
     void addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    void addForInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addConst(int val);
     void pushBlock();
     void popBlock();

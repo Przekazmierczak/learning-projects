@@ -28,6 +28,10 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
     if (match(Token::Type::While)) {
         return createWhileNode();
     }
+    
+    if (match(Token::Type::For)) {
+        return createForNode();
+    }
 
     if (match(Token::Type::Dec)) {
         return createDeclarationNode();
@@ -116,7 +120,7 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
         index++; // consume ")"
         return expression;
     }
-    throwError("Syntax error", tokens[index].line, tokens[index].position);
+    throwError("Syntax error (incorrect primary)", tokens[index].line, tokens[index].position);
 }
 
 bool Parser::match(Token::Type type) {
@@ -151,6 +155,40 @@ std::unique_ptr<Parser::NodeAST> Parser::createWhileNode() {
     std::unique_ptr<NodeAST> whileBlock = createBlock();
 
     return std::make_unique<NodeAST>(NodeAST(whileToken, std::move(condition), std::move(whileBlock), nullptr));
+}
+
+std::unique_ptr<Parser::NodeAST> Parser::createForNode() {
+    Token forToken = tokens[index];
+    index++; // consume for
+    std::unique_ptr<NodeAST> initial = nullptr;
+    if (!match(Token::Type::Scolon)) {
+        initial = createStatement();
+    }
+
+    std::unique_ptr<NodeAST> condition = nullptr;
+    if (match(Token::Type::Scolon)) {
+        index++; // consume semicolon
+        if (!match(Token::Type::Scolon)) {
+            condition = createExpression();
+        }
+    } else {
+        throwError("Incorrect for loop syntax", forToken.line);
+    }
+
+    std::unique_ptr<NodeAST> increment = nullptr;
+    if (match(Token::Type::Scolon)) {
+        index++; // consume semicolon
+        if (!match(Token::Type::Scolon)) {
+            increment = createStatement();
+        }
+    } else {
+        throwError("Incorrect for loop syntax", forToken.line);
+    }
+
+    consumeSNI();
+    std::unique_ptr<NodeAST> forBlock = createBlock();
+
+    return std::make_unique<NodeAST>(NodeAST(forToken, std::move(condition), std::move(forBlock), std::move(initial), std::move(increment)));
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::createDeclarationNode() {
@@ -189,17 +227,17 @@ std::unique_ptr<Parser::NodeAST> Parser::createAssignmentNode(std::unique_ptr<No
 // Check and consume Semicolon, New line and Indentation tokens
 void Parser::consumeSNI() {
     if (!match(Token::Type::Scolon)) {
-        throwError("\";\" is missing after if statemant", tokens[index].line, tokens[index].position);
+        throwError("\";\" is missing", tokens[index].line, tokens[index].position);
     }
     index++; // consume ";"
 
     if (!match(Token::Type::NewL)) {
-        throwError("New line is missing after if statemant", tokens[index].line, tokens[index].position);
+        throwError("New line is missing", tokens[index].line, tokens[index].position);
     }
     index++; // consume NewL
 
     if (!match(Token::Type::Ind)) {
-        throwError("Indentation is missing after if statemant", tokens[index].line, tokens[index].position);
+        throwError("Indentation is missing", tokens[index].line, tokens[index].position);
     }
     index++; // consume Ind
 }

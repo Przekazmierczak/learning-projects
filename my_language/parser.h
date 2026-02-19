@@ -15,6 +15,7 @@ struct Parser {
         std::unique_ptr<NodeAST> right = nullptr;
         std::vector<std::unique_ptr<NodeAST>> statements;
         std::unique_ptr<NodeAST> condition = nullptr;
+        std::unique_ptr<NodeAST> increment = nullptr; // for loop
     
         NodeAST(Token newToken) :
             token(newToken) {}
@@ -30,6 +31,18 @@ struct Parser {
             condition(std::move(newCondition)),
             left(std::move(newLeft)),
             right(std::move(newRight)) {}
+        NodeAST(
+            Token newToken,
+            std::unique_ptr<NodeAST> newCondition,
+            std::unique_ptr<NodeAST> newLeft,
+            std::unique_ptr<NodeAST> newRight,
+            std::unique_ptr<NodeAST> newIncrement
+        ) :
+            token(newToken),
+            condition(std::move(newCondition)),
+            left(std::move(newLeft)),
+            right(std::move(newRight)),
+            increment(std::move(newIncrement)) {}
     };
 
     std::vector<Token> tokens;
@@ -56,6 +69,7 @@ struct Parser {
 
     std::unique_ptr<NodeAST> createIfNode();
     std::unique_ptr<NodeAST> createWhileNode();
+    std::unique_ptr<NodeAST> createForNode();
     std::unique_ptr<NodeAST> createDeclarationNode();
     std::unique_ptr<NodeAST> createAssignmentNode(std::unique_ptr<NodeAST> left);
     void consumeSNI();

@@ -49,6 +49,10 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             addWhileInstructions(node);
             return -1;
 
+        case Token::Type::For:
+            addForInstructions(node);
+            return -1;
+
         case Token::Type::Dec:
             newInstruction.operation = OP::Type::Dec;
             newInstruction.name = node->left->token.name;
@@ -123,6 +127,31 @@ void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     instructions.push_back(Jmp);
 
     instructions[pcEnd].dst = instructions.size();
+}
+
+void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    pushBlock();
+
+    generate(node->right); // generate initialization
+
+    int pcStart = instructions.size();
+    OP JmpZ;
+    JmpZ.operation = OP::Type::JmpZ;
+    JmpZ.src1 = generate(node->condition);
+    
+    int pcEnd = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpZ);
+    generate(node->left); // generate for loop block
+    generate(node->increment); // generate incrementation
+
+    OP Jmp;
+    Jmp.operation = OP::Type::Jmp;
+    Jmp.dst = pcStart;
+    instructions.push_back(Jmp);
+
+    instructions[pcEnd].dst = instructions.size();
+
+    popBlock();
 }
 
 int IR::addConst(int val) {
