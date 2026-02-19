@@ -46,7 +46,7 @@ struct VM {
     };
 
     std::vector<Variable> registers;
-    std::unordered_map<std::string, int> map;
+    std::vector<std::unordered_map<std::string, int>> maps;
 
     int pc = 0;
 
@@ -58,6 +58,8 @@ struct VM {
     void resizeReg(int dst);
     bool isInt(Variable var);
     bool isBool(Variable var);
+    bool findInMap(int index, const std::string& name);
+    int findInMaps(const std::string& name);
     void runCmp(const std::vector<IR::OP>& instructions);
 };
 

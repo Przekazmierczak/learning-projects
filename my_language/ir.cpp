@@ -13,9 +13,11 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             return newInstruction.dst;
 
         case Token::Type::Block:
+            pushBlock();
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
+            popBlock();
             return -1;
 
         case Token::Type::Neg:
@@ -132,6 +134,18 @@ int IR::addConst(int val) {
     return mov.dst;
 }
 
+void IR::pushBlock() {
+    OP block;
+    block.operation = OP::Type::Block;
+    instructions.push_back(block);
+}
+
+void IR::popBlock() {
+    OP deblock;
+    deblock.operation = OP::Type::Deblock;
+    instructions.push_back(deblock);    
+}
+
 void IR::print() {
     for (int i = 0; i < instructions.size(); i++) {
         std::cout << i << ". " << instructions[i];
@@ -173,6 +187,14 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         
         case IR::OP::Type::Dec:
             cout << "Dec \"" << inst.name << "\"" << std::endl;
+            return cout;
+        
+        case IR::OP::Type::Block:
+            cout << "PushBlock" << std::endl;
+            return cout;
+        
+        case IR::OP::Type::Deblock:
+            cout << "PopBlock" << std::endl;
             return cout;
 
         case IR::OP::Type::Add: op = "Add"; break;

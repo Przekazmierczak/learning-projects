@@ -68,34 +68,46 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 break;
 
             case IR::OP::Type::Dec:
-                if (map.find(instructions[pc].name) != map.end()) {
+                if (findInMap(maps.size() - 1, instructions[pc].name)) {
                     throwError("Variable \"" + instructions[pc].name + "\" is already declared");
                 } else {
-                    map[instructions[pc].name] = -1;
+                    maps[maps.size() - 1][instructions[pc].name] = -1;
                 }
                 pc++;
                 break;
 
-            case IR::OP::Type::Assign:
-                if (map.find(instructions[pc].name) != map.end()) {
-                    map[instructions[pc].name] = instructions[pc].dst;
-                } else {
+            case IR::OP::Type::Assign: {
+                int index = findInMaps(instructions[pc].name);
+                if (index == -1) {
                     throwError("Variable \"" + instructions[pc].name + "\" was never declared");
                 }
+                maps[index][instructions[pc].name] = instructions[pc].dst;
+                pc++;
+                break;
+            }
+
+            case IR::OP::Type::Load: {
+                int index = findInMaps(instructions[pc].name);
+                if (index == -1) {
+                    throwError("Unknown variable name: \"" + instructions[pc].name + "\"");
+                }
+                if (maps[index][instructions[pc].name] == -1) {
+                    throwError("Variable \"" + instructions[pc].name + "\" was never initialized");
+                }
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst] = registers[maps[index][instructions[pc].name]];
+                pc++;
+                break;
+            }
+
+            case IR::OP::Type::Block:
+                maps.emplace_back();
                 pc++;
                 break;
 
-            case IR::OP::Type::Load:
-                if (map.find(instructions[pc].name) != map.end()) {
-                    if (map[instructions[pc].name] == -1) {
-                        throwError("Variable \"" + instructions[pc].name + "\" was never initialized");
-                    }
-                    resizeReg(instructions[pc].dst);
-                    registers[instructions[pc].dst] = registers[map[instructions[pc].name]];
-                    pc++;
-                } else {
-                    throwError("Unknown variable name: \"" + instructions[pc].name + "\"");
-                }
+            case IR::OP::Type::Deblock:
+                maps.pop_back();
+                pc++;
                 break;
 
             case IR::OP::Type::CmpEq:
@@ -170,6 +182,17 @@ bool VM::isInt(Variable var) {
 bool VM::isBool(Variable var) {
     if (var.type == Type::Bool) return true;
     return false;
+}
+
+bool VM::findInMap(int index, const std::string& name) {
+    return maps[index].find(name) != maps[index].end();
+}
+
+int VM::findInMaps(const std::string& name) {
+    for (int i = maps.size() - 1; i >= 0; i--) {
+        if (findInMap(i, name)) return i;
+    }
+    return -1;
 }
 
 void VM::runCmp(const std::vector<IR::OP>& instructions) {

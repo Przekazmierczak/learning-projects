@@ -17,14 +17,15 @@ struct IR {
             Neg,
             Assign, Load,
             CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
-            Jmp, JmpZ, JmpNZ
+            Jmp, JmpZ, JmpNZ,
+            Block, Deblock
         };
 
         // mandatory
         Type operation;
-        int dst;
 
         // optional
+        int dst;
         int src1;
         int src2;
         int val;
@@ -50,6 +51,8 @@ struct IR {
     void addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addConst(int val);
+    void pushBlock();
+    void popBlock();
     void print();
 };
 
