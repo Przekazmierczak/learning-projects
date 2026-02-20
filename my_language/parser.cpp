@@ -58,7 +58,9 @@ std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
         match(Token::Type::CmpGt) ||
         match(Token::Type::CmpLs) ||
         match(Token::Type::CmpGtEq) ||
-        match(Token::Type::CmpLsEq)
+        match(Token::Type::CmpLsEq) ||
+        match(Token::Type::And) ||
+        match(Token::Type::Or)
     ) {
         Token currToken = tokens[index];
         index++;

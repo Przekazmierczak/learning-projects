@@ -66,6 +66,12 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             }
             return -1;
 
+        case Token::Type::And:
+            return addAndOrInstructions(node, true);
+
+        case Token::Type::Or:
+            return addAndOrInstructions(node, false);
+
         case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
         case Token::Type::Sub: newInstruction.operation = OP::Type::Sub; break;
         case Token::Type::Mul: newInstruction.operation = OP::Type::Mul; break;
@@ -154,11 +160,55 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     popBlock();
 }
 
-int IR::addConst(int val) {
+int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool ifAnd) {
+    int left = generate(node->left);
+
+    OP JmpLeft;
+    JmpLeft.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
+    JmpLeft.src1 = left;
+    int pcJmpLeft = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpLeft);
+    
+    int right = generate(node->right);
+
+    OP JmpRight;
+    JmpRight.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
+    JmpRight.src1 = right;
+    int pcJmpRight = instructions.size(); // Save Jmpnz location
+    instructions.push_back(JmpRight);
+
+    int res = index.getNext();
+    addConst(res, ifAnd ? true : false);
+
+    OP Jmp;
+    Jmp.operation = OP::Type::Jmp;
+    int pcJmp = instructions.size(); // Save Jmp location
+    instructions.push_back(Jmp);
+
+    instructions[pcJmpLeft].dst = instructions.size();
+    instructions[pcJmpRight].dst = instructions.size();
+
+    addConst(res, ifAnd ? false : true);
+
+    instructions[pcJmp].dst = instructions.size();
+
+    return res;
+}
+
+int IR::addConst(int dst, int val) {
     OP mov;
     mov.operation = OP::Type::Int;
-    mov.dst = index.getNext();
+    mov.dst = dst;
     mov.val = val;
+    instructions.push_back(mov);
+    return mov.dst;
+}
+
+int IR::addConst(int dst, bool val) {
+    OP mov;
+    mov.operation = OP::Type::Bool;
+    mov.dst = dst;
+    mov.bval = val;
     instructions.push_back(mov);
     return mov.dst;
 }
@@ -188,6 +238,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
 
         case IR::OP::Type::Int:
             cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
+            return cout;
+
+        case IR::OP::Type::Bool:
+            cout << "Move r" << inst.dst << ", " << inst.bval << std::endl;
             return cout;
 
         case IR::OP::Type::Neg:
@@ -236,6 +290,8 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         case IR::OP::Type::CmpLs: op = "CmpLs"; break;
         case IR::OP::Type::CmpGtEq: op = "CmpGtEq"; break;
         case IR::OP::Type::CmpLsEq: op = "CmpLsEq"; break;
+        case IR::OP::Type::And: op = "And"; break;
+        case IR::OP::Type::Or: op = "Or"; break;
 
         default:
             throwError("Unsupported token in << overload");

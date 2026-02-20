@@ -121,6 +121,28 @@ void Lexer::lex() {
                     tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
                     break;
                 
+                case '&':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '&') {
+                        tokens.push_back(Token(Token::Type::And ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        throwError("Invalid symbol \"&\"", currLine, currPosition);
+                    }
+                    break;
+                
+                case '|':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    if (index + 1 < line.size() && line[index + 1] == '|') {
+                        tokens.push_back(Token(Token::Type::Or ,currLine, currPosition));
+                        index++;
+                        currPosition++;
+                    } else {
+                        throwError("Invalid symbol \"|\"", currLine, currPosition);
+                    }
+                    break;
+
                 default:
                     current += line[index];
                     break;
@@ -155,6 +177,10 @@ void Lexer::pushNonOperand(int currLine, int currPosition, std::string& current)
         tokens.push_back(Token(Token::Type::Dec, currLine, currPosition));
     } else if (current == "for") {
         tokens.push_back(Token(Token::Type::For, currLine, currPosition));
+    } else if (current == "and") {
+        tokens.push_back(Token(Token::Type::And, currLine, currPosition));
+    } else if (current == "or") {
+        tokens.push_back(Token(Token::Type::Or, currLine, currPosition));
     } else if (std::regex_match(current, patternInt)) {
         tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
     } else if (std::regex_match(current, patternName)) {

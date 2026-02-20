@@ -11,6 +11,13 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 pc++;
                 break;
 
+            case IR::OP::Type::Bool:
+                resizeReg(instructions[pc].dst);
+                registers[instructions[pc].dst].type = VM::Type::Bool;
+                registers[instructions[pc].dst].b = instructions[pc].bval;
+                pc++;
+                break;
+
             case IR::OP::Type::Add:
                 resizeReg(instructions[pc].dst);
                 if (isInt(registers[instructions[pc].src1]) && isInt(registers[instructions[pc].src2])) {

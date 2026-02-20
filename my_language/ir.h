@@ -12,13 +12,14 @@ struct IR {
     struct OP {
         enum class Type {
             Dec,
-            Int,
+            Int, Bool,
             Add, Sub, Mul, Div,
             Neg,
             Assign, Load,
             CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
             Jmp, JmpZ, JmpNZ,
-            Block, Deblock
+            Block, Deblock,
+            And, Or
         };
 
         // mandatory
@@ -29,6 +30,7 @@ struct IR {
         int src1;
         int src2;
         int val;
+        bool bval;
         std::string name;
     };
     
@@ -51,7 +53,9 @@ struct IR {
     void addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addForInstructions(const std::unique_ptr<Parser::NodeAST>& node);
-    int addConst(int val);
+    int addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool ifAnd);
+    int addConst(int dst, int val);
+    int addConst(int dst, bool val);
     void pushBlock();
     void popBlock();
     void print();
