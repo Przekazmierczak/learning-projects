@@ -1,0 +1,12 @@
+dec a = 1
+if a > 4;
+    a = 2
+else if a > 2;
+    a = 3
+else if a > 0;
+    a = 4
+else if a > -2;
+    a = 5
+else;
+    a = 6
+a

@@ -101,6 +101,13 @@ int tests() {
         assert(vm3.registers[i] == res3[i]);
     }
 
+    Lexer lexer4("test4.duckbugger");
+    Parser parser4(lexer4.tokens);
+    IR irgenerator4(parser4.ASTroot);
+    VM vm4(irgenerator4.instructions);
+
+    assert(vm4.registers[vm4.registers.size() - 1] == VM::Variable(4));
+    
     std::cout << "All test passed!" << std::endl;
 
     return 0;

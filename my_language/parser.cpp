@@ -138,10 +138,15 @@ std::unique_ptr<Parser::NodeAST> Parser::createIfNode() {
     std::unique_ptr<NodeAST> ifBlock = createBlock();
 
     std::unique_ptr<NodeAST> elseBlock = nullptr;
-    if (index < tokens.size() && tokens[index].type == Token::Type::Else) {
+    if (match(Token::Type::Else)) {
         index++; // consume else
-        consumeSNI();
-        elseBlock = createBlock();
+
+        if (match(Token::Type::If)) {
+            elseBlock = createIfNode();
+        } else {
+            consumeSNI();
+            elseBlock = createBlock();
+        }
     }
 
     return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
