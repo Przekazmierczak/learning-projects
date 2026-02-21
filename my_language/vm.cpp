@@ -235,6 +235,22 @@ void VM::runCmp(const std::vector<IR::OP>& instructions) {
             default:
                 throwError("Incorrect types for Cmp");
         }
+    } else if (isBool(registers[instructions[pc].src1]) && isBool(registers[instructions[pc].src2])) {
+        registers[instructions[pc].dst].type = Type::Bool;
+
+        switch (instructions[pc].operation) {
+            
+            case IR::OP::Type::CmpEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].b == registers[instructions[pc].src2].b;
+                break;
+
+            case IR::OP::Type::CmpNEq:
+                registers[instructions[pc].dst].b = registers[instructions[pc].src1].b != registers[instructions[pc].src2].b;
+                break;
+
+            default:
+                throwError("Incorrect types for Cmp");
+        }
     } else {
         throwError("Incorrect types for Cmp");
     }

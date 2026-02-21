@@ -27,6 +27,7 @@ struct Token {
 
     int val = 0;
     std::string name = "";
+    bool bval = 0;
 
     int line = -1;
     int position = -1;
@@ -42,6 +43,9 @@ struct Token {
 
     Token(Type newType, std::string newName, int newLine, int newPosition)
         : type(newType),  name(newName), line(newLine), position(newPosition) {}
+
+    Token(Type newType, bool newBval, int newLine, int newPosition)
+        : type(newType),  bval(newBval), line(newLine), position(newPosition) {}
 };
 
 static const char* names[] = {

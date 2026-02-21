@@ -12,6 +12,13 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             instructions.push_back(newInstruction);
             return newInstruction.dst;
 
+        case Token::Type::Bool:
+            newInstruction.operation = OP::Type::Bool;
+            newInstruction.dst = index.getNext();
+            newInstruction.bval = node->token.bval;
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
+
         case Token::Type::Block:
             pushBlock();
             for (int i = 0; i < node->statements.size(); i++) {
