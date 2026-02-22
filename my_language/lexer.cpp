@@ -143,6 +143,11 @@ void Lexer::lex() {
                     }
                     break;
 
+                case ',':
+                    if (!current.empty()) pushNonOperand(currLine, currPosition, current);
+                    tokens.push_back(Token(Token::Type::Comma ,currLine, currPosition));
+                    break;
+
                 default:
                     current += line[index];
                     break;
@@ -185,6 +190,10 @@ void Lexer::pushNonOperand(int currLine, int currPosition, std::string& current)
         tokens.push_back(Token(Token::Type::Bool, true, currLine, currPosition));
     } else if (current == "false") {
         tokens.push_back(Token(Token::Type::Bool, false, currLine, currPosition));
+    } else if (current == "fun") {
+        tokens.push_back(Token(Token::Type::Fun, currLine, currPosition));
+    } else if (current == "return") {
+        tokens.push_back(Token(Token::Type::Ret, currLine, currPosition));
     } else if (std::regex_match(current, patternInt)) {
         tokens.push_back(Token(Token::Type::Int, std::stoi(current), currLine, currPosition));
     } else if (std::regex_match(current, patternName)) {

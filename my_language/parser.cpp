@@ -37,6 +37,48 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         return createDeclarationNode();
     }
 
+    if (match(Token::Type::Fun)) {
+        Token funToken = tokens[index];
+        index++;
+        if (match(Token::Type::Var)) {
+            funToken.name = tokens[index].name;
+        } else {
+            throwError("Incorrect syntax for function declaration", tokens[index].line);
+        }
+        index++;
+
+        Token variables = Token(Token::Type::Block);
+        auto variablesAST = std::make_unique<NodeAST>(variables);
+
+        while (index < tokens.size()) {
+            if (match(Token::Type::Var)) {
+                variablesAST->statements.push_back(parsePrimary());
+            } else {
+                throwError("Incorrect syntax for function declaration", tokens[index].line);
+            }
+
+            if (match(Token::Type::Comma)) {
+                index++;
+            } else if (match(Token::Type::Scolon)){
+                break;
+            } else {
+                throwError("Incorrect syntax for function declaration", tokens[index].line);
+            }
+        }
+
+        consumeSNI();
+
+        std::unique_ptr<NodeAST> funBlock = createBlock();
+
+        return std::make_unique<NodeAST>(NodeAST(funToken, std::move(variablesAST), std::move(funBlock)));
+    }
+
+    if (match(Token::Type::Ret)) {
+        Token retToken = tokens[index];
+        index++;
+        return std::make_unique<NodeAST>(retToken, std::move(createExpression()));
+    }
+
     std::unique_ptr<NodeAST> left = createExpression();
     
     if (match(Token::Type::Assign)) {
