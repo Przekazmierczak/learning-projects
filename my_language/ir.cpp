@@ -20,17 +20,11 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             return newInstruction.dst;
 
         case Token::Type::Block:
-            pushBlock();
+            if (currContext == ContextType::Default) pushBlock();
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
-            popBlock();
-            return -1;
-
-        case Token::Type::FBlock:
-            for (int i = 0; i < node->statements.size(); i++) {
-                generate(node->statements[i]);
-            }
+            if (currContext == ContextType::Default) popBlock();
             return -1;
 
         case Token::Type::Neg:
@@ -94,15 +88,31 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 
         case Token::Type::Fun: {
             currContext = ContextType::FunDeclaration;
+            currLocalReg = 0;
+
+            std::string name = node->token.name;
+            int startPC = instructions.size();
+            int argsCount = node->statements.size();
+
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
+
+            generate(node->left);
+
+            int regCount = currLocalReg - argsCount;
+
+            addFunctionMeta(name, FunctionMeta(startPC, argsCount, regCount));
+
             currContext = ContextType::Default;
             return -1;
         }
 
         case Token::Type::Ret:
-            break;
+            newInstruction.operation = OP::Type::Ret;
+            newInstruction.dst = generate(node->left);
+            instructions.push_back(newInstruction);
+            return newInstruction.dst;
 
         case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
         case Token::Type::Sub: newInstruction.operation = OP::Type::Sub; break;
@@ -257,9 +267,25 @@ void IR::popBlock() {
     instructions.push_back(deblock);    
 }
 
+void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
+    if (functionsMap.find(name) != functionsMap.end()) {
+        throwError("Function \"" + name + "\" is already declared");
+    } else {
+        functionsMap[name] = functionMeta;
+    }
+}
+
 void IR::print() {
     for (int i = 0; i < instructions.size(); i++) {
         std::cout << i << ". " << instructions[i];
+    }
+
+    for (const auto& pair : functionsMap)
+    {
+        std::cout << pair.first << " : startPC " << pair.second.startPC
+                  << ", argsCount " << pair.second.argsCount
+                  << ", regCount " << pair.second.regCount
+                  << std::endl;
     }
 }
 
@@ -310,6 +336,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         
         case IR::OP::Type::Deblock:
             cout << "PopBlock" << std::endl;
+            return cout;
+
+        case IR::OP::Type::Ret:
+            cout << "Return r" << inst.dst << std::endl;
             return cout;
 
         case IR::OP::Type::Add: op = "Add"; break;

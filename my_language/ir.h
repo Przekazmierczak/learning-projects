@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 #include "parser.h"
 
@@ -19,7 +20,8 @@ struct IR {
             CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
             Jmp, JmpZ, JmpNZ,
             Block, Deblock,
-            And, Or
+            And, Or,
+            Ret
         };
 
         // mandatory
@@ -39,10 +41,23 @@ struct IR {
         FunDeclaration
     };
 
+    struct FunctionMeta {
+        int startPC;
+        int argsCount;
+        int regCount;
+
+        FunctionMeta() = default; 
+        FunctionMeta(int pc, int args, int reg) : startPC(pc), argsCount(args), regCount(reg) {};
+    };
+
     ContextType currContext = ContextType::Default;
+
     int currGlobalReg = 0;
     int currLocalReg = 0;
+
     std::vector<OP> instructions;
+
+    std::unordered_map<std::string, FunctionMeta> functionsMap;
 
     int getNextIndex() {
         if (currContext == ContextType::Default) {
@@ -65,6 +80,7 @@ struct IR {
     int addConst(int dst, bool val);
     void pushBlock();
     void popBlock();
+    void addFunctionMeta(std::string name, FunctionMeta functionMeta);
     void print();
 };
 

@@ -49,13 +49,9 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
 
         std::vector<std::unique_ptr<NodeAST>> argumentsAST;
 
-        while (index < tokens.size()) {
-            if (match(Token::Type::Var)) {
-                tokens[index].type = Token::Type::Arg;
-                argumentsAST.push_back(parsePrimary());
-            } else {
-                throwError("Incorrect syntax for function declaration", tokens[index].line);
-            }
+        while (match(Token::Type::Var)) {
+            tokens[index].type = Token::Type::Arg;
+            argumentsAST.push_back(parsePrimary());
 
             if (match(Token::Type::Comma)) {
                 index++;
@@ -69,8 +65,6 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         consumeSNI();
 
         std::unique_ptr<NodeAST> funBlock = createBlock();
-
-        funBlock->token.type = Token::Type::FBlock;
 
         return std::make_unique<NodeAST>(NodeAST(funToken, std::move(argumentsAST), std::move(funBlock)));
     }
