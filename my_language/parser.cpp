@@ -47,12 +47,12 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         }
         index++;
 
-        Token variables = Token(Token::Type::Block);
-        auto variablesAST = std::make_unique<NodeAST>(variables);
+        std::vector<std::unique_ptr<NodeAST>> argumentsAST;
 
         while (index < tokens.size()) {
             if (match(Token::Type::Var)) {
-                variablesAST->statements.push_back(parsePrimary());
+                tokens[index].type = Token::Type::Arg;
+                argumentsAST.push_back(parsePrimary());
             } else {
                 throwError("Incorrect syntax for function declaration", tokens[index].line);
             }
@@ -70,7 +70,9 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
 
         std::unique_ptr<NodeAST> funBlock = createBlock();
 
-        return std::make_unique<NodeAST>(NodeAST(funToken, std::move(variablesAST), std::move(funBlock)));
+        funBlock->token.type = Token::Type::FBlock;
+
+        return std::make_unique<NodeAST>(NodeAST(funToken, std::move(argumentsAST), std::move(funBlock)));
     }
 
     if (match(Token::Type::Ret)) {
@@ -148,7 +150,8 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
     if (
         match(Token::Type::Int) ||
         match(Token::Type::Bool) ||
-        match(Token::Type::Var)
+        match(Token::Type::Var) ||
+        match(Token::Type::Arg)
     ) {
         auto node = std::make_unique<NodeAST>(NodeAST(tokens[index]));
         index++;

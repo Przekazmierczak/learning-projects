@@ -33,17 +33,24 @@ struct IR {
         bool bval;
         std::string name;
     };
-    
-    struct RegisterIndex {
-        int curr = 0;
 
-        int getNext() {
-            return curr++;
-        }
+    enum class ContextType {
+        Default,
+        FunDeclaration
     };
 
+    ContextType currContext = ContextType::Default;
+    int currGlobalReg = 0;
+    int currLocalReg = 0;
     std::vector<OP> instructions;
-    RegisterIndex index;
+
+    int getNextIndex() {
+        if (currContext == ContextType::Default) {
+            return currGlobalReg++;
+        } else {
+            return currLocalReg++;
+        }
+    }
 
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
         generate(node);
