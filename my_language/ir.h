@@ -21,7 +21,8 @@ struct IR {
             Jmp, JmpZ, JmpNZ,
             Block, Deblock,
             And, Or,
-            Ret
+            Call, Ret,
+            Push
         };
 
         // mandatory

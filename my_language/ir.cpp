@@ -108,6 +108,38 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             return -1;
         }
 
+        case Token::Type::Call: {
+            std::string name = node->token.name;
+
+            std::vector<int> argsReg;
+
+            if (functionsMap.find(name) != functionsMap.end()) {
+                if (functionsMap[name].argsCount != node->statements.size()) {
+                    throwError("Incorrect number of arguments in \"" + name + "\"", node->token.line, node->token.position);
+                }
+            } else {
+                throwError("Function \"" + name + "\" was never declared", node->token.line, node->token.position);
+            }
+
+            for (int i = 0; i < node->statements.size(); i++) {
+                argsReg.push_back(generate(node->statements[i]));
+            }
+            
+            OP loadArg;
+            loadArg.operation = OP::Type::Push;
+            for (int i = 0; i < argsReg.size(); i++) {
+                loadArg.dst = getNextIndex();
+                loadArg.src1 = argsReg[i];
+                instructions.push_back(loadArg);
+            }
+
+            newInstruction.operation = OP::Type::Call;
+            newInstruction.name = name;
+            instructions.push_back(newInstruction);
+
+            return -99; // function return?
+        }
+
         case Token::Type::Ret:
             newInstruction.operation = OP::Type::Ret;
             newInstruction.dst = generate(node->left);
@@ -314,6 +346,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
             return cout;
 
+        case IR::OP::Type::Push:
+            cout << "Push r" << inst.dst << ", r" << inst.src1 << std::endl;
+            return cout;
+
         case IR::OP::Type::Jmp:
             cout << "Jmp pc" << inst.dst << std::endl;
             return cout;
@@ -328,6 +364,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         
         case IR::OP::Type::Dec:
             cout << "Dec \"" << inst.name << "\"" << std::endl;
+            return cout;
+
+        case IR::OP::Type::Call:
+            cout << "Call \"" << inst.name << "\"" << std::endl;
             return cout;
         
         case IR::OP::Type::Block:

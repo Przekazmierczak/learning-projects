@@ -141,6 +141,31 @@ std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
 }
 
 std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
+    if (match(Token::Type::Var) && matchNext(Token::Type::Lpar)) {
+        Token callToken = tokens[index];
+        callToken.type = Token::Type::Call;
+        index++; // consume call
+        index++; // consume lpar
+
+        std::vector<std::unique_ptr<NodeAST>> argumentsAST;
+
+        while (!match(Token::Type::Rpar)) {
+            argumentsAST.push_back(createExpression());
+
+            if (match(Token::Type::Comma)) {
+                index++;
+            } else if (match(Token::Type::Rpar)) {
+                break;
+            } else {
+                throwError("Incorrect function call", tokens[index].line, tokens[index].position);
+            }
+        }
+
+        index++; // consume rpar
+
+        return std::make_unique<NodeAST>(NodeAST(callToken, std::move(argumentsAST)));
+    }
+
     if (
         match(Token::Type::Int) ||
         match(Token::Type::Bool) ||
@@ -166,6 +191,13 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
 
 bool Parser::match(Token::Type type) {
     if (index < tokens.size() && tokens[index].type == type) {
+        return true;
+    }
+    return false;
+}
+
+bool Parser::matchNext(Token::Type type) {
+    if (index + 1< tokens.size() && tokens[index + 1].type == type) {
         return true;
     }
     return false;

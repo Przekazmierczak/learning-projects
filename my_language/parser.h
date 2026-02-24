@@ -31,10 +31,13 @@ struct Parser {
             condition(std::move(newCondition)),
             left(std::move(newLeft)),
             right(std::move(newRight)) {}
+        NodeAST(Token newToken, std::vector<std::unique_ptr<NodeAST>> newStatements) :
+            token(newToken),
+            statements(std::move(newStatements)) {}
         NodeAST(Token newToken, std::vector<std::unique_ptr<NodeAST>> newStatements, std::unique_ptr<NodeAST> newLeft) :
             token(newToken),
             statements(std::move(newStatements)),
-            left(std::move(newLeft)){}
+            left(std::move(newLeft)) {}
         NodeAST(
             Token newToken,
             std::unique_ptr<NodeAST> newCondition,
@@ -70,6 +73,7 @@ struct Parser {
     std::unique_ptr<NodeAST> parsePrimary();
     
     bool match(Token::Type type);
+    bool matchNext(Token::Type type);
 
     std::unique_ptr<NodeAST> createIfNode();
     std::unique_ptr<NodeAST> createWhileNode();
