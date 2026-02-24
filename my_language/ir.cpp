@@ -9,50 +9,50 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             newInstruction.operation = OP::Type::Int;
             newInstruction.dst = getNextIndex();
             newInstruction.val = node->token.val;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::Bool:
             newInstruction.operation = OP::Type::Bool;
             newInstruction.dst = getNextIndex();
             newInstruction.bval = node->token.bval;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::Block:
-            if (currContext == ContextType::Default) pushBlock();
+            pushBlock();
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
-            if (currContext == ContextType::Default) popBlock();
+            popBlock();
             return -1;
 
         case Token::Type::Neg:
             newInstruction.operation = OP::Type::Neg;
             newInstruction.src1 = generate(node->left);
             newInstruction.dst = getNextIndex();
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::Assign:
             newInstruction.operation = OP::Type::Assign;
             newInstruction.dst = generate(node->right);
             newInstruction.name = node->left->token.name;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return -1;
 
         case Token::Type::Var:
             newInstruction.operation = OP::Type::Load;
             newInstruction.dst = getNextIndex();
             newInstruction.name = node->token.name;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::Arg:
             newInstruction.operation = OP::Type::Assign;
             newInstruction.dst = getNextIndex();
             newInstruction.name = node->token.name;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::If:
@@ -70,13 +70,13 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         case Token::Type::Dec:
             newInstruction.operation = OP::Type::Dec;
             newInstruction.name = node->left->token.name;
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             if (node->right != nullptr) {
                 OP assign;
                 assign.operation = OP::Type::Assign;
                 assign.dst = generate(node->right);
                 assign.name = newInstruction.name;
-                instructions.push_back(assign);
+                pushInstruction(assign);
             }
             return -1;
 
@@ -91,7 +91,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             currLocalReg = 0;
 
             std::string name = node->token.name;
-            int startPC = instructions.size();
+            int startPC = functionsInstructions.size();
             int argsCount = node->statements.size();
 
             for (int i = 0; i < node->statements.size(); i++) {
@@ -110,6 +110,8 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 
         case Token::Type::Call: {
             std::string name = node->token.name;
+
+            int ret = getNextIndex();
 
             std::vector<int> argsReg;
 
@@ -130,20 +132,21 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             for (int i = 0; i < argsReg.size(); i++) {
                 loadArg.dst = getNextIndex();
                 loadArg.src1 = argsReg[i];
-                instructions.push_back(loadArg);
+                pushInstruction(loadArg);
             }
 
             newInstruction.operation = OP::Type::Call;
             newInstruction.name = name;
-            instructions.push_back(newInstruction);
+            newInstruction.dst = ret;
+            pushInstruction(newInstruction);
 
-            return -99; // function return?
+            return newInstruction.dst;
         }
 
         case Token::Type::Ret:
             newInstruction.operation = OP::Type::Ret;
             newInstruction.dst = generate(node->left);
-            instructions.push_back(newInstruction);
+            pushInstruction(newInstruction);
             return newInstruction.dst;
 
         case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
@@ -164,7 +167,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     newInstruction.src1 = generate(node->left);
     newInstruction.src2 = generate(node->right);
     newInstruction.dst = getNextIndex();
-    instructions.push_back(newInstruction);
+    pushInstruction(newInstruction);
     return newInstruction.dst;
 }
 
@@ -174,7 +177,7 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     JmpZ.src1 = generate(node->condition);
     
     int pcSkipIf = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpZ);
+    pushInstruction(JmpZ);
     generate(node->left);
     instructions[pcSkipIf].dst = instructions.size();
 
@@ -182,7 +185,7 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
         OP Jmp;
         Jmp.operation = OP::Type::Jmp;
         int pcSkipElse = instructions.size(); // Save Jmp location
-        instructions.push_back(Jmp);
+        pushInstruction(Jmp);
 
         instructions[pcSkipIf].dst = instructions.size(); // Fix jmpnz location
 
@@ -198,13 +201,13 @@ void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     JmpZ.src1 = generate(node->condition);
     
     int pcEnd = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpZ);
+    pushInstruction(JmpZ);
     generate(node->left);
 
     OP Jmp;
     Jmp.operation = OP::Type::Jmp;
     Jmp.dst = pcStart;
-    instructions.push_back(Jmp);
+    pushInstruction(Jmp);
 
     instructions[pcEnd].dst = instructions.size();
 }
@@ -220,14 +223,14 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     JmpZ.src1 = generate(node->condition);
     
     int pcEnd = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpZ);
+    pushInstruction(JmpZ);
     generate(node->left); // generate for loop block
     generate(node->increment); // generate incrementation
 
     OP Jmp;
     Jmp.operation = OP::Type::Jmp;
     Jmp.dst = pcStart;
-    instructions.push_back(Jmp);
+    pushInstruction(Jmp);
 
     instructions[pcEnd].dst = instructions.size();
 
@@ -241,7 +244,7 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     JmpLeft.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
     JmpLeft.src1 = left;
     int pcJmpLeft = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpLeft);
+    pushInstruction(JmpLeft);
     
     int right = generate(node->right);
 
@@ -249,7 +252,7 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     JmpRight.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
     JmpRight.src1 = right;
     int pcJmpRight = instructions.size(); // Save Jmpnz location
-    instructions.push_back(JmpRight);
+    pushInstruction(JmpRight);
 
     int res = getNextIndex();
     addConst(res, ifAnd ? true : false);
@@ -257,7 +260,7 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     OP Jmp;
     Jmp.operation = OP::Type::Jmp;
     int pcJmp = instructions.size(); // Save Jmp location
-    instructions.push_back(Jmp);
+    pushInstruction(Jmp);
 
     instructions[pcJmpLeft].dst = instructions.size();
     instructions[pcJmpRight].dst = instructions.size();
@@ -274,7 +277,7 @@ int IR::addConst(int dst, int val) {
     mov.operation = OP::Type::Int;
     mov.dst = dst;
     mov.val = val;
-    instructions.push_back(mov);
+    pushInstruction(mov);
     return mov.dst;
 }
 
@@ -283,20 +286,28 @@ int IR::addConst(int dst, bool val) {
     mov.operation = OP::Type::Bool;
     mov.dst = dst;
     mov.bval = val;
-    instructions.push_back(mov);
+    pushInstruction(mov);
     return mov.dst;
 }
 
 void IR::pushBlock() {
     OP block;
     block.operation = OP::Type::Block;
-    instructions.push_back(block);
+    pushInstruction(block);
 }
 
 void IR::popBlock() {
     OP deblock;
     deblock.operation = OP::Type::Deblock;
-    instructions.push_back(deblock);    
+    pushInstruction(deblock);    
+}
+
+void IR::pushInstruction(OP instruction) {
+    if (currContext == ContextType::Default) {
+        instructions.push_back(instruction);
+    } else if (currContext == ContextType::FunDeclaration) {
+        functionsInstructions.push_back(instruction);
+    }
 }
 
 void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
@@ -308,10 +319,19 @@ void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
 }
 
 void IR::print() {
+    std::cout << "Global instructions:" << std::endl;
     for (int i = 0; i < instructions.size(); i++) {
         std::cout << i << ". " << instructions[i];
     }
+    std::cout << std::endl;
 
+    std::cout << "Function instructions:" << std::endl;
+    for (int i = 0; i < functionsInstructions.size(); i++) {
+        std::cout << i << ". " << functionsInstructions[i];
+    }
+    std::cout << std::endl;
+
+    std::cout << "Functions metadata:" << std::endl;
     for (const auto& pair : functionsMap)
     {
         std::cout << pair.first << " : startPC " << pair.second.startPC
@@ -319,6 +339,7 @@ void IR::print() {
                   << ", regCount " << pair.second.regCount
                   << std::endl;
     }
+    std::cout << std::endl;
 }
 
 std::ostream& operator << (std::ostream& cout, IR::OP& inst)
@@ -367,7 +388,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
 
         case IR::OP::Type::Call:
-            cout << "Call \"" << inst.name << "\"" << std::endl;
+            cout << "Call r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
             return cout;
         
         case IR::OP::Type::Block:

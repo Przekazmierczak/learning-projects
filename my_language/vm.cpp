@@ -1,6 +1,10 @@
 #include "vm.h"
 
-void VM::run(const std::vector<IR::OP>& instructions) {
+void VM::run(
+    const std::vector<IR::OP>& instructions,
+    const std::vector<IR::OP>& functionsInstructions,
+    const std::unordered_map<std::string, IR::FunctionMeta>& functionsMap
+) {
     while (pc < instructions.size()) {
         switch (instructions[pc].operation) {
 
@@ -107,6 +111,20 @@ void VM::run(const std::vector<IR::OP>& instructions) {
                 break;
             }
 
+            case IR::OP::Type::Call: {
+                // int index = findInMaps(instructions[pc].name);
+                // if (index == -1) {
+                //     throwError("Unknown variable name: \"" + instructions[pc].name + "\"");
+                // }
+                // if (maps[index][instructions[pc].name] == -1) {
+                //     throwError("Variable \"" + instructions[pc].name + "\" was never initialized");
+                // }
+                // resizeReg(instructions[pc].dst);
+                // registers[instructions[pc].dst] = registers[maps[index][instructions[pc].name]];
+                // pc++;
+                // break;
+            }
+
             case IR::OP::Type::Block:
                 maps.emplace_back();
                 pc++;
@@ -179,6 +197,37 @@ void VM::resizeReg(int dst) {
     if (dst >= registers.size()) {
         registers.resize(dst + 1);
     }
+}
+
+void VM::pushFrame(Frame newFrame) {
+    if (frames.size() > 0) {
+        
+    } else {
+
+    }
+    frames.push_back(newFrame);
+}
+
+void VM::popFrame() {
+    if (frames.size() > 0) {
+        pc = frames.front().returnPC;
+        frames.pop_back();
+        currTopStack = frames.front().topStack;
+        currBottomStack = frames.front().bottomStack;
+    } else {
+        throwError("__main__ frame should not be poped");
+    }
+}
+
+IR::OP VM::getInstruction(
+    int pc,
+    const std::vector<IR::OP>& instructions,
+    const std::vector<IR::OP>& functionsInstructions
+) {
+    if (frames.size() > 0) {
+        return functionsInstructions[pc];
+    }
+    return instructions[pc];
 }
 
 bool VM::isInt(Variable var) {

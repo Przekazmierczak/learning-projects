@@ -57,6 +57,7 @@ struct IR {
     int currLocalReg = 0;
 
     std::vector<OP> instructions;
+    std::vector<OP> functionsInstructions;
 
     std::unordered_map<std::string, FunctionMeta> functionsMap;
 
@@ -70,6 +71,7 @@ struct IR {
 
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
         generate(node);
+        functionsMap["__main__"] = FunctionMeta(0, 0, currGlobalReg);
     }
 
     int generate(const std::unique_ptr<Parser::NodeAST>& node);
@@ -81,6 +83,7 @@ struct IR {
     int addConst(int dst, bool val);
     void pushBlock();
     void popBlock();
+    void pushInstruction(OP instruction);
     void addFunctionMeta(std::string name, FunctionMeta functionMeta);
     void print();
 };
