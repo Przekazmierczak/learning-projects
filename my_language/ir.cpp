@@ -48,12 +48,18 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             pushInstruction(newInstruction);
             return newInstruction.dst;
 
-        case Token::Type::Arg:
+        case Token::Type::Arg: {
+            OP dec;
+            dec.operation = OP::Type::Dec;
+            dec.name = node->token.name;
+            pushInstruction(dec);
+
             newInstruction.operation = OP::Type::Assign;
             newInstruction.dst = getNextIndex();
             newInstruction.name = node->token.name;
             pushInstruction(newInstruction);
             return newInstruction.dst;
+        }
 
         case Token::Type::If:
             addIfInstructions(node);
