@@ -130,7 +130,6 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             OP loadArg;
             loadArg.operation = OP::Type::Push;
             for (int i = 0; i < argsReg.size(); i++) {
-                loadArg.dst = getNextIndex();
                 loadArg.src1 = argsReg[i];
                 pushInstruction(loadArg);
             }
@@ -368,7 +367,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
 
         case IR::OP::Type::Push:
-            cout << "Push r" << inst.dst << ", r" << inst.src1 << std::endl;
+            cout << "Push r" << inst.src1 << std::endl;
             return cout;
 
         case IR::OP::Type::Jmp:

@@ -22,7 +22,7 @@ struct IR {
             Block, Deblock,
             And, Or,
             Call, Ret,
-            Push
+            Mov, Push
         };
 
         // mandatory
