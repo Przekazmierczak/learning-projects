@@ -90,7 +90,7 @@ struct VM {
     std::unordered_map<std::string, IR::FunctionMeta>& functionsMap;
 
     std::vector<Variable> registers;
-    std::vector<std::unordered_map<std::string, int>> maps;
+    // std::vector<std::unordered_map<std::string, int>> maps;
     std::vector<Frame> frames;
 
     int pc = 0;
@@ -114,6 +114,7 @@ struct VM {
         mainFrame.topStack = functionsMap["__main__"].argsCount + functionsMap["__main__"].regCount;
 
         frames.push_back(mainFrame);
+        registersEnd = mainFrame.topStack;
 
         run();
     }
@@ -123,7 +124,9 @@ struct VM {
 
     void pushFrame(Frame newFrame);
     void popFrame();
+
     const IR::OP& getInstruction(int pc);
+    Variable& getVariable(int offset);
 
     bool isInt(Variable var);
     bool isBool(Variable var);

@@ -1,28 +1,33 @@
 #include "vm.h"
 
 void VM::run() {
-    while (pc < instructions.size()) {
+    while (frames.size() > 1 || pc < instructions.size()) {
+        // if (frames.size() > 1) {
+        //     std::cout << "f" << pc << std::endl;
+        // } else {
+        //     std::cout << pc << std::endl;
+        // }
         switch (getInstruction(pc).operation) {
 
             case IR::OP::Type::Int:
                 resizeReg(getInstruction(pc).dst);
-                registers[getInstruction(pc).dst].type = VM::Type::Int;
-                registers[getInstruction(pc).dst].i = getInstruction(pc).val;
+                getVariable(getInstruction(pc).dst).type = VM::Type::Int;
+                getVariable(getInstruction(pc).dst).i = getInstruction(pc).val;
                 pc++;
                 break;
 
             case IR::OP::Type::Bool:
                 resizeReg(getInstruction(pc).dst);
-                registers[getInstruction(pc).dst].type = VM::Type::Bool;
-                registers[getInstruction(pc).dst].b = getInstruction(pc).bval;
+                getVariable(getInstruction(pc).dst).type = VM::Type::Bool;
+                getVariable(getInstruction(pc).dst).b = getInstruction(pc).bval;
                 pc++;
                 break;
 
             case IR::OP::Type::Add:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(registers[getInstruction(pc).src1]) && isInt(registers[getInstruction(pc).src2])) {
-                    registers[getInstruction(pc).dst].type = Type::Int;
-                    registers[getInstruction(pc).dst].i = registers[getInstruction(pc).src1].i + registers[getInstruction(pc).src2].i;
+                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
+                    getVariable(getInstruction(pc).dst).type = Type::Int;
+                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i + getVariable(getInstruction(pc).src2).i;
                 } else {
                     throwError("Incorrect types for Add");
                 }
@@ -31,9 +36,9 @@ void VM::run() {
 
             case IR::OP::Type::Sub:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(registers[getInstruction(pc).src1]) && isInt(registers[getInstruction(pc).src2])) {
-                    registers[getInstruction(pc).dst].type = Type::Int;
-                    registers[getInstruction(pc).dst].i = registers[getInstruction(pc).src1].i - registers[getInstruction(pc).src2].i;
+                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
+                    getVariable(getInstruction(pc).dst).type = Type::Int;
+                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i - getVariable(getInstruction(pc).src2).i;
                 } else {
                     throwError("Incorrect types for Sub");
                 }
@@ -42,9 +47,9 @@ void VM::run() {
 
             case IR::OP::Type::Mul:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(registers[getInstruction(pc).src1]) && isInt(registers[getInstruction(pc).src2])) {
-                    registers[getInstruction(pc).dst].type = Type::Int;
-                    registers[getInstruction(pc).dst].i = registers[getInstruction(pc).src1].i * registers[getInstruction(pc).src2].i;
+                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
+                    getVariable(getInstruction(pc).dst).type = Type::Int;
+                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i * getVariable(getInstruction(pc).src2).i;
                 } else {
                     throwError("Incorrect types for Mul");
                 }
@@ -53,10 +58,10 @@ void VM::run() {
 
             case IR::OP::Type::Div:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(registers[getInstruction(pc).src1]) && isInt(registers[getInstruction(pc).src2])) {
-                    if (registers[getInstruction(pc).src2].i == 0) throwError("Divide by zero error");
-                    registers[getInstruction(pc).dst].type = Type::Int;
-                    registers[getInstruction(pc).dst].i = registers[getInstruction(pc).src1].i / registers[getInstruction(pc).src2].i;
+                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
+                    if (getVariable(getInstruction(pc).src2).i == 0) throwError("Divide by zero error");
+                    getVariable(getInstruction(pc).dst).type = Type::Int;
+                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i / getVariable(getInstruction(pc).src2).i;
                 } else {
                     throwError("Incorrect types for Div");
                 }
@@ -65,9 +70,9 @@ void VM::run() {
 
             case IR::OP::Type::Neg:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(registers[getInstruction(pc).src1])) {
-                    registers[getInstruction(pc).dst].type = Type::Int;
-                    registers[getInstruction(pc).dst].i = -registers[getInstruction(pc).src1].i;
+                if (isInt(getVariable(getInstruction(pc).src1))) {
+                    getVariable(getInstruction(pc).dst).type = Type::Int;
+                    getVariable(getInstruction(pc).dst).i = -getVariable(getInstruction(pc).src1).i;
                 } else {
                     throwError("Incorrect types for Div");
                 }
@@ -75,10 +80,10 @@ void VM::run() {
                 break;
 
             case IR::OP::Type::Dec:
-                if (findInMap(maps.size() - 1, getInstruction(pc).name)) {
+                if (findInMap(frames.back().maps.size() - 1, getInstruction(pc).name)) {
                     throwError("Variable \"" + getInstruction(pc).name + "\" is already declared");
                 } else {
-                    maps[maps.size() - 1][getInstruction(pc).name] = -1;
+                    frames.back().maps[frames.back().maps.size() - 1][getInstruction(pc).name] = -1;
                 }
                 pc++;
                 break;
@@ -88,7 +93,7 @@ void VM::run() {
                 if (index == -1) {
                     throwError("Variable \"" + getInstruction(pc).name + "\" was never declared");
                 }
-                maps[index][getInstruction(pc).name] = getInstruction(pc).dst;
+                frames.back().maps[index][getInstruction(pc).name] = getInstruction(pc).dst;
                 pc++;
                 break;
             }
@@ -98,59 +103,84 @@ void VM::run() {
                 if (index == -1) {
                     throwError("Unknown variable name: \"" + getInstruction(pc).name + "\"");
                 }
-                if (maps[index][getInstruction(pc).name] == -1) {
+                if (frames.back().maps[index][getInstruction(pc).name] == -1) {
                     throwError("Variable \"" + getInstruction(pc).name + "\" was never initialized");
                 }
                 resizeReg(getInstruction(pc).dst);
-                registers[getInstruction(pc).dst] = registers[maps[index][getInstruction(pc).name]];
+                getVariable(getInstruction(pc).dst) = getVariable(frames.back().maps[index][getInstruction(pc).name]);
                 pc++;
                 break;
             }
 
             case IR::OP::Type::Call: {
+                // for (int i = 0; i < registers.size(); i++) {
+                //     if (registers[i].type == VM::Type::Int) {
+                //         std::cout << "r" << i << "=[int, " << registers[i].i << "],";
+                //     }
+                //     if (registers[i].type == VM::Type::Bool) {
+                //         std::cout << "r" << i << "=[bool, " << registers[i].b << "],";
+                //     }
+                //     if (registers[i].type == VM::Type::NaN) {
+                //         std::cout << "r" << i << "=[NaN],";
+                //     }
+                // }
+                // std::cout << std::endl;
+                // std::cout << "curr end" << registersEnd << std::endl;
+
                 IR::OP caller = getInstruction(pc);
                 IR::FunctionMeta funMeta = functionsMap.at(caller.name);
 
                 Frame newFrame;
                 newFrame.returnPC = pc + 1;
                 newFrame.returnReg = caller.dst;
-                newFrame.bottomStack = frames.front().topStack;
-                newFrame.topStack = funMeta.argsCount + funMeta.regCount;
+                newFrame.bottomStack = frames.back().topStack;
+                newFrame.topStack = funMeta.argsCount + funMeta.regCount + newFrame.bottomStack;
 
                 resizeReg(newFrame.topStack);
                 registersEnd = newFrame.topStack;
+                newFrame.maps.emplace_back();
 
                 frames.push_back(newFrame);
+
                 pc = funMeta.startPC;
+
+                // std::cout << "returnPC: " << newFrame.returnPC
+                //           << ", returnReg: " << newFrame.returnReg
+                //           << ", bottomStack: " << newFrame.bottomStack
+                //           << ", topStack: " << newFrame.topStack
+                //           << std::endl;
                 break;
             }
 
             case IR::OP::Type::Ret: {
-                Variable result = registers[getInstruction(pc).dst];
-                int returnReg = frames.front().returnReg;
-                int returnPc = frames.front().returnPC;
+                Variable result = getVariable(getInstruction(pc).dst);
+                int returnReg = frames.back().returnReg;
+                int returnPc = frames.back().returnPC;
 
                 frames.pop_back();
-                registers[returnReg] = result;
+                getVariable(returnReg) = result;
 
                 pc = returnPc;
-                registersEnd = frames.front().topStack;
+                registersEnd = frames.back().topStack;
                 break;
             }
 
             case IR::OP::Type::Push: {
                 resizeReg(registersEnd);
-                registers[registersEnd] = getInstruction(pc).src1;
+                // std::cout<<"registersEnd"<<registersEnd<<std::endl;
+                registers[registersEnd] = getVariable(getInstruction(pc).src1);
+                registersEnd++;
                 pc++;
+                break;
             }
 
             case IR::OP::Type::Block:
-                maps.emplace_back();
+                frames.back().maps.emplace_back();
                 pc++;
                 break;
 
             case IR::OP::Type::Deblock:
-                maps.pop_back();
+                frames.back().maps.pop_back();
                 pc++;
                 break;
 
@@ -170,14 +200,14 @@ void VM::run() {
                 break;
             
             case IR::OP::Type::JmpZ:
-                if (isBool(registers[getInstruction(pc).src1])) {
-                    if (registers[getInstruction(pc).src1].b == false) {
+                if (isBool(getVariable(getInstruction(pc).src1))) {
+                    if (getVariable(getInstruction(pc).src1).b == false) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
                     }
-                } else if (isInt(registers[getInstruction(pc).src1])) {
-                    if (registers[getInstruction(pc).src1].i == 0) {
+                } else if (isInt(getVariable(getInstruction(pc).src1))) {
+                    if (getVariable(getInstruction(pc).src1).i == 0) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
@@ -188,14 +218,14 @@ void VM::run() {
                 break;
             
             case IR::OP::Type::JmpNZ:
-                if (isBool(registers[getInstruction(pc).src1])) {
-                    if (registers[getInstruction(pc).src1].b == true) {
+                if (isBool(getVariable(getInstruction(pc).src1))) {
+                    if (getVariable(getInstruction(pc).src1).b == true) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
                     }
-                } else if (isInt(registers[getInstruction(pc).src1])) {
-                    if (registers[getInstruction(pc).src1].i != 0) {
+                } else if (isInt(getVariable(getInstruction(pc).src1))) {
+                    if (getVariable(getInstruction(pc).src1).i != 0) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
@@ -229,10 +259,10 @@ void VM::pushFrame(Frame newFrame) {
 
 void VM::popFrame() {
     if (frames.size() > 0) {
-        pc = frames.front().returnPC;
+        pc = frames.back().returnPC;
         frames.pop_back();
-        currTopStack = frames.front().topStack;
-        currBottomStack = frames.front().bottomStack;
+        currTopStack = frames.back().topStack;
+        currBottomStack = frames.back().bottomStack;
     } else {
         throwError("__main__ frame should not be poped");
     }
@@ -243,6 +273,10 @@ const IR::OP& VM::getInstruction(int pc) {
         return functionsInstructions[pc];
     }
     return instructions[pc];
+}
+
+VM::Variable& VM::getVariable(int offset) {
+    return registers[frames.back().bottomStack + offset];
 }
 
 bool VM::isInt(Variable var) {
@@ -256,60 +290,60 @@ bool VM::isBool(Variable var) {
 }
 
 bool VM::findInMap(int index, const std::string& name) {
-    return maps[index].find(name) != maps[index].end();
+    return frames.back().maps[index].find(name) != frames.back().maps[index].end();
 }
 
 int VM::findInMaps(const std::string& name) {
-    for (int i = maps.size() - 1; i >= 0; i--) {
+    for (int i = frames.back().maps.size() - 1; i >= 0; i--) {
         if (findInMap(i, name)) return i;
     }
     return -1;
 }
 
 void VM::runCmp() {
-    if (isInt(registers[getInstruction(pc).src1]) && isInt(registers[getInstruction(pc).src2])) {
-        registers[getInstruction(pc).dst].type = Type::Bool;
+    if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
+        getVariable(getInstruction(pc).dst).type = Type::Bool;
 
         switch (getInstruction(pc).operation) {
             
             case IR::OP::Type::CmpEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i == registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i == getVariable(getInstruction(pc).src2).i;
                 break;
 
             case IR::OP::Type::CmpNEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i != registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i != getVariable(getInstruction(pc).src2).i;
                 break;
 
             case IR::OP::Type::CmpGt:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i > registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i > getVariable(getInstruction(pc).src2).i;
                 break;
 
             case IR::OP::Type::CmpLs:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i < registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i < getVariable(getInstruction(pc).src2).i;
                 break;
             
             case IR::OP::Type::CmpGtEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i >= registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i >= getVariable(getInstruction(pc).src2).i;
                 break;
             
             case IR::OP::Type::CmpLsEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].i <= registers[getInstruction(pc).src2].i;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i <= getVariable(getInstruction(pc).src2).i;
                 break;
 
             default:
                 throwError("Incorrect types for Cmp");
         }
-    } else if (isBool(registers[getInstruction(pc).src1]) && isBool(registers[getInstruction(pc).src2])) {
-        registers[getInstruction(pc).dst].type = Type::Bool;
+    } else if (isBool(getVariable(getInstruction(pc).src1)) && isBool(getVariable(getInstruction(pc).src2))) {
+        getVariable(getInstruction(pc).dst).type = Type::Bool;
 
         switch (getInstruction(pc).operation) {
             
             case IR::OP::Type::CmpEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].b == registers[getInstruction(pc).src2].b;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).b == getVariable(getInstruction(pc).src2).b;
                 break;
 
             case IR::OP::Type::CmpNEq:
-                registers[getInstruction(pc).dst].b = registers[getInstruction(pc).src1].b != registers[getInstruction(pc).src2].b;
+                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).b != getVariable(getInstruction(pc).src2).b;
                 break;
 
             default:
