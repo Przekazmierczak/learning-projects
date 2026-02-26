@@ -107,6 +107,27 @@ int tests() {
     VM vm4(irgenerator4.instructions, irgenerator4.functionsInstructions, irgenerator4.functionsMap);
 
     assert(vm4.registers[vm4.registers.size() - 1] == VM::Variable(4));
+
+    Lexer lexer5("test5.duckbugger");
+    Parser parser5(lexer5.tokens);
+    IR irgenerator5(parser5.ASTroot);
+    VM vm5(irgenerator5.instructions, irgenerator5.functionsInstructions, irgenerator5.functionsMap);
+
+    assert(vm5.registers[0] == VM::Variable(10));
+    
+    Lexer lexer6("test6.duckbugger");
+    Parser parser6(lexer6.tokens);
+    IR irgenerator6(parser6.ASTroot);
+    VM vm6(irgenerator6.instructions, irgenerator6.functionsInstructions, irgenerator6.functionsMap);
+
+    assert(vm6.registers[0] == VM::Variable(56));
+
+    Lexer lexer7("test7.duckbugger");
+    Parser parser7(lexer7.tokens);
+    IR irgenerator7(parser7.ASTroot);
+    VM vm7(irgenerator7.instructions, irgenerator7.functionsInstructions, irgenerator7.functionsMap);
+
+    assert(vm7.registers[0] == VM::Variable(55));
     
     std::cout << "All test passed!" << std::endl;
 

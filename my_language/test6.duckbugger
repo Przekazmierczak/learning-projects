@@ -1,0 +1,7 @@
+fun test a;
+    if a > 10;
+        return 1
+    else;
+        return a + test(a + 1)
+
+test(1)
