@@ -100,15 +100,15 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             int startPC = functionsInstructions.size();
             int argsCount = node->statements.size();
 
+            addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
+
             for (int i = 0; i < node->statements.size(); i++) {
                 generate(node->statements[i]);
             }
 
             generate(node->left);
 
-            int regCount = currLocalReg - argsCount;
-
-            addFunctionMeta(name, FunctionMeta(startPC, argsCount, regCount));
+            functionsMap[name].regCount = currLocalReg - argsCount;
 
             currContext = ContextType::Default;
             return -1;
@@ -181,31 +181,31 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     JmpZ.operation = OP::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
-    int pcSkipIf = instructions.size(); // Save Jmpnz location
+    int pcSkipIf = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpZ);
     generate(node->left);
-    instructions[pcSkipIf].dst = instructions.size();
+    currInstructionArray()[pcSkipIf].dst = currInstructionArray().size();
 
     if (node->right) {
         OP Jmp;
         Jmp.operation = OP::Type::Jmp;
-        int pcSkipElse = instructions.size(); // Save Jmp location
+        int pcSkipElse = currInstructionArray().size(); // Save Jmp location
         pushInstruction(Jmp);
 
-        instructions[pcSkipIf].dst = instructions.size(); // Fix jmpnz location
+        currInstructionArray()[pcSkipIf].dst = currInstructionArray().size(); // Fix jmpnz location
 
         generate(node->right);
-        instructions[pcSkipElse].dst = instructions.size();
+        currInstructionArray()[pcSkipElse].dst = currInstructionArray().size();
     }
 }
 
 void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    int pcStart = instructions.size();
+    int pcStart = currInstructionArray().size();
     OP JmpZ;
     JmpZ.operation = OP::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
-    int pcEnd = instructions.size(); // Save Jmpnz location
+    int pcEnd = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpZ);
     generate(node->left);
 
@@ -214,7 +214,7 @@ void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     Jmp.dst = pcStart;
     pushInstruction(Jmp);
 
-    instructions[pcEnd].dst = instructions.size();
+    currInstructionArray()[pcEnd].dst = currInstructionArray().size();
 }
 
 void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
@@ -222,12 +222,12 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     generate(node->right); // generate initialization
 
-    int pcStart = instructions.size();
+    int pcStart = currInstructionArray().size();
     OP JmpZ;
     JmpZ.operation = OP::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
-    int pcEnd = instructions.size(); // Save Jmpnz location
+    int pcEnd = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpZ);
     generate(node->left); // generate for loop block
     generate(node->increment); // generate incrementation
@@ -237,7 +237,7 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     Jmp.dst = pcStart;
     pushInstruction(Jmp);
 
-    instructions[pcEnd].dst = instructions.size();
+    currInstructionArray()[pcEnd].dst = currInstructionArray().size();
 
     popBlock();
 }
@@ -248,7 +248,7 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     OP JmpLeft;
     JmpLeft.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
     JmpLeft.src1 = left;
-    int pcJmpLeft = instructions.size(); // Save Jmpnz location
+    int pcJmpLeft = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpLeft);
     
     int right = generate(node->right);
@@ -256,7 +256,7 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     OP JmpRight;
     JmpRight.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
     JmpRight.src1 = right;
-    int pcJmpRight = instructions.size(); // Save Jmpnz location
+    int pcJmpRight = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpRight);
 
     int res = getNextIndex();
@@ -264,15 +264,15 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
 
     OP Jmp;
     Jmp.operation = OP::Type::Jmp;
-    int pcJmp = instructions.size(); // Save Jmp location
+    int pcJmp = currInstructionArray().size(); // Save Jmp location
     pushInstruction(Jmp);
 
-    instructions[pcJmpLeft].dst = instructions.size();
-    instructions[pcJmpRight].dst = instructions.size();
+    currInstructionArray()[pcJmpLeft].dst = currInstructionArray().size();
+    currInstructionArray()[pcJmpRight].dst = currInstructionArray().size();
 
     addConst(res, ifAnd ? false : true);
 
-    instructions[pcJmp].dst = instructions.size();
+    currInstructionArray()[pcJmp].dst = currInstructionArray().size();
 
     return res;
 }
@@ -313,6 +313,15 @@ void IR::pushInstruction(OP instruction) {
     } else if (currContext == ContextType::FunDeclaration) {
         functionsInstructions.push_back(instruction);
     }
+}
+
+std::vector<IR::OP>& IR::currInstructionArray() {
+    if (currContext == ContextType::Default) {
+        return instructions;
+    } else if (currContext == ContextType::FunDeclaration) {
+        return functionsInstructions;
+    }
+    throwError("Incorrect currContext");
 }
 
 void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {

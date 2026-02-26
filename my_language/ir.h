@@ -83,7 +83,10 @@ struct IR {
     int addConst(int dst, bool val);
     void pushBlock();
     void popBlock();
+
     void pushInstruction(OP instruction);
+    std::vector<OP>& currInstructionArray();
+
     void addFunctionMeta(std::string name, FunctionMeta functionMeta);
     void print();
 };
