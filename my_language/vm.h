@@ -27,38 +27,6 @@ struct VM {
         Variable(int val) : type(Type::Int), i(val) {};
         Variable(bool val) : type(Type::Bool), b(val) {};
 
-        // // Copy constructor
-        // Variable(const Variable& other): type(other.type) {
-        //     if (type == Type::Int) {
-        //         i = other.i;
-        //     } else if (type == Type::Bool) {
-        //         b = other.b;
-        //     } else {
-        //         throwError("Error in Variable copy constructor");
-        //     }
-        //     std::cout << "Copy constructor called\n";
-        // }
-
-        // // Copy assignment operator
-        // Variable& operator=(const Variable& other)
-        // {
-        //     std::cout << "Copy assignment called\n";
-
-        //     if (this == &other)
-        //         return *this;
-
-        //     type = other.type;
-        //     if (type == Type::Int) {
-        //         i = other.i;
-        //     } else if (type == Type::Bool) {
-        //         b = other.b;
-        //     } else {
-        //         throwError("Error in Variable assignment operator");
-        //     }
-
-        //     return *this;
-        // }
-
         bool operator==(const Variable& other) const {
             if (type == other.type) {
                 switch (type) {
@@ -130,8 +98,10 @@ struct VM {
 
     bool isInt(Variable var);
     bool isBool(Variable var);
+
     bool findInMap(int index, const std::string& name);
     int findInMaps(const std::string& name);
+
     void runCmp();
 };
 

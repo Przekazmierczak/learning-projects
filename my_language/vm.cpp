@@ -2,11 +2,7 @@
 
 void VM::run() {
     while (frames.size() > 1 || pc < instructions.size()) {
-        // if (frames.size() > 1) {
-        //     std::cout << "f" << pc << std::endl;
-        // } else {
-        //     std::cout << pc << std::endl;
-        // }
+
         switch (getInstruction(pc).operation) {
 
             case IR::OP::Type::Int:
@@ -113,20 +109,6 @@ void VM::run() {
             }
 
             case IR::OP::Type::Call: {
-                // for (int i = 0; i < registers.size(); i++) {
-                //     if (registers[i].type == VM::Type::Int) {
-                //         std::cout << "r" << i << "=[int, " << registers[i].i << "],";
-                //     }
-                //     if (registers[i].type == VM::Type::Bool) {
-                //         std::cout << "r" << i << "=[bool, " << registers[i].b << "],";
-                //     }
-                //     if (registers[i].type == VM::Type::NaN) {
-                //         std::cout << "r" << i << "=[NaN],";
-                //     }
-                // }
-                // std::cout << std::endl;
-                // std::cout << "curr end" << registersEnd << std::endl;
-
                 IR::OP caller = getInstruction(pc);
                 IR::FunctionMeta funMeta = functionsMap.at(caller.name);
 
@@ -143,12 +125,6 @@ void VM::run() {
                 frames.push_back(newFrame);
 
                 pc = funMeta.startPC;
-
-                // std::cout << "returnPC: " << newFrame.returnPC
-                //           << ", returnReg: " << newFrame.returnReg
-                //           << ", bottomStack: " << newFrame.bottomStack
-                //           << ", topStack: " << newFrame.topStack
-                //           << std::endl;
                 break;
             }
 
@@ -167,7 +143,6 @@ void VM::run() {
 
             case IR::OP::Type::Push: {
                 resizeReg(registersEnd);
-                // std::cout<<"registersEnd"<<registersEnd<<std::endl;
                 registers[registersEnd] = getVariable(getInstruction(pc).src1);
                 registersEnd++;
                 pc++;
@@ -245,26 +220,6 @@ void VM::run() {
 void VM::resizeReg(int dst) {
     if (dst >= registers.size()) {
         registers.resize(dst + 1);
-    }
-}
-
-void VM::pushFrame(Frame newFrame) {
-    if (frames.size() > 0) {
-        
-    } else {
-
-    }
-    frames.push_back(newFrame);
-}
-
-void VM::popFrame() {
-    if (frames.size() > 0) {
-        pc = frames.back().returnPC;
-        frames.pop_back();
-        currTopStack = frames.back().topStack;
-        currBottomStack = frames.back().bottomStack;
-    } else {
-        throwError("__main__ frame should not be poped");
     }
 }
 

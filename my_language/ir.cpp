@@ -92,61 +92,12 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         case Token::Type::Or:
             return addAndOrInstructions(node, false);
 
-        case Token::Type::Fun: {
-            currContext = ContextType::FunDeclaration;
-            currLocalReg = 0;
-
-            std::string name = node->token.name;
-            int startPC = functionsInstructions.size();
-            int argsCount = node->statements.size();
-
-            addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
-
-            for (int i = 0; i < node->statements.size(); i++) {
-                generate(node->statements[i]);
-            }
-
-            generate(node->left);
-
-            functionsMap[name].regCount = currLocalReg - argsCount;
-
-            currContext = ContextType::Default;
+        case Token::Type::Fun:
+            addFunInstructions(node);
             return -1;
-        }
 
-        case Token::Type::Call: {
-            std::string name = node->token.name;
-
-            int ret = getNextIndex();
-
-            std::vector<int> argsReg;
-
-            if (functionsMap.find(name) != functionsMap.end()) {
-                if (functionsMap[name].argsCount != node->statements.size()) {
-                    throwError("Incorrect number of arguments in \"" + name + "\"", node->token.line, node->token.position);
-                }
-            } else {
-                throwError("Function \"" + name + "\" was never declared", node->token.line, node->token.position);
-            }
-
-            for (int i = 0; i < node->statements.size(); i++) {
-                argsReg.push_back(generate(node->statements[i]));
-            }
-            
-            OP loadArg;
-            loadArg.operation = OP::Type::Push;
-            for (int i = 0; i < argsReg.size(); i++) {
-                loadArg.src1 = argsReg[i];
-                pushInstruction(loadArg);
-            }
-
-            newInstruction.operation = OP::Type::Call;
-            newInstruction.name = name;
-            newInstruction.dst = ret;
-            pushInstruction(newInstruction);
-
-            return newInstruction.dst;
-        }
+        case Token::Type::Call:
+            return addCallInstructions(node);
 
         case Token::Type::Ret:
             newInstruction.operation = OP::Type::Ret;
@@ -275,6 +226,56 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     currInstructionArray()[pcJmp].dst = currInstructionArray().size();
 
     return res;
+}
+
+void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    currContext = ContextType::FunDeclaration;
+    currLocalReg = 0;
+
+    std::string name = node->token.name;
+    int startPC = functionsInstructions.size();
+    int argsCount = node->statements.size();
+
+    addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
+
+    for (int i = 0; i < node->statements.size(); i++) {
+        generate(node->statements[i]);
+    }
+
+    generate(node->left);
+
+    functionsMap[name].regCount = currLocalReg - argsCount;
+
+    currContext = ContextType::Default;
+}
+
+int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    std::string name = node->token.name;
+
+    if (functionsMap.find(name) != functionsMap.end()) {
+        if (functionsMap[name].argsCount != node->statements.size()) {
+            throwError("Incorrect number of arguments in \"" + name + "\"", node->token.line, node->token.position);
+        }
+    } else {
+        throwError("Function \"" + name + "\" was never declared", node->token.line, node->token.position);
+    }
+
+    int ret = getNextIndex();
+
+    OP loadArg;
+    loadArg.operation = OP::Type::Push;
+    for (int i = 0; i < node->statements.size(); i++) {
+        loadArg.src1 = generate(node->statements[i]);
+        pushInstruction(loadArg);
+    }
+
+    OP callInstruction;
+    callInstruction.operation = OP::Type::Call;
+    callInstruction.name = name;
+    callInstruction.dst = ret;
+    pushInstruction(callInstruction);
+
+    return callInstruction.dst;
 }
 
 int IR::addConst(int dst, int val) {
