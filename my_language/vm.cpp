@@ -1,7 +1,7 @@
 #include "vm.h"
 
 void VM::run() {
-    while (frames.size() > 1 || pc < instructions.size()) {
+    while (pc < (*frames.back().instructions).size()) {
 
         switch (getInstruction(pc).operation) {
 
@@ -89,7 +89,7 @@ void VM::run() {
                 if (index == -1) {
                     throwError("Variable \"" + getInstruction(pc).name + "\" was never declared");
                 }
-                frames.back().maps[index][getInstruction(pc).name] = getInstruction(pc).dst;
+                frames.back().maps[index][getInstruction(pc).name] = getVariable(getInstruction(pc).dst);
                 pc++;
                 break;
             }
@@ -103,7 +103,7 @@ void VM::run() {
                     throwError("Variable \"" + getInstruction(pc).name + "\" was never initialized");
                 }
                 resizeReg(getInstruction(pc).dst);
-                getVariable(getInstruction(pc).dst) = getVariable(frames.back().maps[index][getInstruction(pc).name]);
+                getVariable(getInstruction(pc).dst) = frames.back().maps[index][getInstruction(pc).name];
                 pc++;
                 break;
             }
@@ -113,6 +113,7 @@ void VM::run() {
                 IR::FunctionMeta funMeta = functionsMap.at(caller.name);
 
                 Frame newFrame;
+                newFrame.instructions = &functionsInstructions;
                 newFrame.returnPC = pc + 1;
                 newFrame.returnReg = caller.dst;
                 newFrame.bottomStack = frames.back().topStack;
@@ -215,6 +216,12 @@ void VM::run() {
                 break;
         }
     }
+
+    if (frames.size() > 1) {
+        frames.pop_back();
+        // ADD empty return function !!!!!
+        run();
+    }
 }
 
 void VM::resizeReg(int dst) {
@@ -224,10 +231,7 @@ void VM::resizeReg(int dst) {
 }
 
 const IR::OP& VM::getInstruction(int pc) {
-    if (frames.size() > 1) {
-        return functionsInstructions[pc];
-    }
-    return instructions[pc];
+    return (*frames.back().instructions)[pc];
 }
 
 VM::Variable& VM::getVariable(int offset) {
