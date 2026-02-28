@@ -218,9 +218,7 @@ void VM::run() {
     }
 
     if (frames.size() > 1) {
-        frames.pop_back();
-        // ADD empty return function !!!!!
-        run();
+        throwError("Program termiante from function");
     }
 }
 
