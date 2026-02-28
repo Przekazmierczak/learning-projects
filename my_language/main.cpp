@@ -26,6 +26,9 @@ int main() {
         if (vm.registers[i].type == VM::Type::Bool) {
             std::cout << "r" << i << "=[bool, " << vm.registers[i].b << "],";
         }
+        if (vm.registers[i].type == VM::Type::NaN) {
+            std::cout << "r" << i << "=[Nan],";
+        }
     }
     std::cout << std::endl;
 
