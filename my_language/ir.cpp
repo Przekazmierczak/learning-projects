@@ -244,6 +244,11 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     generate(node->left);
 
+    OP blankReturn;
+    blankReturn.operation = OP::Type::Ret;
+    blankReturn.dst = getNextIndex();
+    pushInstruction(blankReturn);
+
     functionsMap[name].regCount = currLocalReg - argsCount;
 
     currContext = ContextType::Default;
