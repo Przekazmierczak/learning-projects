@@ -239,7 +239,7 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
 
     for (int i = 0; i < node->statements.size(); i++) {
-        generate(node->statements[i]);
+        functionsMap[name].argNames.push_back(node->statements[i]->token.name);
     }
 
     generate(node->left);

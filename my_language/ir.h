@@ -47,6 +47,8 @@ struct IR {
         int argsCount;
         int regCount;
 
+        std::vector<std::string> argNames;
+
         FunctionMeta() = default; 
         FunctionMeta(int pc, int args, int reg) : startPC(pc), argsCount(args), regCount(reg) {};
     };
