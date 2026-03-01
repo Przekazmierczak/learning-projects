@@ -6,47 +6,24 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     switch (node->token.type) {
 
         case Token::Type::Int:
-            newInstruction.operation = OP::Type::Int;
-            newInstruction.dst = getNextIndex();
-            newInstruction.val = node->token.val;
-            pushInstruction(newInstruction);
-            return newInstruction.dst;
+            return addIntInstructions(node);
 
         case Token::Type::Bool:
-            newInstruction.operation = OP::Type::Bool;
-            newInstruction.dst = getNextIndex();
-            newInstruction.bval = node->token.bval;
-            pushInstruction(newInstruction);
-            return newInstruction.dst;
+            return addBoolInstructions(node);
 
         case Token::Type::Block:
-            pushBlock();
-            for (int i = 0; i < node->statements.size(); i++) {
-                generate(node->statements[i]);
-            }
-            popBlock();
+            addBlockInstructions(node);
             return -1;
 
         case Token::Type::Neg:
-            newInstruction.operation = OP::Type::Neg;
-            newInstruction.src1 = generate(node->left);
-            newInstruction.dst = getNextIndex();
-            pushInstruction(newInstruction);
-            return newInstruction.dst;
+            return addNegInstructions(node);
 
         case Token::Type::Assign:
-            newInstruction.operation = OP::Type::Assign;
-            newInstruction.dst = generate(node->right);
-            newInstruction.name = node->left->token.name;
-            pushInstruction(newInstruction);
+            addAssignInstructions(node);
             return -1;
 
         case Token::Type::Var:
-            newInstruction.operation = OP::Type::Load;
-            newInstruction.dst = getNextIndex();
-            newInstruction.name = node->token.name;
-            pushInstruction(newInstruction);
-            return newInstruction.dst;
+            return addVarInstructions(node);
 
         case Token::Type::If:
             addIfInstructions(node);
@@ -60,24 +37,15 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             addForInstructions(node);
             return -1;
 
-        case Token::Type::Dec:
-            newInstruction.operation = OP::Type::Dec;
-            newInstruction.name = node->left->token.name;
-            pushInstruction(newInstruction);
-            if (node->right != nullptr) {
-                OP assign;
-                assign.operation = OP::Type::Assign;
-                assign.dst = generate(node->right);
-                assign.name = newInstruction.name;
-                pushInstruction(assign);
-            }
-            return -1;
-
         case Token::Type::And:
             return addAndOrInstructions(node, true);
 
         case Token::Type::Or:
             return addAndOrInstructions(node, false);
+
+        case Token::Type::Dec:
+            addDecInstructions(node);
+            return -1;
 
         case Token::Type::Fun:
             addFunInstructions(node);
@@ -87,10 +55,7 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
             return addCallInstructions(node);
 
         case Token::Type::Ret:
-            newInstruction.operation = OP::Type::Ret;
-            newInstruction.dst = generate(node->left);
-            pushInstruction(newInstruction);
-            return newInstruction.dst;
+            return addRetInstructions(node);
 
         case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
         case Token::Type::Sub: newInstruction.operation = OP::Type::Sub; break;
@@ -110,6 +75,58 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     newInstruction.src1 = generate(node->left);
     newInstruction.src2 = generate(node->right);
     newInstruction.dst = getNextIndex();
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
+}
+
+int IR::addIntInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Int;
+    newInstruction.dst = getNextIndex();
+    newInstruction.val = node->token.val;
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
+}
+
+int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Bool;
+    newInstruction.dst = getNextIndex();
+    newInstruction.bval = node->token.bval;
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
+}
+
+void IR::addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    pushBlock();
+    for (int i = 0; i < node->statements.size(); i++) {
+        generate(node->statements[i]);
+    }
+    popBlock();
+}
+
+int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Neg;
+    newInstruction.src1 = generate(node->left);
+    newInstruction.dst = getNextIndex();
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
+}
+
+void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Assign;
+    newInstruction.dst = generate(node->right);
+    newInstruction.name = node->left->token.name;
+    pushInstruction(newInstruction);
+}
+
+int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Load;
+    newInstruction.dst = getNextIndex();
+    newInstruction.name = node->token.name;
     pushInstruction(newInstruction);
     return newInstruction.dst;
 }
@@ -215,6 +232,20 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     return res;
 }
 
+void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Dec;
+    newInstruction.name = node->left->token.name;
+    pushInstruction(newInstruction);
+    if (node->right != nullptr) {
+        OP assign;
+        assign.operation = OP::Type::Assign;
+        assign.dst = generate(node->right);
+        assign.name = newInstruction.name;
+        pushInstruction(assign);
+    }
+}
+
 void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     currContext = ContextType::FunDeclaration;
     currLocalReg = 0;
@@ -268,6 +299,14 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     pushInstruction(callInstruction);
 
     return callInstruction.dst;
+}
+
+int IR::addRetInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::Ret;
+    newInstruction.dst = generate(node->left);
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
 }
 
 int IR::addConst(int dst, int val) {

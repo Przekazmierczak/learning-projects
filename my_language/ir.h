@@ -78,13 +78,25 @@ struct IR {
 
     int generate(const std::unique_ptr<Parser::NodeAST>& node);
 
+    int addIntInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    int addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    void addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    int addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+
+    void addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    int addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+
     void addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     void addForInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool ifAnd);
 
+    void addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+
     void addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+
+    int addRetInstructions(const std::unique_ptr<Parser::NodeAST>& node);
 
     int addConst(int dst, int val);
     int addConst(int dst, bool val);
