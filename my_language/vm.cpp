@@ -7,23 +7,20 @@ void VM::run() {
 
             case IR::OP::Type::Int:
                 resizeReg(getInstruction(pc).dst);
-                getVariable(getInstruction(pc).dst).type = VM::Type::Int;
-                getVariable(getInstruction(pc).dst).i = getInstruction(pc).val;
+                getVariable(getInstruction(pc).dst).value = getInstruction(pc).val;
                 pc++;
                 break;
 
             case IR::OP::Type::Bool:
                 resizeReg(getInstruction(pc).dst);
-                getVariable(getInstruction(pc).dst).type = VM::Type::Bool;
-                getVariable(getInstruction(pc).dst).b = getInstruction(pc).bval;
+                getVariable(getInstruction(pc).dst).value = getInstruction(pc).bval;
                 pc++;
                 break;
 
             case IR::OP::Type::Add:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
-                    getVariable(getInstruction(pc).dst).type = Type::Int;
-                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i + getVariable(getInstruction(pc).src2).i;
+                if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
+                    getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() + getVariable(getInstruction(pc).src2).getInt();
                 } else {
                     throwError("Incorrect types for Add");
                 }
@@ -32,9 +29,8 @@ void VM::run() {
 
             case IR::OP::Type::Sub:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
-                    getVariable(getInstruction(pc).dst).type = Type::Int;
-                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i - getVariable(getInstruction(pc).src2).i;
+                if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
+                    getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() - getVariable(getInstruction(pc).src2).getInt();
                 } else {
                     throwError("Incorrect types for Sub");
                 }
@@ -43,9 +39,8 @@ void VM::run() {
 
             case IR::OP::Type::Mul:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
-                    getVariable(getInstruction(pc).dst).type = Type::Int;
-                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i * getVariable(getInstruction(pc).src2).i;
+                if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
+                    getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() * getVariable(getInstruction(pc).src2).getInt();
                 } else {
                     throwError("Incorrect types for Mul");
                 }
@@ -54,10 +49,9 @@ void VM::run() {
 
             case IR::OP::Type::Div:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
-                    if (getVariable(getInstruction(pc).src2).i == 0) throwError("Divide by zero error");
-                    getVariable(getInstruction(pc).dst).type = Type::Int;
-                    getVariable(getInstruction(pc).dst).i = getVariable(getInstruction(pc).src1).i / getVariable(getInstruction(pc).src2).i;
+                if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
+                    if (getVariable(getInstruction(pc).src2).getInt() == 0) throwError("Divide by zero error");
+                    getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() / getVariable(getInstruction(pc).src2).getInt();
                 } else {
                     throwError("Incorrect types for Div");
                 }
@@ -66,11 +60,10 @@ void VM::run() {
 
             case IR::OP::Type::Neg:
                 resizeReg(getInstruction(pc).dst);
-                if (isInt(getVariable(getInstruction(pc).src1))) {
-                    getVariable(getInstruction(pc).dst).type = Type::Int;
-                    getVariable(getInstruction(pc).dst).i = -getVariable(getInstruction(pc).src1).i;
+                if (getVariable(getInstruction(pc).src1).isInt()) {
+                    getVariable(getInstruction(pc).dst).value = -getVariable(getInstruction(pc).src1).getInt();
                 } else {
-                    throwError("Incorrect types for Div");
+                    throwError("Incorrect types for Neg");
                 }
                 pc++;
                 break;
@@ -125,6 +118,10 @@ void VM::run() {
 
                 frames.push_back(newFrame);
 
+                for (int i = 0; i < funMeta.argNames.size(); i++) {
+                    frames.back().maps.back()[funMeta.argNames[i]] = registers[frames.back().bottomStack + i];
+                }
+
                 pc = funMeta.startPC;
                 break;
             }
@@ -176,14 +173,14 @@ void VM::run() {
                 break;
             
             case IR::OP::Type::JmpZ:
-                if (isBool(getVariable(getInstruction(pc).src1))) {
-                    if (getVariable(getInstruction(pc).src1).b == false) {
+                if (getVariable(getInstruction(pc).src1).isBool()) {
+                    if (std::get<bool>(getVariable(getInstruction(pc).src1).value) == false) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
                     }
-                } else if (isInt(getVariable(getInstruction(pc).src1))) {
-                    if (getVariable(getInstruction(pc).src1).i == 0) {
+                } else if (getVariable(getInstruction(pc).src1).isInt()) {
+                    if (std::get<int>(getVariable(getInstruction(pc).src1).value) == 0) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
@@ -194,14 +191,14 @@ void VM::run() {
                 break;
             
             case IR::OP::Type::JmpNZ:
-                if (isBool(getVariable(getInstruction(pc).src1))) {
-                    if (getVariable(getInstruction(pc).src1).b == true) {
+                if (getVariable(getInstruction(pc).src1).isBool()) {
+                    if (std::get<bool>(getVariable(getInstruction(pc).src1).value) == true) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
                     }
-                } else if (isInt(getVariable(getInstruction(pc).src1))) {
-                    if (getVariable(getInstruction(pc).src1).i != 0) {
+                } else if (getVariable(getInstruction(pc).src1).isInt()) {
+                    if (std::get<int>(getVariable(getInstruction(pc).src1).value) != 0) {
                         pc = getInstruction(pc).dst;
                     } else {
                         pc++;
@@ -236,16 +233,6 @@ VM::Variable& VM::getVariable(int offset) {
     return registers[frames.back().bottomStack + offset];
 }
 
-bool VM::isInt(Variable var) {
-    if (var.type == Type::Int) return true;
-    return false;
-}
-
-bool VM::isBool(Variable var) {
-    if (var.type == Type::Bool) return true;
-    return false;
-}
-
 bool VM::findInMap(int index, const std::string& name) {
     return frames.back().maps[index].find(name) != frames.back().maps[index].end();
 }
@@ -258,49 +245,45 @@ int VM::findInMaps(const std::string& name) {
 }
 
 void VM::runCmp() {
-    if (isInt(getVariable(getInstruction(pc).src1)) && isInt(getVariable(getInstruction(pc).src2))) {
-        getVariable(getInstruction(pc).dst).type = Type::Bool;
-
+    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
         switch (getInstruction(pc).operation) {
             
             case IR::OP::Type::CmpEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i == getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() == getVariable(getInstruction(pc).src2).getInt();
                 break;
 
             case IR::OP::Type::CmpNEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i != getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() != getVariable(getInstruction(pc).src2).getInt();
                 break;
 
             case IR::OP::Type::CmpGt:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i > getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() > getVariable(getInstruction(pc).src2).getInt();
                 break;
 
             case IR::OP::Type::CmpLs:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i < getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() < getVariable(getInstruction(pc).src2).getInt();
                 break;
             
             case IR::OP::Type::CmpGtEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i >= getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() >= getVariable(getInstruction(pc).src2).getInt();
                 break;
             
             case IR::OP::Type::CmpLsEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).i <= getVariable(getInstruction(pc).src2).i;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() <= getVariable(getInstruction(pc).src2).getInt();
                 break;
 
             default:
                 throwError("Incorrect types for Cmp");
         }
-    } else if (isBool(getVariable(getInstruction(pc).src1)) && isBool(getVariable(getInstruction(pc).src2))) {
-        getVariable(getInstruction(pc).dst).type = Type::Bool;
-
+    } else if (getVariable(getInstruction(pc).src1).isBool() && getVariable(getInstruction(pc).src2).isBool()) {
         switch (getInstruction(pc).operation) {
             
             case IR::OP::Type::CmpEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).b == getVariable(getInstruction(pc).src2).b;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getBool() == getVariable(getInstruction(pc).src2).getBool();
                 break;
 
             case IR::OP::Type::CmpNEq:
-                getVariable(getInstruction(pc).dst).b = getVariable(getInstruction(pc).src1).b != getVariable(getInstruction(pc).src2).b;
+                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getBool() != getVariable(getInstruction(pc).src2).getBool();
                 break;
 
             default:

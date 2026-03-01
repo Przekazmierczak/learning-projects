@@ -20,13 +20,13 @@ int main() {
     VM vm(irgenerator.instructions, irgenerator.functionsInstructions, irgenerator.functionsMap);
 
     for (int i = 0; i < vm.registers.size(); i++) {
-        if (vm.registers[i].type == VM::Type::Int) {
-            std::cout << "r" << i << "=[int, " << vm.registers[i].i << "],";
+        if (vm.registers[i].isInt()) {
+            std::cout << "r" << i << "=[int, " << std::get<int>(vm.registers[i].value) << "],";
         }
-        if (vm.registers[i].type == VM::Type::Bool) {
-            std::cout << "r" << i << "=[bool, " << vm.registers[i].b << "],";
+        if (vm.registers[i].isBool()) {
+            std::cout << "r" << i << "=[bool, " << std::get<bool>(vm.registers[i].value) << "],";
         }
-        if (vm.registers[i].type == VM::Type::NaN) {
+        if (vm.registers[i].isNaN()) {
             std::cout << "r" << i << "=[Nan],";
         }
     }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <variant>
 
 #include "ir.h"
 #include "helper.h"
@@ -16,32 +17,34 @@ struct VM {
     };
 
     struct Variable {
-        Type type = Type::NaN;
+        std::variant<std::monostate, int, bool> value;
 
-        union {
-            int i;
-            bool b;
-        };
-
-        Variable() {};
-        Variable(int val) : type(Type::Int), i(val) {};
-        Variable(bool val) : type(Type::Bool), b(val) {};
+        Variable() = default;
+        Variable(int valInt) : value(valInt) {};
+        Variable(bool valBool) : value(valBool) {};
 
         bool operator==(const Variable& other) const {
-            if (type == other.type) {
-                switch (type) {
-                    
-                    case Type::Int:
-                        return i == other.i;
+            return value == other.value;
+        }
 
-                    case Type::Bool:
-                        return b == other.b;
+        bool isInt() const {
+            return std::holds_alternative<int>(value);
+        }
 
-                    case Type::NaN:
-                        return true;
-                }
-            }
-            return false;
+        bool isBool() const {
+            return std::holds_alternative<bool>(value);
+        }
+
+        bool isNaN() const {
+            return std::holds_alternative<std::monostate>(value);
+        }
+
+        int getInt() const {
+            return std::get<int>(value);
+        }
+
+        int getBool() const {
+            return std::get<bool>(value);
         }
     };
 
@@ -96,9 +99,6 @@ struct VM {
 
     const IR::OP& getInstruction(int pc);
     Variable& getVariable(int offset);
-
-    bool isInt(Variable var);
-    bool isBool(Variable var);
 
     bool findInMap(int index, const std::string& name);
     int findInMaps(const std::string& name);
