@@ -46,8 +46,10 @@ struct IR {
         int startPC;
         int argsCount;
         int regCount;
+        int varCount;
 
         std::vector<std::string> argNames;
+        //std::vector<int> args;
 
         FunctionMeta() = default; 
         FunctionMeta(int pc, int args, int reg) : startPC(pc), argsCount(args), regCount(reg) {};
@@ -57,6 +59,11 @@ struct IR {
 
     int currGlobalReg = 0;
     int currLocalReg = 0;
+
+    std::vector<std::unordered_map<std::string, int>> varMap;
+    int nextVarIndex = 0;
+    std::vector<std::unordered_map<std::string, int>> functionVarMap;
+    int nextFunctionVarIndex = 0;
 
     std::vector<OP> instructions;
     std::vector<OP> functionsInstructions;
@@ -74,6 +81,7 @@ struct IR {
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
         generate(node);
         functionsMap["__main__"] = FunctionMeta(0, 0, currGlobalReg);
+        functionsMap["__main__"].varCount = nextVarIndex;
     }
 
     int generate(const std::unique_ptr<Parser::NodeAST>& node);
@@ -106,6 +114,12 @@ struct IR {
 
     void pushInstruction(OP instruction);
     std::vector<OP>& currInstructionArray();
+
+    std::vector<std::unordered_map<std::string, int>>& currVarMap();
+    int getNextVarIndex();
+
+    bool findInMap(int index, const std::string& name);
+    int findInMaps(const std::string& name);
 
     void addFunctionMeta(std::string name, FunctionMeta functionMeta);
     void print();

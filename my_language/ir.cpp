@@ -99,9 +99,13 @@ int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
 void IR::addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     pushBlock();
+    currVarMap().emplace_back();
+
     for (int i = 0; i < node->statements.size(); i++) {
         generate(node->statements[i]);
     }
+
+    currVarMap().pop_back();
     popBlock();
 }
 
@@ -115,18 +119,30 @@ int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
+    int index = findInMaps(node->left->token.name);
+    if (index == -1) {
+        throwError("Variable \"" + node->left->token.name + "\" was never declaredssssssssssssssssssssssss");
+    }
+
     OP newInstruction;
     newInstruction.operation = OP::Type::Assign;
     newInstruction.dst = generate(node->right);
     newInstruction.name = node->left->token.name;
+    newInstruction.src1 = currVarMap()[index][node->left->token.name];
     pushInstruction(newInstruction);
 }
 
 int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    int index = findInMaps(node->token.name);
+    if (index == -1) {
+        throwError("Unknown variable name: \"" + node->token.name + "\"sssssssssssssssssssssssssssssss");
+    }
+
     OP newInstruction;
     newInstruction.operation = OP::Type::Load;
     newInstruction.dst = getNextIndex();
     newInstruction.name = node->token.name;
+    newInstruction.src1 = currVarMap()[index][node->token.name];
     pushInstruction(newInstruction);
     return newInstruction.dst;
 }
@@ -233,15 +249,28 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
 }
 
 void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    if (findInMap(currVarMap().size() - 1, node->left->token.name)) {
+        throwError("Variable \"" + node->left->token.name + "\" is already declared");
+    }
+    // else {
+    //     currVarMap()[currVarMap().size() - 1][node->left->token.name] = -1;
+    // }
+    int newIndex = getNextVarIndex();
+    std::cout << node->left->token.name << std::endl;
+    currVarMap().back()[node->left->token.name] = newIndex;
+    std::cout << currVarMap().back()[node->left->token.name] << std::endl;
+
     OP newInstruction;
     newInstruction.operation = OP::Type::Dec;
     newInstruction.name = node->left->token.name;
+    newInstruction.dst = newIndex;
     pushInstruction(newInstruction);
     if (node->right != nullptr) {
         OP assign;
         assign.operation = OP::Type::Assign;
         assign.dst = generate(node->right);
         assign.name = newInstruction.name;
+        assign.src1 = newIndex;
         pushInstruction(assign);
     }
 }
@@ -249,6 +278,10 @@ void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     currContext = ContextType::FunDeclaration;
     currLocalReg = 0;
+    nextFunctionVarIndex = 0;
+    functionVarMap.clear();
+    functionVarMap.emplace_back();
+
 
     std::string name = node->token.name;
     int startPC = functionsInstructions.size();
@@ -258,6 +291,11 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     for (int i = 0; i < node->statements.size(); i++) {
         functionsMap[name].argNames.push_back(node->statements[i]->token.name);
+
+        int newIndex = getNextVarIndex();
+        std::cout << node->statements[i]->token.name << std::endl;
+        currVarMap().back()[node->statements[i]->token.name] = newIndex;
+        std::cout << currVarMap().back()[node->statements[i]->token.name] << std::endl;
     }
 
     generate(node->left);
@@ -268,6 +306,7 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     pushInstruction(blankReturn);
 
     functionsMap[name].regCount = currLocalReg - argsCount;
+    functionsMap[name].varCount = nextFunctionVarIndex;
 
     currContext = ContextType::Default;
 }
@@ -356,6 +395,36 @@ std::vector<IR::OP>& IR::currInstructionArray() {
     throwError("Incorrect currContext");
 }
 
+std::vector<std::unordered_map<std::string, int>>& IR::currVarMap() {
+    if (currContext == ContextType::Default) {
+        return varMap;
+    } else if (currContext == ContextType::FunDeclaration) {
+        return functionVarMap;
+    }
+    throwError("Incorrect currContext");
+}
+
+int IR::getNextVarIndex() {
+    if (currContext == ContextType::Default) {
+        return nextVarIndex++;
+    } else if (currContext == ContextType::FunDeclaration) {
+        return nextFunctionVarIndex++;
+    }
+    throwError("Incorrect currContext");
+}
+
+bool IR::findInMap(int index, const std::string& name) {
+    return currVarMap()[index].find(name) != currVarMap()[index].end();
+}
+
+int IR::findInMaps(const std::string& name) {
+    for (int i = currVarMap().size() - 1; i >= 0; i--) {
+        if (findInMap(i, name)) return i;
+    }
+    return -1;
+}
+
+
 void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
     if (functionsMap.find(name) != functionsMap.end()) {
         throwError("Function \"" + name + "\" is already declared");
@@ -383,6 +452,7 @@ void IR::print() {
         std::cout << pair.first << " : startPC " << pair.second.startPC
                   << ", argsCount " << pair.second.argsCount
                   << ", regCount " << pair.second.regCount
+                  << ", varCount " << pair.second.varCount
                   << std::endl;
     }
     std::cout << std::endl;
@@ -406,11 +476,11 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
 
         case IR::OP::Type::Assign:
-            cout << "Assign \"" << inst.name << "\", r" << inst.dst << std::endl;
+            cout << "Assign \"" << inst.name << "\", r" << inst.dst << " test: " << inst.src1 << std::endl;
             return cout;
 
         case IR::OP::Type::Load:
-            cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
+            cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << " test: " << inst.src1 << std::endl;
             return cout;
 
         case IR::OP::Type::Push:
@@ -430,7 +500,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
         
         case IR::OP::Type::Dec:
-            cout << "Dec \"" << inst.name << "\"" << std::endl;
+            cout << "Dec \"" << inst.name << "\"" << " test: " << inst.dst << std::endl;
             return cout;
 
         case IR::OP::Type::Call:

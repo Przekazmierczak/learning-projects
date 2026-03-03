@@ -54,7 +54,9 @@ struct VM {
         int returnReg;
         int bottomStack;
         int topStack;
+
         std::vector<std::unordered_map<std::string, Variable>> maps;
+        std::vector<Variable> varMap;
     };
 
     std::vector<IR::OP>& mainInstructions;
