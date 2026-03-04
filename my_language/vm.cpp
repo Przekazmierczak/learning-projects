@@ -68,37 +68,14 @@ void VM::run() {
                 pc++;
                 break;
 
-            // case IR::OP::Type::Dec:
-            //     // if (findInMap(frames.back().maps.size() - 1, getInstruction(pc).name)) {
-            //     //     throwError("Variable \"" + getInstruction(pc).name + "\" is already declared");
-            //     // } else {
-            //         frames.back().maps[frames.back().maps.size() - 1][getInstruction(pc).name] = -1;
-            //     //}
-            //     pc++;
-            //     break;
-
             case IR::OP::Type::Assign: {
-                // int index = findInMaps(getInstruction(pc).name);
-                // if (index == -1) {
-                //     throwError("Variable \"" + getInstruction(pc).name + "\" was never declared");
-                // }
-                // frames.back().maps[index][getInstruction(pc).name] = getVariable(getInstruction(pc).dst);
-
                 frames.back().varMap[getInstruction(pc).src1] = getVariable(getInstruction(pc).dst);
                 pc++;
                 break;
             }
 
             case IR::OP::Type::Load: {
-                // int index = findInMaps(getInstruction(pc).name);
-                // if (index == -1) {
-                //     throwError("Unknown variable name: \"" + getInstruction(pc).name + "\"");
-                // }
-                // if (frames.back().maps[index][getInstruction(pc).name] == -1) {
-                //     throwError("Variable \"" + getInstruction(pc).name + "\" was never initialized");
-                // }
                 resizeReg(getInstruction(pc).dst);
-                //getVariable(getInstruction(pc).dst) = frames.back().maps[index][getInstruction(pc).name];
                 getVariable(getInstruction(pc).dst) = frames.back().varMap[getInstruction(pc).src1];
                 pc++;
                 break;
@@ -117,14 +94,12 @@ void VM::run() {
 
                 resizeReg(newFrame.topStack);
                 registersEnd = newFrame.topStack;
-                //newFrame.maps.emplace_back();
 
                 newFrame.varMap.resize(funMeta.varCount);
 
                 frames.push_back(newFrame);
 
                 for (int i = 0; i < funMeta.argsCount; i++) {
-                    // frames.back().maps.back()[funMeta.argNames[i]] = registers[frames.back().bottomStack + i];
                     frames.back().varMap[i] = registers[frames.back().bottomStack + i];
                 }
 
@@ -152,16 +127,6 @@ void VM::run() {
                 pc++;
                 break;
             }
-
-            // case IR::OP::Type::Block:
-            //     //frames.back().maps.emplace_back();
-            //     pc++;
-            //     break;
-
-            // case IR::OP::Type::Deblock:
-            //     //frames.back().maps.pop_back();
-            //     pc++;
-            //     break;
 
             case IR::OP::Type::CmpEq:
             case IR::OP::Type::CmpNEq:
@@ -238,17 +203,6 @@ const IR::OP& VM::getInstruction(int pc) {
 VM::Variable& VM::getVariable(int offset) {
     return registers[frames.back().bottomStack + offset];
 }
-
-// bool VM::findInMap(int index, const std::string& name) {
-//     return frames.back().maps[index].find(name) != frames.back().maps[index].end();
-// }
-
-// int VM::findInMaps(const std::string& name) {
-//     for (int i = frames.back().maps.size() - 1; i >= 0; i--) {
-//         if (findInMap(i, name)) return i;
-//     }
-//     return -1;
-// }
 
 void VM::runCmp() {
     if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {

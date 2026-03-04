@@ -10,12 +10,6 @@
 #include "helper.h"
 
 struct VM {
-    // enum class Type {
-    //     NaN,
-    //     Int,
-    //     Bool
-    // };
-
     struct Variable {
         std::variant<std::monostate, int, bool> value;
 
@@ -55,7 +49,6 @@ struct VM {
         int bottomStack;
         int topStack;
 
-        //std::vector<std::unordered_map<std::string, Variable>> maps;
         std::vector<Variable> varMap;
     };
 
@@ -80,7 +73,6 @@ struct VM {
         functionsInstructions(newFunctionsInstructions),
         functionsMap(newFunctionsMap)
     {
-
         Frame mainFrame;
         mainFrame.instructions = &mainInstructions;
         mainFrame.returnPC = -1;
@@ -102,9 +94,6 @@ struct VM {
 
     const IR::OP& getInstruction(int pc);
     Variable& getVariable(int offset);
-
-    // bool findInMap(int index, const std::string& name);
-    // int findInMaps(const std::string& name);
 
     void runCmp();
 };

@@ -98,7 +98,6 @@ int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    // pushBlock();
     currVarMap().emplace_back();
 
     for (int i = 0; i < node->statements.size(); i++) {
@@ -106,7 +105,6 @@ void IR::addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     }
 
     currVarMap().pop_back();
-    // popBlock();
 }
 
 int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
@@ -127,7 +125,6 @@ void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
     OP newInstruction;
     newInstruction.operation = OP::Type::Assign;
     newInstruction.dst = generate(node->right);
-    //newInstruction.name = node->left->token.name;
     newInstruction.src1 = currVarMap()[index][node->left->token.name];
     pushInstruction(newInstruction);
 }
@@ -141,7 +138,6 @@ int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     OP newInstruction;
     newInstruction.operation = OP::Type::Load;
     newInstruction.dst = getNextIndex();
-    //newInstruction.name = node->token.name;
     newInstruction.src1 = currVarMap()[index][node->token.name];
     pushInstruction(newInstruction);
     return newInstruction.dst;
@@ -189,8 +185,6 @@ void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    // pushBlock();
-
     generate(node->right); // generate initialization
 
     int pcStart = currInstructionArray().size();
@@ -209,8 +203,6 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     pushInstruction(Jmp);
 
     currInstructionArray()[pcEnd].dst = currInstructionArray().size();
-
-    // popBlock();
 }
 
 int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool ifAnd) {
@@ -252,24 +244,14 @@ void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     if (findInMap(currVarMap().size() - 1, node->left->token.name)) {
         throwError("Variable \"" + node->left->token.name + "\" is already declared");
     }
-    // else {
-    //     currVarMap()[currVarMap().size() - 1][node->left->token.name] = -1;
-    // }
-    int newIndex = getNextVarIndex();
-    // std::cout << node->left->token.name << std::endl;
-    currVarMap().back()[node->left->token.name] = newIndex;
-    // std::cout << currVarMap().back()[node->left->token.name] << std::endl;
 
-    //OP newInstruction;
-    //newInstruction.operation = OP::Type::Dec;
-    //newInstruction.name = node->left->token.name;
-    //newInstruction.dst = newIndex;
-    //pushInstruction(newInstruction);
+    int newIndex = getNextVarIndex();
+    currVarMap().back()[node->left->token.name] = newIndex;
+
     if (node->right != nullptr) {
         OP assign;
         assign.operation = OP::Type::Assign;
         assign.dst = generate(node->right);
-        //assign.name = newInstruction.name;
         assign.src1 = newIndex;
         pushInstruction(assign);
     }
@@ -282,7 +264,6 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     functionVarMap.clear();
     functionVarMap.emplace_back();
 
-
     std::string name = node->token.name;
     int startPC = functionsInstructions.size();
     int argsCount = node->statements.size();
@@ -290,12 +271,7 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
 
     for (int i = 0; i < node->statements.size(); i++) {
-        //functionsMap[name].argNames.push_back(node->statements[i]->token.name);
-
-        int newIndex = getNextVarIndex();
-        //std::cout << node->statements[i]->token.name << std::endl;
-        currVarMap().back()[node->statements[i]->token.name] = newIndex;
-        //std::cout << currVarMap().back()[node->statements[i]->token.name] << std::endl;
+        currVarMap().back()[node->statements[i]->token.name] = getNextVarIndex();
     }
 
     generate(node->left);
@@ -366,18 +342,6 @@ int IR::addConst(int dst, bool val) {
     return mov.dst;
 }
 
-// void IR::pushBlock() {
-//     OP block;
-//     block.operation = OP::Type::Block;
-//     pushInstruction(block);
-// }
-
-// void IR::popBlock() {
-//     OP deblock;
-//     deblock.operation = OP::Type::Deblock;
-//     pushInstruction(deblock);    
-// }
-
 void IR::pushInstruction(OP instruction) {
     if (currContext == ContextType::Default) {
         instructions.push_back(instruction);
@@ -423,7 +387,6 @@ int IR::findInMaps(const std::string& name) {
     }
     return -1;
 }
-
 
 void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
     if (functionsMap.find(name) != functionsMap.end()) {
@@ -476,12 +439,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
 
         case IR::OP::Type::Assign:
-            // cout << "Assign \"" << inst.name << "\", r" << inst.dst << " test: " << inst.src1 << std::endl;
             cout << "Assign v" << inst.src1 << ", r" << inst.dst << std::endl;
             return cout;
 
         case IR::OP::Type::Load:
-            // cout << "Load r" << inst.dst << ", \"" << inst.name << "\"" << " test: " << inst.src1 << std::endl;
             cout << "Load r" << inst.dst << ", v" << inst.src1 << std::endl;
             return cout;
 
@@ -500,22 +461,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         case IR::OP::Type::JmpNZ:
             cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
             return cout;
-        
-        // case IR::OP::Type::Dec:
-        //     cout << "Dec \"" << inst.name << "\"" << " test: " << inst.dst << std::endl;
-        //     return cout;
 
         case IR::OP::Type::Call:
             cout << "Call r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
             return cout;
-        
-        // case IR::OP::Type::Block:
-        //     cout << "PushBlock" << std::endl;
-        //     return cout;
-        
-        // case IR::OP::Type::Deblock:
-        //     cout << "PopBlock" << std::endl;
-        //     return cout;
 
         case IR::OP::Type::Ret:
             cout << "Return r" << inst.dst << std::endl;

@@ -12,14 +12,12 @@
 struct IR {
     struct OP {
         enum class Type {
-            Dec,
             Int, Bool,
             Add, Sub, Mul, Div,
             Neg,
             Assign, Load,
             CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
             Jmp, JmpZ, JmpNZ,
-            Block, Deblock,
             And, Or,
             Call, Ret,
             Mov, Push
@@ -47,9 +45,6 @@ struct IR {
         int argsCount;
         int regCount;
         int varCount;
-
-        //std::vector<std::string> argNames;
-        //std::vector<int> args;
 
         FunctionMeta() = default; 
         FunctionMeta(int pc, int args, int reg) : startPC(pc), argsCount(args), regCount(reg) {};
@@ -108,9 +103,6 @@ struct IR {
 
     int addConst(int dst, int val);
     int addConst(int dst, bool val);
-    
-    // void pushBlock();
-    // void popBlock();
 
     void pushInstruction(OP instruction);
     std::vector<OP>& currInstructionArray();
