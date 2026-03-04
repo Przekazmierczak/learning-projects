@@ -48,7 +48,7 @@ struct IR {
         int regCount;
         int varCount;
 
-        std::vector<std::string> argNames;
+        //std::vector<std::string> argNames;
         //std::vector<int> args;
 
         FunctionMeta() = default; 
@@ -109,8 +109,8 @@ struct IR {
     int addConst(int dst, int val);
     int addConst(int dst, bool val);
     
-    void pushBlock();
-    void popBlock();
+    // void pushBlock();
+    // void popBlock();
 
     void pushInstruction(OP instruction);
     std::vector<OP>& currInstructionArray();

@@ -10,11 +10,11 @@
 #include "helper.h"
 
 struct VM {
-    enum class Type {
-        NaN,
-        Int,
-        Bool
-    };
+    // enum class Type {
+    //     NaN,
+    //     Int,
+    //     Bool
+    // };
 
     struct Variable {
         std::variant<std::monostate, int, bool> value;
@@ -43,7 +43,7 @@ struct VM {
             return std::get<int>(value);
         }
 
-        int getBool() const {
+        bool getBool() const {
             return std::get<bool>(value);
         }
     };
@@ -55,7 +55,7 @@ struct VM {
         int bottomStack;
         int topStack;
 
-        std::vector<std::unordered_map<std::string, Variable>> maps;
+        //std::vector<std::unordered_map<std::string, Variable>> maps;
         std::vector<Variable> varMap;
     };
 
@@ -86,6 +86,7 @@ struct VM {
         mainFrame.returnPC = -1;
         mainFrame.bottomStack = 0;
         mainFrame.topStack = functionsMap["__main__"].argsCount + functionsMap["__main__"].regCount;
+        mainFrame.varMap.resize(functionsMap["__main__"].varCount);
 
         frames.push_back(mainFrame);
         registersEnd = mainFrame.topStack;
@@ -102,8 +103,8 @@ struct VM {
     const IR::OP& getInstruction(int pc);
     Variable& getVariable(int offset);
 
-    bool findInMap(int index, const std::string& name);
-    int findInMaps(const std::string& name);
+    // bool findInMap(int index, const std::string& name);
+    // int findInMaps(const std::string& name);
 
     void runCmp();
 };
