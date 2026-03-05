@@ -1,6 +1,7 @@
-fun fib n;
-    if n <= 1;
-        return n
-    return fib(n - 1) + fib(n - 2)
+fun test a;
+    if a > 10;
+        return 1
+    else;
+        return a + test(a + 1)
 
-fib(10)
+test(1)

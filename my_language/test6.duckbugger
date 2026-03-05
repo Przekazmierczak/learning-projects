@@ -1,7 +1,6 @@
-fun test a;
-    if a > 10;
-        return 1
-    else;
-        return a + test(a + 1)
+dec a = 1
 
-test(1)
+for dec i = 0; i < 5; i = i + 1;
+    a = a + 1
+
+a
