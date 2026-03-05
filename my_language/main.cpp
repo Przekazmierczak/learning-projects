@@ -17,7 +17,7 @@ int main() {
     IR irgenerator(parser.ASTroot);
     irgenerator.print();
 
-    VM vm(irgenerator.instructions, irgenerator.functionsInstructions, irgenerator.functionsMap);
+    VM vm(irgenerator.instructions, irgenerator.functionsInstructions, irgenerator.functionsMetaMap);
 
     for (int i = 0; i < vm.registers.size(); i++) {
         if (vm.registers[i].isInt()) {
@@ -39,7 +39,7 @@ int tests() {
     Lexer lexer1("test1.duckbugger");
     Parser parser1(lexer1.tokens);
     IR irgenerator1(parser1.ASTroot);
-    VM vm1(irgenerator1.instructions, irgenerator1.functionsInstructions, irgenerator1.functionsMap);
+    VM vm1(irgenerator1.instructions, irgenerator1.functionsInstructions, irgenerator1.functionsMetaMap);
 
     VM::Variable res1[] = {
         VM::Variable(1),
@@ -64,7 +64,7 @@ int tests() {
     Lexer lexer2("test2.duckbugger");
     Parser parser2(lexer2.tokens);
     IR irgenerator2(parser2.ASTroot);
-    VM vm2(irgenerator2.instructions, irgenerator2.functionsInstructions, irgenerator2.functionsMap);
+    VM vm2(irgenerator2.instructions, irgenerator2.functionsInstructions, irgenerator2.functionsMetaMap);
 
     VM::Variable res2[] = {
         VM::Variable(4),
@@ -87,7 +87,7 @@ int tests() {
     Lexer lexer3("test3.duckbugger");
     Parser parser3(lexer3.tokens);
     IR irgenerator3(parser3.ASTroot);
-    VM vm3(irgenerator3.instructions, irgenerator3.functionsInstructions, irgenerator3.functionsMap);
+    VM vm3(irgenerator3.instructions, irgenerator3.functionsInstructions, irgenerator3.functionsMetaMap);
 
     VM::Variable res3[] = {
         VM::Variable(1),
@@ -107,35 +107,35 @@ int tests() {
     Lexer lexer4("test4.duckbugger");
     Parser parser4(lexer4.tokens);
     IR irgenerator4(parser4.ASTroot);
-    VM vm4(irgenerator4.instructions, irgenerator4.functionsInstructions, irgenerator4.functionsMap);
+    VM vm4(irgenerator4.instructions, irgenerator4.functionsInstructions, irgenerator4.functionsMetaMap);
 
     assert(vm4.registers.back() == VM::Variable(4));
 
     Lexer lexer5("test5.duckbugger");
     Parser parser5(lexer5.tokens);
     IR irgenerator5(parser5.ASTroot);
-    VM vm5(irgenerator5.instructions, irgenerator5.functionsInstructions, irgenerator5.functionsMap);
+    VM vm5(irgenerator5.instructions, irgenerator5.functionsInstructions, irgenerator5.functionsMetaMap);
 
     assert(vm5.registers[0] == VM::Variable(10));
     
     Lexer lexer6("test6.duckbugger");
     Parser parser6(lexer6.tokens);
     IR irgenerator6(parser6.ASTroot);
-    VM vm6(irgenerator6.instructions, irgenerator6.functionsInstructions, irgenerator6.functionsMap);
+    VM vm6(irgenerator6.instructions, irgenerator6.functionsInstructions, irgenerator6.functionsMetaMap);
 
     assert(vm6.registers.back() == VM::Variable(6));
 
     Lexer lexer7("test7.duckbugger");
     Parser parser7(lexer7.tokens);
     IR irgenerator7(parser7.ASTroot);
-    VM vm7(irgenerator7.instructions, irgenerator7.functionsInstructions, irgenerator7.functionsMap);
+    VM vm7(irgenerator7.instructions, irgenerator7.functionsInstructions, irgenerator7.functionsMetaMap);
 
     assert(vm7.registers[0] == VM::Variable(56));
 
     Lexer lexer8("test8.duckbugger");
     Parser parser8(lexer8.tokens);
     IR irgenerator8(parser8.ASTroot);
-    VM vm8(irgenerator8.instructions, irgenerator8.functionsInstructions, irgenerator8.functionsMap);
+    VM vm8(irgenerator8.instructions, irgenerator8.functionsInstructions, irgenerator8.functionsMetaMap);
 
     assert(vm8.registers[0] == VM::Variable(55));
     

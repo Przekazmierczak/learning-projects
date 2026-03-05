@@ -57,13 +57,14 @@ struct IR {
 
     std::vector<std::unordered_map<std::string, int>> varMap;
     int nextVarIndex = 0;
-    std::vector<std::unordered_map<std::string, int>> functionVarMap;
-    int nextFunctionVarIndex = 0;
+    std::vector<std::unordered_map<std::string, int>> functionsVarMap;
+    int nextFunctionsVarIndex = 0;
 
     std::vector<OP> instructions;
     std::vector<OP> functionsInstructions;
 
-    std::unordered_map<std::string, FunctionMeta> functionsMap;
+    std::unordered_map<std::string, int> functionsNameMap;
+    std::vector<FunctionMeta> functionsMetaMap;
 
     int getNextIndex() {
         if (currContext == ContextType::Default) {
@@ -74,9 +75,11 @@ struct IR {
     }
 
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
+        functionsNameMap["__main__"] = 0;
+        functionsMetaMap.push_back(FunctionMeta(0, 0, 0));
         generate(node);
-        functionsMap["__main__"] = FunctionMeta(0, 0, currGlobalReg);
-        functionsMap["__main__"].varCount = nextVarIndex;
+        functionsMetaMap[0].regCount = currGlobalReg;
+        functionsMetaMap[0].varCount = nextVarIndex;
     }
 
     int generate(const std::unique_ptr<Parser::NodeAST>& node);

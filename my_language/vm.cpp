@@ -83,7 +83,7 @@ void VM::run() {
 
             case IR::OP::Type::Call: {
                 IR::OP caller = getInstruction(pc);
-                IR::FunctionMeta funMeta = functionsMap.at(caller.name);
+                IR::FunctionMeta funMeta = functionsMap[caller.src1];
 
                 Frame newFrame;
                 newFrame.instructions = &functionsInstructions;

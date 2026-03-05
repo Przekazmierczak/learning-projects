@@ -54,7 +54,7 @@ struct VM {
 
     std::vector<IR::OP>& mainInstructions;
     std::vector<IR::OP>& functionsInstructions;
-    std::unordered_map<std::string, IR::FunctionMeta>& functionsMap;
+    std::vector<IR::FunctionMeta>& functionsMap;
 
     std::vector<Variable> registers;
     std::vector<Frame> frames;
@@ -67,7 +67,7 @@ struct VM {
     VM(
         std::vector<IR::OP>& newMainInstructions,
         std::vector<IR::OP>& newFunctionsInstructions,
-        std::unordered_map<std::string, IR::FunctionMeta>& newFunctionsMap
+        std::vector<IR::FunctionMeta>& newFunctionsMap
     ) : 
         mainInstructions(newMainInstructions),
         functionsInstructions(newFunctionsInstructions),
@@ -77,8 +77,8 @@ struct VM {
         mainFrame.instructions = &mainInstructions;
         mainFrame.returnPC = -1;
         mainFrame.bottomStack = 0;
-        mainFrame.topStack = functionsMap["__main__"].argsCount + functionsMap["__main__"].regCount;
-        mainFrame.varMap.resize(functionsMap["__main__"].varCount);
+        mainFrame.topStack = functionsMap[0].argsCount + functionsMap[0].regCount;
+        mainFrame.varMap.resize(functionsMap[0].varCount);
 
         frames.push_back(mainFrame);
         registersEnd = mainFrame.topStack;

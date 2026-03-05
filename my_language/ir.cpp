@@ -260,9 +260,9 @@ void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     currContext = ContextType::FunDeclaration;
     currLocalReg = 0;
-    nextFunctionVarIndex = 0;
-    functionVarMap.clear();
-    functionVarMap.emplace_back();
+    nextFunctionsVarIndex = 0;
+    functionsVarMap.clear();
+    functionsVarMap.emplace_back();
 
     std::string name = node->token.name;
     int startPC = functionsInstructions.size();
@@ -281,8 +281,8 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     blankReturn.dst = getNextIndex();
     pushInstruction(blankReturn);
 
-    functionsMap[name].regCount = currLocalReg - argsCount;
-    functionsMap[name].varCount = nextFunctionVarIndex;
+    functionsMetaMap[functionsNameMap[name]].regCount = currLocalReg - argsCount;
+    functionsMetaMap[functionsNameMap[name]].varCount = nextFunctionsVarIndex;
 
     currContext = ContextType::Default;
 }
@@ -290,8 +290,8 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     std::string name = node->token.name;
 
-    if (functionsMap.find(name) != functionsMap.end()) {
-        if (functionsMap[name].argsCount != node->statements.size()) {
+    if (functionsNameMap.find(name) != functionsNameMap.end()) {
+        if (functionsMetaMap[functionsNameMap[name]].argsCount != node->statements.size()) {
             throwError("Incorrect number of arguments in \"" + name + "\"", node->token.line, node->token.position);
         }
     } else {
@@ -309,7 +309,8 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     OP callInstruction;
     callInstruction.operation = OP::Type::Call;
-    callInstruction.name = name;
+    callInstruction.src1 = functionsNameMap[name];
+    //callInstruction.name = name;
     callInstruction.dst = ret;
     pushInstruction(callInstruction);
 
@@ -363,7 +364,7 @@ std::vector<std::unordered_map<std::string, int>>& IR::currVarMap() {
     if (currContext == ContextType::Default) {
         return varMap;
     } else if (currContext == ContextType::FunDeclaration) {
-        return functionVarMap;
+        return functionsVarMap;
     }
     throwError("Incorrect currContext");
 }
@@ -372,7 +373,7 @@ int IR::getNextVarIndex() {
     if (currContext == ContextType::Default) {
         return nextVarIndex++;
     } else if (currContext == ContextType::FunDeclaration) {
-        return nextFunctionVarIndex++;
+        return nextFunctionsVarIndex++;
     }
     throwError("Incorrect currContext");
 }
@@ -389,10 +390,11 @@ int IR::findInMaps(const std::string& name) {
 }
 
 void IR::addFunctionMeta(std::string name, FunctionMeta functionMeta) {
-    if (functionsMap.find(name) != functionsMap.end()) {
+    if (functionsNameMap.find(name) != functionsNameMap.end()) {
         throwError("Function \"" + name + "\" is already declared");
     } else {
-        functionsMap[name] = functionMeta;
+        functionsNameMap[name] = functionsNameMap.size();
+        functionsMetaMap.push_back(functionMeta);
     }
 }
 
@@ -410,12 +412,12 @@ void IR::print() {
     std::cout << std::endl;
 
     std::cout << "Functions metadata:" << std::endl;
-    for (const auto& pair : functionsMap)
+    for (int i = 0; i < functionsMetaMap.size(); i++)
     {
-        std::cout << pair.first << " : startPC " << pair.second.startPC
-                  << ", argsCount " << pair.second.argsCount
-                  << ", regCount " << pair.second.regCount
-                  << ", varCount " << pair.second.varCount
+        std::cout << i << " : startPC " << functionsMetaMap[i].startPC
+                  << ", argsCount " << functionsMetaMap[i].argsCount
+                  << ", regCount " << functionsMetaMap[i].regCount
+                  << ", varCount " << functionsMetaMap[i].varCount
                   << std::endl;
     }
     std::cout << std::endl;
@@ -463,7 +465,7 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
             return cout;
 
         case IR::OP::Type::Call:
-            cout << "Call r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
+            cout << "Call r" << inst.dst << ", f" << inst.src1 << std::endl;
             return cout;
 
         case IR::OP::Type::Ret:
