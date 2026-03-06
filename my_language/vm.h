@@ -63,6 +63,9 @@ struct VM {
     int currBottomStack;
     int currTopStack;
     int registersEnd;
+    
+    using Funct = void(VM::*)();
+    static Funct dispatch[];
 
     VM(
         std::vector<IR::OP>& newMainInstructions,
@@ -85,6 +88,15 @@ struct VM {
 
         run();
     }
+
+    void Int(); void Bool();
+    void Add(); void Sub(); void Mul(); void Div();
+    void Neg();
+    void Assign(); void Load();
+    void CmpEq(); void CmpNEq(); void CmpGt(); void CmpLs(); void CmpGtEq(); void CmpLsEq();
+    void Jmp(); void JmpZ(); void JmpNZ();
+    void Call(); void Ret();
+    void Push();
 
     void run();
     void resizeReg(int dst);
