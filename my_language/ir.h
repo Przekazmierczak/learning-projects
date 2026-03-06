@@ -11,16 +11,15 @@
 
 struct IR {
     struct OP {
-        enum class Type {
+        enum Type {
             Int, Bool,
             Add, Sub, Mul, Div,
             Neg,
             Assign, Load,
             CmpEq, CmpNEq, CmpGt, CmpLs, CmpGtEq, CmpLsEq,
             Jmp, JmpZ, JmpNZ,
-            And, Or,
             Call, Ret,
-            Mov, Push
+            Push
         };
 
         // mandatory

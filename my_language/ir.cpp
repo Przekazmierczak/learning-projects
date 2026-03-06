@@ -482,8 +482,6 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
         case IR::OP::Type::CmpLs: op = "CmpLs"; break;
         case IR::OP::Type::CmpGtEq: op = "CmpGtEq"; break;
         case IR::OP::Type::CmpLsEq: op = "CmpLsEq"; break;
-        case IR::OP::Type::And: op = "And"; break;
-        case IR::OP::Type::Or: op = "Or"; break;
 
         default:
             throwError("Unsupported token in << overload");
