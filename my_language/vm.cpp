@@ -2,7 +2,8 @@
 
 void VM::run() {
     while (pc < (*frames.back().instructions).size()) {
-        (this->*dispatch[getInstruction(pc).operation])();
+        IR::OP inst = getInstruction(pc);
+        (this->*dispatch[inst.operation])(inst);
     }
 
     if (frames.size() > 1) {
@@ -21,82 +22,88 @@ VM::Funct VM::dispatch[] = {
     &VM::Push
 };
 
-void VM::Int() {
-    resizeReg(getInstruction(pc).dst);
-    getVariable(getInstruction(pc).dst).value = getInstruction(pc).val;
+void VM::Int(IR::OP& inst) {
+    getVariable(inst.dst).value = inst.val;
     pc++;
 }
 
-void VM::Bool() {
-    resizeReg(getInstruction(pc).dst);
-    getVariable(getInstruction(pc).dst).value = getInstruction(pc).bval;
+void VM::Bool(IR::OP& inst) {
+    getVariable(inst.dst).value = inst.bval;
     pc++;
 }
 
-void VM::Add() {
-    resizeReg(getInstruction(pc).dst);
-    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
-        getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() + getVariable(getInstruction(pc).src2).getInt();
+void VM::Add(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+    auto& src2 = getVariable(inst.src2);
+
+    if (src1.isInt() && src2.isInt()) {
+        getVariable(inst.dst).value = src1.getInt() + src2.getInt();
     } else {
         throwError("Incorrect types for Add");
     }
     pc++;
 }
 
-void VM::Sub() {
-    resizeReg(getInstruction(pc).dst);
-    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
-        getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() - getVariable(getInstruction(pc).src2).getInt();
+void VM::Sub(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+    auto& src2 = getVariable(inst.src2);
+
+    if (src1.isInt() && src2.isInt()) {
+        getVariable(inst.dst).value = src1.getInt() - src2.getInt();
     } else {
         throwError("Incorrect types for Sub");
     }
     pc++;
 }
 
-void VM::Mul() {
-    resizeReg(getInstruction(pc).dst);
-    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
-        getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() * getVariable(getInstruction(pc).src2).getInt();
+void VM::Mul(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+    auto& src2 = getVariable(inst.src2);
+
+    if (src1.isInt() && src2.isInt()) {
+        getVariable(inst.dst).value = src1.getInt() * src2.getInt();
     } else {
         throwError("Incorrect types for Mul");
     }
     pc++;
 }
 
-void VM::Div() {
-    resizeReg(getInstruction(pc).dst);
-    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
-        if (getVariable(getInstruction(pc).src2).getInt() == 0) throwError("Divide by zero error");
-        getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() / getVariable(getInstruction(pc).src2).getInt();
+void VM::Div(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+    auto& src2 = getVariable(inst.src2);
+
+    if (src1.isInt() && src2.isInt()) {
+        if (src2.getInt() == 0) throwError("Divide by zero error");
+        getVariable(inst.dst).value = src1.getInt() / src2.getInt();
     } else {
         throwError("Incorrect types for Div");
     }
     pc++;
 }
 
-void VM::Neg() {
-    resizeReg(getInstruction(pc).dst);
-    if (getVariable(getInstruction(pc).src1).isInt()) {
-        getVariable(getInstruction(pc).dst).value = -getVariable(getInstruction(pc).src1).getInt();
+void VM::Neg(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+
+    if (src1.isInt()) {
+        getVariable(inst.dst).value = -src1.getInt();
     } else {
         throwError("Incorrect types for Neg");
     }
     pc++;
 }
 
-void VM::Assign() {
-    frames.back().varMap[getInstruction(pc).src1] = getVariable(getInstruction(pc).dst);
+void VM::Assign(IR::OP& inst) {
+    frames.back().varMap[inst.src1] = getVariable(inst.dst);
     pc++;
 }
 
-void VM::Load() {
-    resizeReg(getInstruction(pc).dst);
-    getVariable(getInstruction(pc).dst) = frames.back().varMap[getInstruction(pc).src1];
+void VM::Load(IR::OP& inst) {
+    getVariable(inst.dst) = frames.back().varMap[inst.src1];
     pc++;
 }
 
-void VM::Call() {
-    IR::OP caller = getInstruction(pc);
+void VM::Call(IR::OP& inst) {
+    IR::OP caller = inst;
     IR::FunctionMeta funMeta = functionsMap[caller.src1];
 
     Frame newFrame;
@@ -106,7 +113,7 @@ void VM::Call() {
     newFrame.bottomStack = frames.back().topStack;
     newFrame.topStack = funMeta.argsCount + funMeta.regCount + newFrame.bottomStack;
 
-    resizeReg(newFrame.topStack);
+    resizeReg(newFrame.topStack - 1);
     registersEnd = newFrame.topStack;
 
     newFrame.varMap.resize(funMeta.varCount);
@@ -120,8 +127,8 @@ void VM::Call() {
     pc = funMeta.startPC;
 }
 
-void VM::Ret() {
-    Variable result = getVariable(getInstruction(pc).dst);
+void VM::Ret(IR::OP& inst) {
+    Variable result = getVariable(inst.dst);
     int returnReg = frames.back().returnReg;
     int returnPc = frames.back().returnPC;
 
@@ -132,63 +139,59 @@ void VM::Ret() {
     registersEnd = frames.back().topStack;
 }
 
-void VM::Push() {
+void VM::Push(IR::OP& inst) {
     resizeReg(registersEnd);
-    registers[registersEnd] = getVariable(getInstruction(pc).src1);
+    registers[registersEnd] = getVariable(inst.src1);
     registersEnd++;
     pc++;
 }
 
-void VM::CmpEq() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpEq(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::CmpNEq() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpNEq(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::CmpGt() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpGt(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::CmpLs() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpLs(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::CmpGtEq() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpGtEq(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::CmpLsEq() {
-    resizeReg(getInstruction(pc).dst);
-    runCmp();
+void VM::CmpLsEq(IR::OP& inst) {
+    runCmp(inst);
     pc++;
 }
 
-void VM::Jmp() {
-    pc = getInstruction(pc).dst;
+void VM::Jmp(IR::OP& inst) {
+    pc = inst.dst;
 }
 
-void VM::JmpZ() {
-    if (getVariable(getInstruction(pc).src1).isBool()) {
-        if (std::get<bool>(getVariable(getInstruction(pc).src1).value) == false) {
-            pc = getInstruction(pc).dst;
+void VM::JmpZ(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+
+    if (src1.isBool()) {
+        if (std::get<bool>(src1.value) == false) {
+            pc = inst.dst;
         } else {
             pc++;
         }
-    } else if (getVariable(getInstruction(pc).src1).isInt()) {
-        if (std::get<int>(getVariable(getInstruction(pc).src1).value) == 0) {
-            pc = getInstruction(pc).dst;
+    } else if (src1.isInt()) {
+        if (std::get<int>(src1.value) == 0) {
+            pc = inst.dst;
         } else {
             pc++;
         }
@@ -197,16 +200,18 @@ void VM::JmpZ() {
     }
 }
 
-void VM::JmpNZ() {
-    if (getVariable(getInstruction(pc).src1).isBool()) {
-        if (std::get<bool>(getVariable(getInstruction(pc).src1).value) == true) {
-            pc = getInstruction(pc).dst;
+void VM::JmpNZ(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+
+    if (src1.isBool()) {
+        if (std::get<bool>(src1.value) == true) {
+            pc = inst.dst;
         } else {
             pc++;
         }
-    } else if (getVariable(getInstruction(pc).src1).isInt()) {
-        if (std::get<int>(getVariable(getInstruction(pc).src1).value) != 0) {
-            pc = getInstruction(pc).dst;
+    } else if (src1.isInt()) {
+        if (std::get<int>(src1.value) != 0) {
+            pc = inst.dst;
         } else {
             pc++;
         }
@@ -226,49 +231,56 @@ const IR::OP& VM::getInstruction(int pc) {
 }
 
 VM::Variable& VM::getVariable(int offset) {
-    return registers[frames.back().bottomStack + offset];
+    int index = frames.back().bottomStack + offset;
+    if (index >= registers.size()) {
+        throwError("Index out of registers size in getVariable");
+    }
+    return registers[index];
 }
 
-void VM::runCmp() {
-    if (getVariable(getInstruction(pc).src1).isInt() && getVariable(getInstruction(pc).src2).isInt()) {
-        switch (getInstruction(pc).operation) {
+void VM::runCmp(IR::OP& inst) {
+    auto& src1 = getVariable(inst.src1);
+    auto& src2 = getVariable(inst.src2);
+
+    if (src1.isInt() && getVariable(inst.src2).isInt()) {
+        switch (inst.operation) {
             
             case IR::OP::Type::CmpEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() == getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() == src2.getInt();
                 break;
 
             case IR::OP::Type::CmpNEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() != getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() != src2.getInt();
                 break;
 
             case IR::OP::Type::CmpGt:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() > getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() > src2.getInt();
                 break;
 
             case IR::OP::Type::CmpLs:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() < getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() < src2.getInt();
                 break;
             
             case IR::OP::Type::CmpGtEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() >= getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() >= src2.getInt();
                 break;
             
             case IR::OP::Type::CmpLsEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getInt() <= getVariable(getInstruction(pc).src2).getInt();
+                getVariable(inst.dst).value = src1.getInt() <= src2.getInt();
                 break;
 
             default:
                 throwError("Incorrect types for Cmp");
         }
-    } else if (getVariable(getInstruction(pc).src1).isBool() && getVariable(getInstruction(pc).src2).isBool()) {
-        switch (getInstruction(pc).operation) {
+    } else if (src1.isBool() && src2.isBool()) {
+        switch (inst.operation) {
             
             case IR::OP::Type::CmpEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getBool() == getVariable(getInstruction(pc).src2).getBool();
+                getVariable(inst.dst).value = src1.getBool() == src2.getBool();
                 break;
 
             case IR::OP::Type::CmpNEq:
-                getVariable(getInstruction(pc).dst).value = getVariable(getInstruction(pc).src1).getBool() != getVariable(getInstruction(pc).src2).getBool();
+                getVariable(inst.dst).value = src1.getBool() != src2.getBool();
                 break;
 
             default:

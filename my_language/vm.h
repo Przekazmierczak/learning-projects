@@ -64,7 +64,7 @@ struct VM {
     int currTopStack;
     int registersEnd;
     
-    using Funct = void(VM::*)();
+    using Funct = void(VM::*)(IR::OP& instruction);
     static Funct dispatch[];
 
     VM(
@@ -85,18 +85,20 @@ struct VM {
 
         frames.push_back(mainFrame);
         registersEnd = mainFrame.topStack;
+        resizeReg(mainFrame.topStack - 1);
 
         run();
     }
 
-    void Int(); void Bool();
-    void Add(); void Sub(); void Mul(); void Div();
-    void Neg();
-    void Assign(); void Load();
-    void CmpEq(); void CmpNEq(); void CmpGt(); void CmpLs(); void CmpGtEq(); void CmpLsEq();
-    void Jmp(); void JmpZ(); void JmpNZ();
-    void Call(); void Ret();
-    void Push();
+    void Int(IR::OP& inst); void Bool(IR::OP& inst);
+    void Add(IR::OP& inst); void Sub(IR::OP& inst); void Mul(IR::OP& inst); void Div(IR::OP& inst);
+    void Neg(IR::OP& inst);
+    void Assign(IR::OP& inst); void Load(IR::OP& inst);
+    void CmpEq(IR::OP& inst); void CmpNEq(IR::OP& inst); void CmpGt(IR::OP& inst);
+    void CmpLs(IR::OP& inst); void CmpGtEq(IR::OP& inst); void CmpLsEq(IR::OP& inst);
+    void Jmp(IR::OP& inst); void JmpZ(IR::OP& inst); void JmpNZ(IR::OP& inst);
+    void Call(IR::OP& inst); void Ret(IR::OP& inst);
+    void Push(IR::OP& inst);
 
     void run();
     void resizeReg(int dst);
@@ -107,7 +109,7 @@ struct VM {
     const IR::OP& getInstruction(int pc);
     Variable& getVariable(int offset);
 
-    void runCmp();
+    void runCmp(IR::OP& inst);
 };
 
 
