@@ -8,7 +8,7 @@ void Lexer::lex() {
     indents.push_back(0);
 
     while (std::getline(file, line)) {
-        int currPosition = 1;
+        //int currPosition = 1;
         index = 0;
 
         // Check current indentation
@@ -35,29 +35,24 @@ void Lexer::lex() {
                 }
             }
         }
-        currPosition += index;
         
+        // Scan for tokens
         for (; index < line.size(); index++) {
             if (std::isdigit(line[index])) {
-                scanNumeric(currPosition, line);
+                scanNumeric(line);
                 continue;
             }
             
             if (std::isalpha(line[index]) || line[index] == '_') {
-                scanIdentifier(currPosition, line);
+                scanIdentifier(line);
                 continue;
             }
 
-            scanOperant(currPosition, line);
-
-            currPosition++;
+            scanOperant(line);
         }
 
-        // if (!current.empty()) pushNonOperand(currLine, currPosition, current);
-        // currPosition += current.size();
-        // current.clear();
-        
-        tokens.push_back(Token(Token::Type::NewL ,currLine, currPosition));
+        // Push new line token
+        tokens.push_back(Token(Token::Type::NewL ,currLine, index + 1));
         currLine++;
     }
 
@@ -68,133 +63,127 @@ void Lexer::lex() {
     }
 }
 
-void Lexer::scanNumeric(int currPosition, const std::string& line) {
+void Lexer::scanNumeric(const std::string& line) {
     std::string numStr;
     numStr += line[index];
     while (index + 1 < line.size() && std::isdigit(line[index + 1])) {
         index++;
         numStr += line[index];
     }
-    tokens.push_back(Token(Token::Type::Int, std::stoi(numStr), currLine, currPosition));
+    tokens.push_back(Token(Token::Type::Int, std::stoi(numStr), currLine, index + 1));
 }
 
-void Lexer::scanIdentifier(int currPosition, const std::string& line) {
+void Lexer::scanIdentifier(const std::string& line) {
     std::string indentifier;
     indentifier += line[index];
     while (index + 1 < line.size() && (std::isalnum(line[index + 1]) || line[index] == '_')) {
         index++;
         indentifier += line[index];
     }
-    pushIdentifier(indentifier, currPosition);
+    pushIdentifier(indentifier);
 }
 
-void Lexer::scanOperant(int currPosition, const std::string& line) {
+void Lexer::scanOperant(const std::string& line) {
     switch (line[index]) {
 
         case ' ':
             break;
         
         case '+':
-            tokens.push_back(Token(Token::Type::Add ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Add ,currLine, index + 1));
             break;
         
         case '-':
-            tokens.push_back(Token(Token::Type::Sub ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Sub ,currLine, index + 1));
             break;
         
         case '*':
-            tokens.push_back(Token(Token::Type::Mul ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Mul ,currLine, index + 1));
             break;
         
         case '/':
-            tokens.push_back(Token(Token::Type::Div ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Div ,currLine, index + 1));
             break;
         
         case '(':
-            tokens.push_back(Token(Token::Type::Lpar ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Lpar ,currLine, index + 1));
             break;
         
         case ')':
-            tokens.push_back(Token(Token::Type::Rpar ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Rpar ,currLine, index + 1));
             break;
         
         case '=':
             if (index + 1 < line.size() && line[index + 1] == '=') {
-                tokens.push_back(Token(Token::Type::CmpEq ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpEq ,currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                tokens.push_back(Token(Token::Type::Assign ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::Assign ,currLine, index + 1));
             }
             break;
         
         case '!':
             if (index + 1 < line.size() && line[index + 1] == '=') {
-                tokens.push_back(Token(Token::Type::CmpNEq ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpNEq ,currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                throwError("Invalid symbol \"!\"", currLine, currPosition);
+                throwError("Invalid symbol \"!\"", currLine, index + 1);
             }
             break;
         
         case '>':
             if (index + 1 < line.size() && line[index + 1] == '=') {
-                tokens.push_back(Token(Token::Type::CmpGtEq ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpGtEq ,currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                tokens.push_back(Token(Token::Type::CmpGt ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpGt ,currLine, index + 1));
             }
             break;
         
         case '<':
             if (index + 1 < line.size() && line[index + 1] == '=') {
-                tokens.push_back(Token(Token::Type::CmpLsEq ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpLsEq ,currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                tokens.push_back(Token(Token::Type::CmpLs ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::CmpLs ,currLine, index + 1));
             }
             break;
         
         case ';':
-            tokens.push_back(Token(Token::Type::Scolon ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Scolon ,currLine, index + 1));
             break;
         
         case '&':
             if (index + 1 < line.size() && line[index + 1] == '&') {
-                tokens.push_back(Token(Token::Type::And ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::And, currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                throwError("Invalid symbol \"&\"", currLine, currPosition);
+                throwError("Invalid symbol \"&\"", currLine, index + 1);
             }
             break;
         
         case '|':
             if (index + 1 < line.size() && line[index + 1] == '|') {
-                tokens.push_back(Token(Token::Type::Or ,currLine, currPosition));
+                tokens.push_back(Token(Token::Type::Or ,currLine, index + 1));
                 index++;
-                currPosition++;
             } else {
-                throwError("Invalid symbol \"|\"", currLine, currPosition);
+                throwError("Invalid symbol \"|\"", currLine, index + 1);
             }
             break;
 
         case ',':
-            tokens.push_back(Token(Token::Type::Comma ,currLine, currPosition));
+            tokens.push_back(Token(Token::Type::Comma ,currLine, index + 1));
             break;
 
         default:
-            throwError(std::string("Incorrect symbol \"") + line[index] + "\"", currLine, currPosition);
+            throwError(std::string("Incorrect symbol \"") + line[index] + "\"", currLine, index + 1);
         }
 }
 
-void Lexer::pushIdentifier(std::string identifier, int currPosition) {
-    currPosition = currPosition - identifier.size();
+void Lexer::pushIdentifier(std::string identifier) {
+    int currPosition = index - identifier.size() + 1;
     if (identifier == "if") {
-        tokens.push_back(Token(Token::Type::If, currLine, currPosition));
+        tokens.push_back(Token(Token::Type::If, currLine, index));
     } else if (identifier == "else") {
         tokens.push_back(Token(Token::Type::Else, currLine, currPosition));
     } else if (identifier == "while") {
