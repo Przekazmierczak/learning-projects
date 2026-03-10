@@ -103,27 +103,37 @@ void VM::Load(IR::OP& inst) {
 }
 
 void VM::Call(IR::OP& inst) {
-    if (inst.src1 >= 0) {
-        IR::FunctionMeta funMeta = functionsMap[inst.src1];
+    FunctionMeta funMeta = functionsMap[inst.src1];
+    // check
+    if (funMeta.native) {
+        std::vector<Variable> args;
+        for (int i = 0; i < funMeta.argsCount; i++) {
+            args.push_back(registers[frames.back().topStack + i]);
+        }
+        getVariable(inst.dst) = nativeFunctions[funMeta.startPC](args);
 
+        registersEnd = frames.back().topStack;
+
+        pc++;
+    } else {
         Frame newFrame;
         newFrame.instructions = &functionsInstructions;
         newFrame.returnPC = pc + 1;
         newFrame.returnReg = inst.dst;
         newFrame.bottomStack = frames.back().topStack;
         newFrame.topStack = funMeta.argsCount + funMeta.regCount + newFrame.bottomStack;
-
+    
         resizeReg(newFrame.topStack - 1);
         registersEnd = newFrame.topStack;
-
+    
         newFrame.varMap.resize(funMeta.varCount);
-
+    
         frames.push_back(newFrame);
-
+    
         for (int i = 0; i < funMeta.argsCount; i++) {
             frames.back().varMap[i] = registers[frames.back().bottomStack + i];
         }
-
+    
         pc = funMeta.startPC;
     }
 }

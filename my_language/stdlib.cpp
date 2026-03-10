@@ -2,12 +2,12 @@
 #include "vm.h"
 
 std::unordered_map<std::string, int> nativeFunctionsNameMap =  {
-    { "print", -1 }
+    { "print", 1 }
 };
 
-Variable callNativeFun(int index, std::vector<Variable> vars) {
-    return nativeFunctions[-index - 1](vars);
-}
+std::vector<FunctionMeta> nativeFunctionsMetaMap = {
+    {0, 1, 0, true},
+};
 
 NativeFun nativeFunctions[] = {
     print

@@ -268,7 +268,7 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     int startPC = functionsInstructions.size();
     int argsCount = node->statements.size();
 
-    addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0));
+    addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0, false));
 
     for (int i = 0; i < node->statements.size(); i++) {
         currVarMap().back()[node->statements[i]->token.name] = getNextVarIndex();
@@ -420,6 +420,7 @@ void IR::print() {
                   << ", argsCount " << functionsMetaMap[i].argsCount
                   << ", regCount " << functionsMetaMap[i].regCount
                   << ", varCount " << functionsMetaMap[i].varCount
+                  << ", native " << functionsMetaMap[i].native
                   << std::endl;
     }
     std::cout << std::endl;

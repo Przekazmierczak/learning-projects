@@ -13,6 +13,7 @@ using NativeFun = Variable(*)(std::vector<Variable>);
 
 extern std::unordered_map<std::string, int> nativeFunctionsNameMap;
 extern NativeFun nativeFunctions[];
+extern std::vector<FunctionMeta> nativeFunctionsMetaMap;
 
 Variable print(std::vector<Variable> vars);
 

@@ -35,4 +35,17 @@ struct Variable {
     }
 };
 
+struct FunctionMeta {
+    int startPC;
+    int argsCount;
+    int regCount;
+    int varCount;
+
+    bool native;
+
+    FunctionMeta() = default; 
+    FunctionMeta(int pc, int args, int reg, bool newNative) :
+        startPC(pc), argsCount(args), regCount(reg), varCount(0), native(newNative) {};
+};
+
 #endif

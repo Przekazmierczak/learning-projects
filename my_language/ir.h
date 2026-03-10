@@ -9,6 +9,7 @@
 
 #include "parser.h"
 #include "stdlib.h"
+#include "variable.h"
 
 struct IR {
     struct OP {
@@ -40,16 +41,6 @@ struct IR {
         FunDeclaration
     };
 
-    struct FunctionMeta {
-        int startPC;
-        int argsCount;
-        int regCount;
-        int varCount;
-
-        FunctionMeta() = default; 
-        FunctionMeta(int pc, int args, int reg) : startPC(pc), argsCount(args), regCount(reg) {};
-    };
-
     ContextType currContext = ContextType::Default;
 
     int currGlobalReg = 0;
@@ -76,7 +67,11 @@ struct IR {
 
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
         functionsNameMap["__main__"] = 0;
-        functionsMetaMap.push_back(FunctionMeta(0, 0, 0));
+        functionsMetaMap.push_back(FunctionMeta(0, 0, 0, false));
+        // check
+        functionsNameMap.insert(nativeFunctionsNameMap.begin(), nativeFunctionsNameMap.end());
+        functionsMetaMap.insert(functionsMetaMap.end(), nativeFunctionsMetaMap.begin(), nativeFunctionsMetaMap.end());
+
         generate(node);
         functionsMetaMap[0].regCount = currGlobalReg;
         functionsMetaMap[0].varCount = nextVarIndex;
