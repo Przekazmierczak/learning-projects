@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "parser.h"
+#include "stdlib.h"
 
 struct IR {
     struct OP {

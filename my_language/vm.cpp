@@ -103,28 +103,29 @@ void VM::Load(IR::OP& inst) {
 }
 
 void VM::Call(IR::OP& inst) {
-    IR::OP caller = inst;
-    IR::FunctionMeta funMeta = functionsMap[caller.src1];
+    if (inst.src1 >= 0) {
+        IR::FunctionMeta funMeta = functionsMap[inst.src1];
 
-    Frame newFrame;
-    newFrame.instructions = &functionsInstructions;
-    newFrame.returnPC = pc + 1;
-    newFrame.returnReg = caller.dst;
-    newFrame.bottomStack = frames.back().topStack;
-    newFrame.topStack = funMeta.argsCount + funMeta.regCount + newFrame.bottomStack;
+        Frame newFrame;
+        newFrame.instructions = &functionsInstructions;
+        newFrame.returnPC = pc + 1;
+        newFrame.returnReg = inst.dst;
+        newFrame.bottomStack = frames.back().topStack;
+        newFrame.topStack = funMeta.argsCount + funMeta.regCount + newFrame.bottomStack;
 
-    resizeReg(newFrame.topStack - 1);
-    registersEnd = newFrame.topStack;
+        resizeReg(newFrame.topStack - 1);
+        registersEnd = newFrame.topStack;
 
-    newFrame.varMap.resize(funMeta.varCount);
+        newFrame.varMap.resize(funMeta.varCount);
 
-    frames.push_back(newFrame);
+        frames.push_back(newFrame);
 
-    for (int i = 0; i < funMeta.argsCount; i++) {
-        frames.back().varMap[i] = registers[frames.back().bottomStack + i];
+        for (int i = 0; i < funMeta.argsCount; i++) {
+            frames.back().varMap[i] = registers[frames.back().bottomStack + i];
+        }
+
+        pc = funMeta.startPC;
     }
-
-    pc = funMeta.startPC;
 }
 
 void VM::Ret(IR::OP& inst) {
@@ -230,7 +231,7 @@ const IR::OP& VM::getInstruction(int pc) {
     return (*frames.back().instructions)[pc];
 }
 
-VM::Variable& VM::getVariable(int offset) {
+Variable& VM::getVariable(int offset) {
     int index = frames.back().bottomStack + offset;
     if (index >= registers.size()) {
         throwError("Index out of registers size in getVariable");
