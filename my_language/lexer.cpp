@@ -76,7 +76,7 @@ void Lexer::scanNumeric(const std::string& line) {
 void Lexer::scanIdentifier(const std::string& line) {
     std::string indentifier;
     indentifier += line[index];
-    while (index + 1 < line.size() && (std::isalnum(line[index + 1]) || line[index] == '_')) {
+    while (index + 1 < line.size() && (std::isalnum(line[index + 1]) || line[index + 1] == '_')) {
         index++;
         indentifier += line[index];
     }
