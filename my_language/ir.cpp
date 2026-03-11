@@ -117,28 +117,28 @@ int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
-    int index = findInMaps(node->left->token.name);
+    int index = findInMaps(node->left->token.strval);
     if (index == -1) {
-        throwError("Variable \"" + node->left->token.name + "\" was never declared");
+        throwError("Variable \"" + node->left->token.strval + "\" was never declared");
     }
 
     OP newInstruction;
     newInstruction.operation = OP::Type::Assign;
     newInstruction.dst = generate(node->right);
-    newInstruction.src1 = currVarMap()[index][node->left->token.name];
+    newInstruction.src1 = currVarMap()[index][node->left->token.strval];
     pushInstruction(newInstruction);
 }
 
 int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    int index = findInMaps(node->token.name);
+    int index = findInMaps(node->token.strval);
     if (index == -1) {
-        throwError("Unknown variable name: \"" + node->token.name + "\"");
+        throwError("Unknown variable name: \"" + node->token.strval + "\"");
     }
 
     OP newInstruction;
     newInstruction.operation = OP::Type::Load;
     newInstruction.dst = getNextIndex();
-    newInstruction.src1 = currVarMap()[index][node->token.name];
+    newInstruction.src1 = currVarMap()[index][node->token.strval];
     pushInstruction(newInstruction);
     return newInstruction.dst;
 }
@@ -241,12 +241,12 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
 }
 
 void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    if (findInMap(currVarMap().size() - 1, node->left->token.name)) {
-        throwError("Variable \"" + node->left->token.name + "\" is already declared");
+    if (findInMap(currVarMap().size() - 1, node->left->token.strval)) {
+        throwError("Variable \"" + node->left->token.strval + "\" is already declared");
     }
 
     int newIndex = getNextVarIndex();
-    currVarMap().back()[node->left->token.name] = newIndex;
+    currVarMap().back()[node->left->token.strval] = newIndex;
 
     if (node->right != nullptr) {
         OP assign;
@@ -264,14 +264,14 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     functionsVarMap.clear();
     functionsVarMap.emplace_back();
 
-    std::string name = node->token.name;
+    std::string name = node->token.strval;
     int startPC = functionsInstructions.size();
     int argsCount = node->statements.size();
 
     addFunctionMeta(name, FunctionMeta(startPC, argsCount, 0, false));
 
     for (int i = 0; i < node->statements.size(); i++) {
-        currVarMap().back()[node->statements[i]->token.name] = getNextVarIndex();
+        currVarMap().back()[node->statements[i]->token.strval] = getNextVarIndex();
     }
 
     generate(node->left);
@@ -288,7 +288,7 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    std::string name = node->token.name;
+    std::string name = node->token.strval;
     int functionIndex;
     if (functionsNameMap.find(name) != functionsNameMap.end()) {
         if (functionsMetaMap[functionsNameMap[name]].argsCount != node->statements.size()) {

@@ -41,7 +41,7 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
         Token funToken = tokens[index];
         index++;
         if (match(Token::Type::Var)) {
-            funToken.name = tokens[index].name;
+            funToken.strval = tokens[index].strval;
         } else {
             throwError("Incorrect syntax for function declaration", tokens[index].line);
         }
