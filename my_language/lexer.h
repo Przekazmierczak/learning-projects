@@ -26,6 +26,7 @@ struct Lexer {
 
     void scanNumeric(const std::string& line);
     void scanIdentifier(const std::string& line);
+    void scanString(const std::string& line);
     void scanOperant(const std::string& line);
 
     void pushIdentifier(std::string identifier);

@@ -48,6 +48,11 @@ void Lexer::lex() {
                 continue;
             }
 
+            if (line[index] == '"') {
+                scanString(line);
+                continue;
+            }
+
             scanOperant(line);
         }
 
@@ -81,6 +86,22 @@ void Lexer::scanIdentifier(const std::string& line) {
         indentifier += line[index];
     }
     pushIdentifier(indentifier);
+}
+
+void Lexer::scanString(const std::string& line) {
+    std::string str;
+    while (index + 1 < line.size() && line[index + 1] != '"') {
+        index++;
+        str += line[index];
+    }
+
+    if (index + 1 < line.size() && line[index + 1] == '"') {
+        tokens.push_back(Token(Token::Type::String, str, currLine, index + 1));
+    } else {
+        throwError("String was never closed", currLine);
+    }
+    
+    index++;
 }
 
 void Lexer::scanOperant(const std::string& line) {
