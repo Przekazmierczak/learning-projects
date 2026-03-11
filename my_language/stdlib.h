@@ -9,12 +9,19 @@
 #include "helper.h"
 #include "variable.h"
 
-using NativeFun = Variable(*)(std::vector<Variable>);
+using Func = Variable(*)(const std::vector<Variable>&);
 
-extern std::unordered_map<std::string, int> nativeFunctionsNameMap;
-extern NativeFun nativeFunctions[];
-extern std::vector<FunctionMeta> nativeFunctionsMetaMap;
+struct NativeFunction {
+    std::string name;
+    int argsCount;
+    Func fun;
+};
 
-Variable print(std::vector<Variable> vars);
+extern std::vector<NativeFunction> nativeFunctions;
+
+Variable print(const std::vector<Variable>& vars);
+Variable printn(const std::vector<Variable>& vars);
+
+std::string printHelper(const Variable& var);
 
 #endif

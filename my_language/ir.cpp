@@ -294,9 +294,6 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
         if (functionsMetaMap[functionsNameMap[name]].argsCount != node->statements.size()) {
             throwError("Incorrect number of arguments in \"" + name + "\"", node->token.line, node->token.position);
         }
-        functionIndex = functionsNameMap[name];
-    } else if (nativeFunctionsNameMap.find(name) != nativeFunctionsNameMap.end()) {
-        functionIndex = nativeFunctionsNameMap[name];
     } else {
         throwError("Function \"" + name + "\" was never declared", node->token.line, node->token.position);
     }
@@ -312,7 +309,7 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     OP callInstruction;
     callInstruction.operation = OP::Type::Call;
-    callInstruction.src1 = functionIndex;
+    callInstruction.src1 = functionsNameMap[name];
     callInstruction.dst = ret;
     pushInstruction(callInstruction);
 

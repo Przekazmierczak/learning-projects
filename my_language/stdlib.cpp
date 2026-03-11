@@ -1,27 +1,27 @@
 #include "stdlib.h"
-#include "vm.h"
 
-std::unordered_map<std::string, int> nativeFunctionsNameMap =  {
-    { "print", 1 }
+std::vector<NativeFunction> nativeFunctions = {
+    {"print", 1, print},
+    {"printn", 1, printn}
 };
 
-std::vector<FunctionMeta> nativeFunctionsMetaMap = {
-    {0, 1, 0, true},
-};
-
-NativeFun nativeFunctions[] = {
-    print
-};
-
-Variable print(std::vector<Variable> vars) {
-    if (vars[0].isInt()) {
-        std::cout << vars[0].getInt() << std::endl;
-    } else if(vars[0].isBool()) {
-        std::cout << vars[0].getBool() << std::endl;
-    } else if (vars[0].isNaN()) {
-        std::cout << "NaN" << std::endl;
-    } else {
-        throwError("Unknown type in print");
-    }
+Variable print(const std::vector<Variable>& vars) {
+    std::cout << printHelper(vars[0]);
     return Variable();
+}
+
+Variable printn(const std::vector<Variable>& vars) {
+    std::cout << printHelper(vars[0]) << std::endl;
+    return Variable();
+}
+
+std::string printHelper(const Variable& var) {
+    if (var.isInt()) {
+        return std::to_string(var.getInt());
+    } else if(var.isBool()) {
+        return (var.getBool() ? "true" : "false");
+    } else if (var.isNaN()) {
+        return "NaN";
+    }
+    throwError("Unknown type in print");
 }

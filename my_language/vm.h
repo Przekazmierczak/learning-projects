@@ -8,7 +8,6 @@
 #include "ir.h"
 #include "helper.h"
 #include "variable.h"
-#include "stdlib.h"
 
 struct VM {
     struct Frame {
@@ -23,7 +22,7 @@ struct VM {
 
     std::vector<IR::OP>& mainInstructions;
     std::vector<IR::OP>& functionsInstructions;
-    std::vector<FunctionMeta>& functionsMap;
+    std::vector<IR::FunctionMeta>& functionsMap;
 
     std::vector<Variable> registers;
     std::vector<Frame> frames;
@@ -39,7 +38,7 @@ struct VM {
     VM(
         std::vector<IR::OP>& newMainInstructions,
         std::vector<IR::OP>& newFunctionsInstructions,
-        std::vector<FunctionMeta>& newFunctionsMap
+        std::vector<IR::FunctionMeta>& newFunctionsMap
     ) : 
         mainInstructions(newMainInstructions),
         functionsInstructions(newFunctionsInstructions),

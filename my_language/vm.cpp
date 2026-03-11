@@ -103,14 +103,14 @@ void VM::Load(IR::OP& inst) {
 }
 
 void VM::Call(IR::OP& inst) {
-    FunctionMeta funMeta = functionsMap[inst.src1];
-    // check
+    IR::FunctionMeta funMeta = functionsMap[inst.src1];
+    
     if (funMeta.native) {
         std::vector<Variable> args;
         for (int i = 0; i < funMeta.argsCount; i++) {
             args.push_back(registers[frames.back().topStack + i]);
         }
-        getVariable(inst.dst) = nativeFunctions[funMeta.startPC](args);
+        getVariable(inst.dst) = nativeFunctions[funMeta.startPC].fun(args);
 
         registersEnd = frames.back().topStack;
 

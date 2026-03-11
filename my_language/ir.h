@@ -9,7 +9,6 @@
 
 #include "parser.h"
 #include "stdlib.h"
-#include "variable.h"
 
 struct IR {
     struct OP {
@@ -34,6 +33,19 @@ struct IR {
         int val;
         bool bval;
         std::string name;
+    };
+
+    struct FunctionMeta {
+        int startPC;
+        int argsCount;
+        int regCount;
+        int varCount;
+
+        bool native;
+
+        FunctionMeta() = default; 
+        FunctionMeta(int pc, int args, int reg, bool newNative) :
+            startPC(pc), argsCount(args), regCount(reg), varCount(0), native(newNative) {};
     };
 
     enum class ContextType {
@@ -68,11 +80,17 @@ struct IR {
     IR(const std::unique_ptr<Parser::NodeAST>& node) {
         functionsNameMap["__main__"] = 0;
         functionsMetaMap.push_back(FunctionMeta(0, 0, 0, false));
-        // check
-        functionsNameMap.insert(nativeFunctionsNameMap.begin(), nativeFunctionsNameMap.end());
-        functionsMetaMap.insert(functionsMetaMap.end(), nativeFunctionsMetaMap.begin(), nativeFunctionsMetaMap.end());
+
+        // Load native functions
+        for (int i = 0; i < nativeFunctions.size(); i ++) {
+            addFunctionMeta(
+                nativeFunctions[i].name,
+                FunctionMeta(i, nativeFunctions[i].argsCount, 0, true)
+            );
+        }
 
         generate(node);
+
         functionsMetaMap[0].regCount = currGlobalReg;
         functionsMetaMap[0].varCount = nextVarIndex;
     }
