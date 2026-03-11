@@ -12,7 +12,7 @@ void VM::run() {
 }
 
 VM::Funct VM::dispatch[] = {
-    &VM::Int, &VM::Bool,
+    &VM::Int, &VM::Bool, &VM::String,
     &VM::Add, &VM::Sub, &VM::Mul, &VM::Div,
     &VM::Neg,
     &VM::Assign, &VM::Load,
@@ -29,6 +29,11 @@ void VM::Int(IR::OP& inst) {
 
 void VM::Bool(IR::OP& inst) {
     getVariable(inst.dst).value = inst.bval;
+    pc++;
+}
+
+void VM::String(IR::OP& inst) {
+    getVariable(inst.dst).value = inst.name;
     pc++;
 }
 
@@ -300,4 +305,22 @@ void VM::runCmp(IR::OP& inst) {
     } else {
         throwError("Incorrect types for Cmp");
     }
+}
+
+void VM::print() {
+    for (int i = 0; i < registers.size(); i++) {
+        if (registers[i].isNaN()) {
+            std::cout << "r" << i << "=[Nan],";
+        }
+        if (registers[i].isInt()) {
+            std::cout << "r" << i << "=[int, " << std::get<int>(registers[i].value) << "],";
+        }
+        if (registers[i].isBool()) {
+            std::cout << "r" << i << "=[bool, " << std::get<bool>(registers[i].value) << "],";
+        }
+        if (registers[i].isString()) {
+            std::cout << "r" << i << "=[string, \"" << std::get<std::string>(registers[i].value) << "\"],";
+        }
+    }
+    std::cout << std::endl;
 }

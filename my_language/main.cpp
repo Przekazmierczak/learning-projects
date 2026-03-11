@@ -11,29 +11,28 @@ int tests();
 
 int main() {
     Lexer lexer("code.duck");
-    lexer.printTokens();
+
+    #ifdef DEBUG
+        lexer.printTokens();
+    #endif
 
     Parser parser(lexer.tokens);
 
     IR irgenerator(parser.ASTroot);
-    irgenerator.print();
+
+    #ifdef DEBUG
+        irgenerator.print();
+    #endif
 
     VM vm(irgenerator.instructions, irgenerator.functionsInstructions, irgenerator.functionsMetaMap);
 
-    for (int i = 0; i < vm.registers.size(); i++) {
-        if (vm.registers[i].isInt()) {
-            std::cout << "r" << i << "=[int, " << std::get<int>(vm.registers[i].value) << "],";
-        }
-        if (vm.registers[i].isBool()) {
-            std::cout << "r" << i << "=[bool, " << std::get<bool>(vm.registers[i].value) << "],";
-        }
-        if (vm.registers[i].isNaN()) {
-            std::cout << "r" << i << "=[Nan],";
-        }
-    }
-    std::cout << std::endl;
+    #ifdef DEBUG
+        vm.print();
 
-    return tests();
+        return tests();
+    #endif
+    
+    return 0;
 }
 
 int tests() {

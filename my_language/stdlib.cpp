@@ -22,6 +22,8 @@ std::string printHelper(const Variable& var) {
         return (var.getBool() ? "true" : "false");
     } else if (var.isNaN()) {
         return "NaN";
+    } else if (var.isString()) {
+        return var.getString();
     }
     throwError("Unknown type in print");
 }

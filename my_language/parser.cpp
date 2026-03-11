@@ -169,6 +169,7 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
     if (
         match(Token::Type::Int) ||
         match(Token::Type::Bool) ||
+        match(Token::Type::String) ||
         match(Token::Type::Var) ||
         match(Token::Type::Arg)
     ) {

@@ -11,6 +11,9 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         case Token::Type::Bool:
             return addBoolInstructions(node);
 
+        case Token::Type::String:
+            return addStringInstructions(node);
+
         case Token::Type::Block:
             addBlockInstructions(node);
             return -1;
@@ -93,6 +96,15 @@ int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     newInstruction.operation = OP::Type::Bool;
     newInstruction.dst = getNextIndex();
     newInstruction.bval = node->token.bval;
+    pushInstruction(newInstruction);
+    return newInstruction.dst;
+}
+
+int IR::addStringInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
+    OP newInstruction;
+    newInstruction.operation = OP::Type::String;
+    newInstruction.dst = getNextIndex();
+    newInstruction.name = node->token.strval;
     pushInstruction(newInstruction);
     return newInstruction.dst;
 }
@@ -434,6 +446,10 @@ std::ostream& operator << (std::ostream& cout, IR::OP& inst)
 
         case IR::OP::Type::Bool:
             cout << "Move r" << inst.dst << ", " << inst.bval << std::endl;
+            return cout;
+
+        case IR::OP::Type::String:
+            cout << "Move r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
             return cout;
 
         case IR::OP::Type::Neg:

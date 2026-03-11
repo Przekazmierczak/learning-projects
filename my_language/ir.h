@@ -13,7 +13,7 @@
 struct IR {
     struct OP {
         enum Type {
-            Int, Bool,
+            Int, Bool, String,
             Add, Sub, Mul, Div,
             Neg,
             Assign, Load,
@@ -99,6 +99,8 @@ struct IR {
 
     int addIntInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    int addStringInstructions(const std::unique_ptr<Parser::NodeAST>& node);
+    
     void addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node);
     int addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node);
 

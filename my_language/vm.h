@@ -58,7 +58,7 @@ struct VM {
         run();
     }
 
-    void Int(IR::OP& inst); void Bool(IR::OP& inst);
+    void Int(IR::OP& inst); void Bool(IR::OP& inst); void String(IR::OP& inst);
     void Add(IR::OP& inst); void Sub(IR::OP& inst); void Mul(IR::OP& inst); void Div(IR::OP& inst);
     void Neg(IR::OP& inst);
     void Assign(IR::OP& inst); void Load(IR::OP& inst);
@@ -78,6 +78,8 @@ struct VM {
     Variable& getVariable(int offset);
 
     void runCmp(IR::OP& inst);
+
+    void print();
 };
 
 #endif
