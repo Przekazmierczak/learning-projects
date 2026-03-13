@@ -4,8 +4,10 @@ std::vector<NativeFunction> nativeFunctions = {
     {"print", 1, print},
     {"printn", 1, printn},
     {"input", 0, input},
-    {"intput", 0, intput},
-    {"toint", 1, toint}
+    {"inputInt", 0, inputInt},
+    {"toInt", 1, toInt},
+    {"toBool", 1, toBool},
+    {"toString", 1, toString}
 };
 
 Variable print(const std::vector<Variable>& vars) {
@@ -24,14 +26,14 @@ Variable input(const std::vector<Variable>& vars) {
     return Variable(input);
 }
 
-Variable intput(const std::vector<Variable>& vars) {
+Variable inputInt(const std::vector<Variable>& vars) {
     int input;
     std::cin >> input;
     return Variable(input);
 }
 
-Variable toint(const std::vector<Variable>& vars) {
-    Variable var = vars[0];
+Variable toInt(const std::vector<Variable>& vars) {
+    const Variable& var = vars[0];
 
     if (var.isInt()) {
         return var;
@@ -46,17 +48,71 @@ Variable toint(const std::vector<Variable>& vars) {
         try {
             return Variable(std::stoi(var.getString()));
         } catch (const std::invalid_argument& e) {
-            throwError("Variable (string) can not be converted to int - no digits");
+            throwError("String cannot convert to int");
         } catch (const std::out_of_range& e) {
-            throwError("Variable (string) can not be converted to int - too big number");
+            throwError("Number out of range");
         }
     }
 
     if (var.isNaN()) {
-        throwError("NaN can not be converted to int");
+        throwError("NaN cannot be converted to int");
     }
 
-    throwError("Incorrect Variable type in toint()");
+    throwError("Invalid type in toInt()");
+}
+
+Variable toBool(const std::vector<Variable>& vars) {
+    const Variable& var = vars[0];
+
+    if (var.isInt()) {
+        return Variable(var.getInt() != 0);
+    }
+    
+    if (var.isBool()) {
+        return var;
+    }
+    
+    if (var.isString()) {
+        bool res;
+        if (var.getString() == "true") {
+            res = true;
+        } else if (var.getString() == "false") {
+            res = false;
+        } else {
+            throwError("String cannot convert to bool");
+        }
+        return Variable(res);
+    }
+
+    if (var.isNaN()) {
+        throwError("NaN cannot convert to bool");
+    }
+
+    throwError("Invalid type in toBool()");
+}
+
+Variable toString(const std::vector<Variable>& vars) {
+    const Variable& var = vars[0];
+
+    if (var.isInt()) {
+        std::string str = std::to_string(var.getInt());
+        return Variable(str);
+    }
+    
+    if (var.isBool()) {
+        std::string str = var.getBool() ? "true" : "false";
+        return Variable(str);
+    }
+    
+    if (var.isString()) {
+        return var;
+    }
+
+    if (var.isNaN()) {
+        return Variable("NaN");
+    }
+
+    throwError("Invalid type in toString()");
 }
 
 std::string printHelper(const Variable& var) {

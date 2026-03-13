@@ -22,8 +22,10 @@ extern std::vector<NativeFunction> nativeFunctions;
 Variable print(const std::vector<Variable>& vars);
 Variable printn(const std::vector<Variable>& vars);
 Variable input(const std::vector<Variable>& vars);
-Variable intput(const std::vector<Variable>& vars);
-Variable toint(const std::vector<Variable>& vars);
+Variable inputInt(const std::vector<Variable>& vars);
+Variable toInt(const std::vector<Variable>& vars);
+Variable toBool(const std::vector<Variable>& vars);
+Variable toString(const std::vector<Variable>& vars);
 
 std::string printHelper(const Variable& var);
 
