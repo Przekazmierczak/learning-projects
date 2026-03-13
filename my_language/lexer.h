@@ -10,13 +10,13 @@
 #include "helper.h"
 
 struct Lexer {
-    std::string code;
+    std::string sourceCode;
     std::vector<Token> tokens;
 
     int index;
     int currLine = 1;
 
-    Lexer(std::string codeURL) : code(codeURL) {
+    Lexer(std::string codeURL) : sourceCode(codeURL) {
         lex();
     }
 
@@ -27,10 +27,10 @@ struct Lexer {
     void scanNumeric(const std::string& line);
     void scanIdentifier(const std::string& line);
     void scanString(const std::string& line);
-    void scanOperant(const std::string& line);
+    void scanOperator(const std::string& line);
 
-    void pushIdentifier(std::string identifier);
-    void printTokens();
+    void addIdentifierToken(std::string identifier);
+    void debugPrintTokens();
 };
 
 #endif

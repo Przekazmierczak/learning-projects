@@ -2,7 +2,7 @@
 
 void VM::run() {
     while (pc < (*frames.back().instructions).size()) {
-        IR::OP inst = getInstruction(pc);
+        IR::Opcode inst = getInstruction(pc);
         (this->*dispatch[inst.operation])(inst);
     }
 
@@ -22,22 +22,22 @@ VM::Funct VM::dispatch[] = {
     &VM::Push
 };
 
-void VM::Int(IR::OP& inst) {
+void VM::Int(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.val;
     pc++;
 }
 
-void VM::Bool(IR::OP& inst) {
+void VM::Bool(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.bval;
     pc++;
 }
 
-void VM::String(IR::OP& inst) {
+void VM::String(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.name;
     pc++;
 }
 
-void VM::Add(IR::OP& inst) {
+void VM::Add(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
 
@@ -51,7 +51,7 @@ void VM::Add(IR::OP& inst) {
     pc++;
 }
 
-void VM::Sub(IR::OP& inst) {
+void VM::Sub(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
 
@@ -63,7 +63,7 @@ void VM::Sub(IR::OP& inst) {
     pc++;
 }
 
-void VM::Mul(IR::OP& inst) {
+void VM::Mul(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
 
@@ -75,7 +75,7 @@ void VM::Mul(IR::OP& inst) {
     pc++;
 }
 
-void VM::Div(IR::OP& inst) {
+void VM::Div(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
 
@@ -88,7 +88,7 @@ void VM::Div(IR::OP& inst) {
     pc++;
 }
 
-void VM::Neg(IR::OP& inst) {
+void VM::Neg(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
     if (src1.isInt()) {
@@ -99,21 +99,21 @@ void VM::Neg(IR::OP& inst) {
     pc++;
 }
 
-void VM::Assign(IR::OP& inst) {
+void VM::Assign(IR::Opcode& inst) {
     frames.back().varMap[inst.src1] = getVariable(inst.dst);
     pc++;
 }
 
-void VM::Load(IR::OP& inst) {
+void VM::Load(IR::Opcode& inst) {
     getVariable(inst.dst) = frames.back().varMap[inst.src1];
     pc++;
 }
 
-void VM::Call(IR::OP& inst) {
+void VM::Call(IR::Opcode& inst) {
     IR::FunctionMeta funMeta = functionsMap[inst.src1];
     
     if (funMeta.native) {
-        std::vector<Variable> args;
+        std::vector<Value> args;
         for (int i = 0; i < funMeta.argsCount; i++) {
             args.push_back(registers[frames.back().topStack + i]);
         }
@@ -145,8 +145,8 @@ void VM::Call(IR::OP& inst) {
     }
 }
 
-void VM::Ret(IR::OP& inst) {
-    Variable result = getVariable(inst.dst);
+void VM::Ret(IR::Opcode& inst) {
+    Value result = getVariable(inst.dst);
     int returnReg = frames.back().returnReg;
     int returnPc = frames.back().returnPC;
 
@@ -157,48 +157,48 @@ void VM::Ret(IR::OP& inst) {
     registersEnd = frames.back().topStack;
 }
 
-void VM::Push(IR::OP& inst) {
+void VM::Push(IR::Opcode& inst) {
     resizeReg(registersEnd);
     registers[registersEnd] = getVariable(inst.src1);
     registersEnd++;
     pc++;
 }
 
-void VM::CmpEq(IR::OP& inst) {
+void VM::CmpEq(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::CmpNEq(IR::OP& inst) {
+void VM::CmpNEq(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::CmpGt(IR::OP& inst) {
+void VM::CmpGt(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::CmpLs(IR::OP& inst) {
+void VM::CmpLs(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::CmpGtEq(IR::OP& inst) {
+void VM::CmpGtEq(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::CmpLsEq(IR::OP& inst) {
+void VM::CmpLsEq(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
 }
 
-void VM::Jmp(IR::OP& inst) {
+void VM::Jmp(IR::Opcode& inst) {
     pc = inst.dst;
 }
 
-void VM::JmpZ(IR::OP& inst) {
+void VM::JmpZ(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
     if (src1.isBool()) {
@@ -218,7 +218,7 @@ void VM::JmpZ(IR::OP& inst) {
     }
 }
 
-void VM::JmpNZ(IR::OP& inst) {
+void VM::JmpNZ(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
     if (src1.isBool()) {
@@ -244,11 +244,11 @@ void VM::resizeReg(int dst) {
     }
 }
 
-const IR::OP& VM::getInstruction(int pc) {
+const IR::Opcode& VM::getInstruction(int pc) {
     return (*frames.back().instructions)[pc];
 }
 
-Variable& VM::getVariable(int offset) {
+Value& VM::getVariable(int offset) {
     int index = frames.back().bottomStack + offset;
     if (index >= registers.size()) {
         throwError("Index out of registers size in getVariable");
@@ -256,34 +256,34 @@ Variable& VM::getVariable(int offset) {
     return registers[index];
 }
 
-void VM::runCmp(IR::OP& inst) {
+void VM::runCmp(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
 
     if (src1.isInt() && getVariable(inst.src2).isInt()) {
         switch (inst.operation) {
             
-            case IR::OP::Type::CmpEq:
+            case IR::Opcode::Type::CmpEq:
                 getVariable(inst.dst).value = src1.getInt() == src2.getInt();
                 break;
 
-            case IR::OP::Type::CmpNEq:
+            case IR::Opcode::Type::CmpNEq:
                 getVariable(inst.dst).value = src1.getInt() != src2.getInt();
                 break;
 
-            case IR::OP::Type::CmpGt:
+            case IR::Opcode::Type::CmpGt:
                 getVariable(inst.dst).value = src1.getInt() > src2.getInt();
                 break;
 
-            case IR::OP::Type::CmpLs:
+            case IR::Opcode::Type::CmpLs:
                 getVariable(inst.dst).value = src1.getInt() < src2.getInt();
                 break;
             
-            case IR::OP::Type::CmpGtEq:
+            case IR::Opcode::Type::CmpGtEq:
                 getVariable(inst.dst).value = src1.getInt() >= src2.getInt();
                 break;
             
-            case IR::OP::Type::CmpLsEq:
+            case IR::Opcode::Type::CmpLsEq:
                 getVariable(inst.dst).value = src1.getInt() <= src2.getInt();
                 break;
 
@@ -293,11 +293,11 @@ void VM::runCmp(IR::OP& inst) {
     } else if (src1.isBool() && src2.isBool()) {
         switch (inst.operation) {
             
-            case IR::OP::Type::CmpEq:
+            case IR::Opcode::Type::CmpEq:
                 getVariable(inst.dst).value = src1.getBool() == src2.getBool();
                 break;
 
-            case IR::OP::Type::CmpNEq:
+            case IR::Opcode::Type::CmpNEq:
                 getVariable(inst.dst).value = src1.getBool() != src2.getBool();
                 break;
 

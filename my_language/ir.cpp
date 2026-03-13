@@ -1,7 +1,7 @@
 #include "ir.h"
 
 int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
+    Opcode newInstruction;
 
     switch (node->token.type) {
 
@@ -60,16 +60,16 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
         case Token::Type::Ret:
             return addRetInstructions(node);
 
-        case Token::Type::Add:newInstruction.operation = OP::Type::Add; break;
-        case Token::Type::Sub: newInstruction.operation = OP::Type::Sub; break;
-        case Token::Type::Mul: newInstruction.operation = OP::Type::Mul; break;
-        case Token::Type::Div: newInstruction.operation = OP::Type::Div; break;
-        case Token::Type::CmpEq: newInstruction.operation = OP::Type::CmpEq; break;
-        case Token::Type::CmpNEq: newInstruction.operation = OP::Type::CmpNEq; break;
-        case Token::Type::CmpGt: newInstruction.operation = OP::Type::CmpGt; break;
-        case Token::Type::CmpLs: newInstruction.operation = OP::Type::CmpLs; break;
-        case Token::Type::CmpGtEq: newInstruction.operation = OP::Type::CmpGtEq; break;
-        case Token::Type::CmpLsEq: newInstruction.operation = OP::Type::CmpLsEq; break;
+        case Token::Type::Add:newInstruction.operation = Opcode::Type::Add; break;
+        case Token::Type::Sub: newInstruction.operation = Opcode::Type::Sub; break;
+        case Token::Type::Mul: newInstruction.operation = Opcode::Type::Mul; break;
+        case Token::Type::Div: newInstruction.operation = Opcode::Type::Div; break;
+        case Token::Type::CmpEq: newInstruction.operation = Opcode::Type::CmpEq; break;
+        case Token::Type::CmpNEq: newInstruction.operation = Opcode::Type::CmpNEq; break;
+        case Token::Type::CmpGt: newInstruction.operation = Opcode::Type::CmpGt; break;
+        case Token::Type::CmpLs: newInstruction.operation = Opcode::Type::CmpLs; break;
+        case Token::Type::CmpGtEq: newInstruction.operation = Opcode::Type::CmpGtEq; break;
+        case Token::Type::CmpLsEq: newInstruction.operation = Opcode::Type::CmpLsEq; break;
 
         default:
             throwError("Unsupported token in IR generation", node->token.line, node->token.position);
@@ -83,8 +83,8 @@ int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addIntInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Int;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Int;
     newInstruction.dst = getNextIndex();
     newInstruction.val = node->token.val;
     pushInstruction(newInstruction);
@@ -92,8 +92,8 @@ int IR::addIntInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Bool;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Bool;
     newInstruction.dst = getNextIndex();
     newInstruction.bval = node->token.bval;
     pushInstruction(newInstruction);
@@ -101,8 +101,8 @@ int IR::addBoolInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addStringInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
-    newInstruction.operation = OP::Type::String;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::String;
     newInstruction.dst = getNextIndex();
     newInstruction.name = node->token.strval;
     pushInstruction(newInstruction);
@@ -120,8 +120,8 @@ void IR::addBlockInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Neg;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Neg;
     newInstruction.src1 = generate(node->left);
     newInstruction.dst = getNextIndex();
     pushInstruction(newInstruction);
@@ -134,8 +134,8 @@ void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
         throwError("Variable \"" + node->left->token.strval + "\" was never declared");
     }
 
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Assign;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Assign;
     newInstruction.dst = generate(node->right);
     newInstruction.src1 = currVarMap()[index][node->left->token.strval];
     pushInstruction(newInstruction);
@@ -147,8 +147,8 @@ int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
         throwError("Unknown variable name: \"" + node->token.strval + "\"");
     }
 
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Load;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Load;
     newInstruction.dst = getNextIndex();
     newInstruction.src1 = currVarMap()[index][node->token.strval];
     pushInstruction(newInstruction);
@@ -156,8 +156,8 @@ int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP JmpZ;
-    JmpZ.operation = OP::Type::JmpZ;
+    Opcode JmpZ;
+    JmpZ.operation = Opcode::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
     int pcSkipIf = currInstructionArray().size(); // Save Jmpnz location
@@ -166,8 +166,8 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     currInstructionArray()[pcSkipIf].dst = currInstructionArray().size();
 
     if (node->right) {
-        OP Jmp;
-        Jmp.operation = OP::Type::Jmp;
+        Opcode Jmp;
+        Jmp.operation = Opcode::Type::Jmp;
         int pcSkipElse = currInstructionArray().size(); // Save Jmp location
         pushInstruction(Jmp);
 
@@ -180,16 +180,16 @@ void IR::addIfInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
 void IR::addWhileInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     int pcStart = currInstructionArray().size();
-    OP JmpZ;
-    JmpZ.operation = OP::Type::JmpZ;
+    Opcode JmpZ;
+    JmpZ.operation = Opcode::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
     int pcEnd = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpZ);
     generate(node->left);
 
-    OP Jmp;
-    Jmp.operation = OP::Type::Jmp;
+    Opcode Jmp;
+    Jmp.operation = Opcode::Type::Jmp;
     Jmp.dst = pcStart;
     pushInstruction(Jmp);
 
@@ -200,8 +200,8 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     generate(node->right); // generate initialization
 
     int pcStart = currInstructionArray().size();
-    OP JmpZ;
-    JmpZ.operation = OP::Type::JmpZ;
+    Opcode JmpZ;
+    JmpZ.operation = Opcode::Type::JmpZ;
     JmpZ.src1 = generate(node->condition);
     
     int pcEnd = currInstructionArray().size(); // Save Jmpnz location
@@ -209,8 +209,8 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     generate(node->left); // generate for loop block
     generate(node->increment); // generate incrementation
 
-    OP Jmp;
-    Jmp.operation = OP::Type::Jmp;
+    Opcode Jmp;
+    Jmp.operation = Opcode::Type::Jmp;
     Jmp.dst = pcStart;
     pushInstruction(Jmp);
 
@@ -220,16 +220,16 @@ void IR::addForInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool ifAnd) {
     int left = generate(node->left);
 
-    OP JmpLeft;
-    JmpLeft.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
+    Opcode JmpLeft;
+    JmpLeft.operation = ifAnd ? Opcode::Type::JmpZ : Opcode::Type::JmpNZ;
     JmpLeft.src1 = left;
     int pcJmpLeft = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpLeft);
     
     int right = generate(node->right);
 
-    OP JmpRight;
-    JmpRight.operation = ifAnd ? OP::Type::JmpZ : OP::Type::JmpNZ;
+    Opcode JmpRight;
+    JmpRight.operation = ifAnd ? Opcode::Type::JmpZ : Opcode::Type::JmpNZ;
     JmpRight.src1 = right;
     int pcJmpRight = currInstructionArray().size(); // Save Jmpnz location
     pushInstruction(JmpRight);
@@ -237,8 +237,8 @@ int IR::addAndOrInstructions(const std::unique_ptr<Parser::NodeAST>& node, bool 
     int res = getNextIndex();
     addConst(res, ifAnd ? true : false);
 
-    OP Jmp;
-    Jmp.operation = OP::Type::Jmp;
+    Opcode Jmp;
+    Jmp.operation = Opcode::Type::Jmp;
     int pcJmp = currInstructionArray().size(); // Save Jmp location
     pushInstruction(Jmp);
 
@@ -261,8 +261,8 @@ void IR::addDecInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     currVarMap().back()[node->left->token.strval] = newIndex;
 
     if (node->right != nullptr) {
-        OP assign;
-        assign.operation = OP::Type::Assign;
+        Opcode assign;
+        assign.operation = Opcode::Type::Assign;
         assign.dst = generate(node->right);
         assign.src1 = newIndex;
         pushInstruction(assign);
@@ -288,8 +288,8 @@ void IR::addFunInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     generate(node->left);
 
-    OP blankReturn;
-    blankReturn.operation = OP::Type::Ret;
+    Opcode blankReturn;
+    blankReturn.operation = Opcode::Type::Ret;
     blankReturn.dst = getNextIndex();
     pushInstruction(blankReturn);
 
@@ -312,15 +312,15 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 
     int ret = getNextIndex();
 
-    OP loadArg;
-    loadArg.operation = OP::Type::Push;
+    Opcode loadArg;
+    loadArg.operation = Opcode::Type::Push;
     for (int i = 0; i < node->statements.size(); i++) {
         loadArg.src1 = generate(node->statements[i]);
         pushInstruction(loadArg);
     }
 
-    OP callInstruction;
-    callInstruction.operation = OP::Type::Call;
+    Opcode callInstruction;
+    callInstruction.operation = Opcode::Type::Call;
     callInstruction.src1 = functionsNameMap[name];
     callInstruction.dst = ret;
     pushInstruction(callInstruction);
@@ -329,16 +329,16 @@ int IR::addCallInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 }
 
 int IR::addRetInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
-    OP newInstruction;
-    newInstruction.operation = OP::Type::Ret;
+    Opcode newInstruction;
+    newInstruction.operation = Opcode::Type::Ret;
     newInstruction.dst = generate(node->left);
     pushInstruction(newInstruction);
     return newInstruction.dst;
 }
 
 int IR::addConst(int dst, int val) {
-    OP mov;
-    mov.operation = OP::Type::Int;
+    Opcode mov;
+    mov.operation = Opcode::Type::Int;
     mov.dst = dst;
     mov.val = val;
     pushInstruction(mov);
@@ -346,15 +346,15 @@ int IR::addConst(int dst, int val) {
 }
 
 int IR::addConst(int dst, bool val) {
-    OP mov;
-    mov.operation = OP::Type::Bool;
+    Opcode mov;
+    mov.operation = Opcode::Type::Bool;
     mov.dst = dst;
     mov.bval = val;
     pushInstruction(mov);
     return mov.dst;
 }
 
-void IR::pushInstruction(OP instruction) {
+void IR::pushInstruction(Opcode instruction) {
     if (currContext == ContextType::Default) {
         instructions.push_back(instruction);
     } else if (currContext == ContextType::FunDeclaration) {
@@ -362,7 +362,7 @@ void IR::pushInstruction(OP instruction) {
     }
 }
 
-std::vector<IR::OP>& IR::currInstructionArray() {
+std::vector<IR::Opcode>& IR::currInstructionArray() {
     if (currContext == ContextType::Default) {
         return instructions;
     } else if (currContext == ContextType::FunDeclaration) {
@@ -435,69 +435,69 @@ void IR::print() {
     std::cout << std::endl;
 }
 
-std::ostream& operator << (std::ostream& cout, IR::OP& inst)
+std::ostream& operator << (std::ostream& cout, IR::Opcode& inst)
 {
     std::string op;
     switch (inst.operation) {
 
-        case IR::OP::Type::Int:
+        case IR::Opcode::Type::Int:
             cout << "Move r" << inst.dst << ", " << inst.val << std::endl;
             return cout;
 
-        case IR::OP::Type::Bool:
+        case IR::Opcode::Type::Bool:
             cout << "Move r" << inst.dst << ", " << inst.bval << std::endl;
             return cout;
 
-        case IR::OP::Type::String:
+        case IR::Opcode::Type::String:
             cout << "Move r" << inst.dst << ", \"" << inst.name << "\"" << std::endl;
             return cout;
 
-        case IR::OP::Type::Neg:
+        case IR::Opcode::Type::Neg:
             cout << "Neg" << " r" << inst.dst << ", r" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::Assign:
+        case IR::Opcode::Type::Assign:
             cout << "Assign v" << inst.src1 << ", r" << inst.dst << std::endl;
             return cout;
 
-        case IR::OP::Type::Load:
+        case IR::Opcode::Type::Load:
             cout << "Load r" << inst.dst << ", v" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::Push:
+        case IR::Opcode::Type::Push:
             cout << "Push r" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::Jmp:
+        case IR::Opcode::Type::Jmp:
             cout << "Jmp pc" << inst.dst << std::endl;
             return cout;
 
-        case IR::OP::Type::JmpZ:
+        case IR::Opcode::Type::JmpZ:
             cout << "JmpZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::JmpNZ:
+        case IR::Opcode::Type::JmpNZ:
             cout << "JmpNZ pc" << inst.dst << ", r" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::Call:
+        case IR::Opcode::Type::Call:
             cout << "Call r" << inst.dst << ", f" << inst.src1 << std::endl;
             return cout;
 
-        case IR::OP::Type::Ret:
+        case IR::Opcode::Type::Ret:
             cout << "Return r" << inst.dst << std::endl;
             return cout;
 
-        case IR::OP::Type::Add: op = "Add"; break;
-        case IR::OP::Type::Sub: op = "Sub"; break;
-        case IR::OP::Type::Mul: op = "Mul"; break;
-        case IR::OP::Type::Div: op = "Div"; break;
-        case IR::OP::Type::CmpEq: op = "CmpEq"; break;
-        case IR::OP::Type::CmpNEq: op = "CmpNEq"; break;
-        case IR::OP::Type::CmpGt: op = "CmpGt"; break;
-        case IR::OP::Type::CmpLs: op = "CmpLs"; break;
-        case IR::OP::Type::CmpGtEq: op = "CmpGtEq"; break;
-        case IR::OP::Type::CmpLsEq: op = "CmpLsEq"; break;
+        case IR::Opcode::Type::Add: op = "Add"; break;
+        case IR::Opcode::Type::Sub: op = "Sub"; break;
+        case IR::Opcode::Type::Mul: op = "Mul"; break;
+        case IR::Opcode::Type::Div: op = "Div"; break;
+        case IR::Opcode::Type::CmpEq: op = "CmpEq"; break;
+        case IR::Opcode::Type::CmpNEq: op = "CmpNEq"; break;
+        case IR::Opcode::Type::CmpGt: op = "CmpGt"; break;
+        case IR::Opcode::Type::CmpLs: op = "CmpLs"; break;
+        case IR::Opcode::Type::CmpGtEq: op = "CmpGtEq"; break;
+        case IR::Opcode::Type::CmpLsEq: op = "CmpLsEq"; break;
 
         default:
             throwError("Unsupported token in << overload");

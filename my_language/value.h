@@ -1,18 +1,18 @@
-#ifndef VARIABLE_H
-#define VARIABLE_H
+#ifndef VALUE_H
+#define VALUE_H
 
 #include <variant>
 #include <string>
 
-struct Variable {
+struct Value {
     std::variant<std::monostate, int, bool, std::string> value;
 
-    Variable() = default;
-    Variable(int valInt) : value(valInt) {};
-    Variable(bool valBool) : value(valBool) {};
-    Variable(std::string valString) : value(valString) {};
+    Value() = default;
+    Value(int valInt) : value(valInt) {};
+    Value(bool valBool) : value(valBool) {};
+    Value(std::string valString) : value(valString) {};
 
-    bool operator==(const Variable& other) const {
+    bool operator==(const Value& other) const {
         return value == other.value;
     }
 

@@ -7,24 +7,24 @@
 
 #include "ir.h"
 #include "helper.h"
-#include "variable.h"
+#include "value.h"
 
 struct VM {
     struct Frame {
-        std::vector<IR::OP>* instructions;
+        std::vector<IR::Opcode>* instructions;
         int returnPC;
         int returnReg;
         int bottomStack;
         int topStack;
 
-        std::vector<Variable> varMap;
+        std::vector<Value> varMap;
     };
 
-    std::vector<IR::OP>& mainInstructions;
-    std::vector<IR::OP>& functionsInstructions;
+    std::vector<IR::Opcode>& mainInstructions;
+    std::vector<IR::Opcode>& functionsInstructions;
     std::vector<IR::FunctionMeta>& functionsMap;
 
-    std::vector<Variable> registers;
+    std::vector<Value> registers;
     std::vector<Frame> frames;
 
     int pc = 0;
@@ -32,12 +32,12 @@ struct VM {
     int currTopStack;
     int registersEnd;
     
-    using Funct = void(VM::*)(IR::OP& instruction);
+    using Funct = void(VM::*)(IR::Opcode& instruction);
     static Funct dispatch[];
 
     VM(
-        std::vector<IR::OP>& newMainInstructions,
-        std::vector<IR::OP>& newFunctionsInstructions,
+        std::vector<IR::Opcode>& newMainInstructions,
+        std::vector<IR::Opcode>& newFunctionsInstructions,
         std::vector<IR::FunctionMeta>& newFunctionsMap
     ) : 
         mainInstructions(newMainInstructions),
@@ -58,15 +58,15 @@ struct VM {
         run();
     }
 
-    void Int(IR::OP& inst); void Bool(IR::OP& inst); void String(IR::OP& inst);
-    void Add(IR::OP& inst); void Sub(IR::OP& inst); void Mul(IR::OP& inst); void Div(IR::OP& inst);
-    void Neg(IR::OP& inst);
-    void Assign(IR::OP& inst); void Load(IR::OP& inst);
-    void CmpEq(IR::OP& inst); void CmpNEq(IR::OP& inst); void CmpGt(IR::OP& inst);
-    void CmpLs(IR::OP& inst); void CmpGtEq(IR::OP& inst); void CmpLsEq(IR::OP& inst);
-    void Jmp(IR::OP& inst); void JmpZ(IR::OP& inst); void JmpNZ(IR::OP& inst);
-    void Call(IR::OP& inst); void Ret(IR::OP& inst);
-    void Push(IR::OP& inst);
+    void Int(IR::Opcode& inst); void Bool(IR::Opcode& inst); void String(IR::Opcode& inst);
+    void Add(IR::Opcode& inst); void Sub(IR::Opcode& inst); void Mul(IR::Opcode& inst); void Div(IR::Opcode& inst);
+    void Neg(IR::Opcode& inst);
+    void Assign(IR::Opcode& inst); void Load(IR::Opcode& inst);
+    void CmpEq(IR::Opcode& inst); void CmpNEq(IR::Opcode& inst); void CmpGt(IR::Opcode& inst);
+    void CmpLs(IR::Opcode& inst); void CmpGtEq(IR::Opcode& inst); void CmpLsEq(IR::Opcode& inst);
+    void Jmp(IR::Opcode& inst); void JmpZ(IR::Opcode& inst); void JmpNZ(IR::Opcode& inst);
+    void Call(IR::Opcode& inst); void Ret(IR::Opcode& inst);
+    void Push(IR::Opcode& inst);
 
     void run();
     void resizeReg(int dst);
@@ -74,10 +74,10 @@ struct VM {
     void pushFrame(Frame newFrame);
     void popFrame();
 
-    const IR::OP& getInstruction(int pc);
-    Variable& getVariable(int offset);
+    const IR::Opcode& getInstruction(int pc);
+    Value& getVariable(int offset);
 
-    void runCmp(IR::OP& inst);
+    void runCmp(IR::Opcode& inst);
 
     void print();
 };

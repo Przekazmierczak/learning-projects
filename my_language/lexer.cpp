@@ -1,7 +1,7 @@
 #include "lexer.h"
 
 void Lexer::lex() {
-    std::ifstream file(code);
+    std::ifstream file(sourceCode);
     std::string line;
     std::vector<int> indents;
 
@@ -53,7 +53,7 @@ void Lexer::lex() {
                 continue;
             }
 
-            scanOperant(line);
+            scanOperator(line);
         }
 
         // Push new line token
@@ -85,7 +85,7 @@ void Lexer::scanIdentifier(const std::string& line) {
         index++;
         indentifier += line[index];
     }
-    pushIdentifier(indentifier);
+    addIdentifierToken(indentifier);
 }
 
 void Lexer::scanString(const std::string& line) {
@@ -100,11 +100,11 @@ void Lexer::scanString(const std::string& line) {
     } else {
         throwError("String was never closed", currLine);
     }
-    
+
     index++;
 }
 
-void Lexer::scanOperant(const std::string& line) {
+void Lexer::scanOperator(const std::string& line) {
     switch (line[index]) {
 
         case ' ':
@@ -201,7 +201,7 @@ void Lexer::scanOperant(const std::string& line) {
         }
 }
 
-void Lexer::pushIdentifier(std::string identifier) {
+void Lexer::addIdentifierToken(std::string identifier) {
     int currPosition = index - identifier.size() + 1;
     if (identifier == "if") {
         tokens.push_back(Token(Token::Type::If, currLine, index));
@@ -230,7 +230,7 @@ void Lexer::pushIdentifier(std::string identifier) {
     }
 }
 
-void Lexer::printTokens() {
+void Lexer::debugPrintTokens() {
     for (int i = 0; i < tokens.size(); i++) {
         std::cout << tokens[i] << ", ";
     }

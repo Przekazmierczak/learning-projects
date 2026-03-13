@@ -11,7 +11,7 @@
 #include "stdlib.h"
 
 struct IR {
-    struct OP {
+    struct Opcode {
         enum Type {
             Int, Bool, String,
             Add, Sub, Mul, Div,
@@ -63,8 +63,8 @@ struct IR {
     std::vector<std::unordered_map<std::string, int>> functionsVarMap;
     int nextFunctionsVarIndex = 0;
 
-    std::vector<OP> instructions;
-    std::vector<OP> functionsInstructions;
+    std::vector<Opcode> instructions;
+    std::vector<Opcode> functionsInstructions;
 
     std::unordered_map<std::string, int> functionsNameMap;
     std::vector<FunctionMeta> functionsMetaMap;
@@ -122,8 +122,8 @@ struct IR {
     int addConst(int dst, int val);
     int addConst(int dst, bool val);
 
-    void pushInstruction(OP instruction);
-    std::vector<OP>& currInstructionArray();
+    void pushInstruction(Opcode instruction);
+    std::vector<Opcode>& currInstructionArray();
 
     std::vector<std::unordered_map<std::string, int>>& currVarMap();
     int getNextVarIndex();
@@ -135,6 +135,6 @@ struct IR {
     void print();
 };
 
-std::ostream& operator << (std::ostream& cout, IR::OP& inst);
+std::ostream& operator << (std::ostream& cout, IR::Opcode& inst);
 
 #endif

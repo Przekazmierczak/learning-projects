@@ -7,9 +7,9 @@
 #include <unordered_map>
 
 #include "helper.h"
-#include "variable.h"
+#include "value.h"
 
-using Func = Variable(*)(const std::vector<Variable>&);
+using Func = Value(*)(const std::vector<Value>&);
 
 struct NativeFunction {
     std::string name;
@@ -19,14 +19,14 @@ struct NativeFunction {
 
 extern std::vector<NativeFunction> nativeFunctions;
 
-Variable print(const std::vector<Variable>& vars);
-Variable printn(const std::vector<Variable>& vars);
-Variable input(const std::vector<Variable>& vars);
-Variable inputInt(const std::vector<Variable>& vars);
-Variable toInt(const std::vector<Variable>& vars);
-Variable toBool(const std::vector<Variable>& vars);
-Variable toString(const std::vector<Variable>& vars);
+Value print(const std::vector<Value>& vars);
+Value printn(const std::vector<Value>& vars);
+Value input(const std::vector<Value>& vars);
+Value inputInt(const std::vector<Value>& vars);
+Value toInt(const std::vector<Value>& vars);
+Value toBool(const std::vector<Value>& vars);
+Value toString(const std::vector<Value>& vars);
 
-std::string printHelper(const Variable& var);
+std::string printHelper(const Value& var);
 
 #endif
