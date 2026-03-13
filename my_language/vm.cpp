@@ -43,6 +43,8 @@ void VM::Add(IR::OP& inst) {
 
     if (src1.isInt() && src2.isInt()) {
         getVariable(inst.dst).value = src1.getInt() + src2.getInt();
+    } else if (src1.isString() && src2.isString()) {
+        getVariable(inst.dst).value = src1.getString() + src2.getString();
     } else {
         throwError("Incorrect types for Add");
     }
