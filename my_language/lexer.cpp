@@ -1,28 +1,33 @@
 #include "lexer.h"
 
+// -----------------------------------------------------------------------------
+// Main Lexing Loop
+// -----------------------------------------------------------------------------
+// Reads the source file line by line, handles indentation, and scans each token.
+// Emits Newline tokens and ensures proper closing Dedent tokens at EOF.
+// -----------------------------------------------------------------------------
 void Lexer::lex() {
     std::ifstream file(sourceCode);
     std::string line;
-    std::vector<int> indents;
+    std::vector<int> indents; // stack to track indentation levels
 
     indents.push_back(0);
 
     while (std::getline(file, line)) {
-        //int currPosition = 1;
         index = 0;
 
-        // Check current indentation
+        // Count leading spaces for indentation
         while (index < line.size() && line[index] == ' ') {
             index++;
         };
 
-        // Ignore empty line
+        // Skip empty lines
         if (index >= line.size()) {
             currLine++;
             continue;
         }
 
-        // Add Ind, Ded if indantation changed
+        // Handle indentation changes
         if (indents.empty() || index > indents.back()) {
             indents.push_back(index);
             tokens.push_back(Token(Token::Type::Ind, currLine, 1));
@@ -36,7 +41,7 @@ void Lexer::lex() {
             }
         }
         
-        // Scan for tokens
+        // Scan characters in the line
         for (; index < line.size(); index++) {
             if (std::isdigit(line[index])) {
                 scanNumeric(line);
@@ -56,18 +61,25 @@ void Lexer::lex() {
             scanOperator(line);
         }
 
-        // Push new line token
+        // Emit newline token
         tokens.push_back(Token(Token::Type::NewL ,currLine, index + 1));
         currLine++;
     }
 
-    // Add missing Ded to close indentation
+    // Close remaining indentation levels
     while (indents.size() > 1) {
         indents.pop_back();
         tokens.push_back(Token(Token::Type::Ded, currLine, 1));
     }
 }
 
+// -----------------------------------------------------------------------------
+// Scan Numeric Literal
+// -----------------------------------------------------------------------------
+// Parameters:
+//   line - current line from source code
+// Returns: none (updates tokens vector directly)
+// -----------------------------------------------------------------------------
 void Lexer::scanNumeric(const std::string& line) {
     std::string numStr;
     numStr += line[index];
@@ -78,6 +90,13 @@ void Lexer::scanNumeric(const std::string& line) {
     tokens.push_back(Token(Token::Type::Int, std::stoi(numStr), currLine, index + 1));
 }
 
+// -----------------------------------------------------------------------------
+// Scan Identifier or Keyword
+// -----------------------------------------------------------------------------
+// Parameters:
+//   line - current line from source code
+// Returns: none (adds keyword or variable token)
+// -----------------------------------------------------------------------------
 void Lexer::scanIdentifier(const std::string& line) {
     std::string indentifier;
     indentifier += line[index];
@@ -88,6 +107,14 @@ void Lexer::scanIdentifier(const std::string& line) {
     addIdentifierToken(indentifier);
 }
 
+// -----------------------------------------------------------------------------
+// Scan String Literal
+// -----------------------------------------------------------------------------
+// Parameters:
+//   line - current line from source code
+// Returns: none (adds string token)
+// Throws: error if string is not closed with a quote
+// -----------------------------------------------------------------------------
 void Lexer::scanString(const std::string& line) {
     std::string str;
     while (index + 1 < line.size() && line[index + 1] != '"') {
@@ -104,6 +131,15 @@ void Lexer::scanString(const std::string& line) {
     index++;
 }
 
+// -----------------------------------------------------------------------------
+// Scan Operator
+// -----------------------------------------------------------------------------
+// Parameters:
+//   line - current line from source code
+// Returns: none (adds operator token or throws error)
+// Throws: error if invalid symbol appear in source code
+// Notes: supports multi-character operators like ==, !=, >=, <=, &&, ||
+// -----------------------------------------------------------------------------
 void Lexer::scanOperator(const std::string& line) {
     switch (line[index]) {
 
@@ -201,6 +237,13 @@ void Lexer::scanOperator(const std::string& line) {
         }
 }
 
+// -----------------------------------------------------------------------------
+// Add Identifier Token
+// -----------------------------------------------------------------------------
+// Convert identifier to keyword or variable
+// Parameters:
+//   identifier - raw string from source code
+// -----------------------------------------------------------------------------
 void Lexer::addIdentifierToken(std::string identifier) {
     int currPosition = index - identifier.size() + 1;
     if (identifier == "if") {
@@ -230,6 +273,11 @@ void Lexer::addIdentifierToken(std::string identifier) {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Debug: Print Tokens
+// -----------------------------------------------------------------------------
+// Prints all tokens to stdout for debugging purposes
+// -----------------------------------------------------------------------------
 void Lexer::debugPrintTokens() {
     for (int i = 0; i < tokens.size(); i++) {
         std::cout << tokens[i] << ", ";
