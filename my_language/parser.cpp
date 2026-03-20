@@ -1,5 +1,12 @@
 #include "parser.h"
 
+// -----------------------------------------------------------------------------
+// Create Block
+// -----------------------------------------------------------------------------
+// Parses a block of statements until Ded (dedentation) or end of input.
+// Skips leading newlines.
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
     Token newBlock = Token(Token::Type::Block);
     auto newBlockAST = std::make_unique<NodeAST>(newBlock);
@@ -20,6 +27,19 @@ std::unique_ptr<Parser::NodeAST> Parser::createBlock() {
     return std::move(newBlockAST);
 }
 
+// -----------------------------------------------------------------------------
+// Create Statement
+// -----------------------------------------------------------------------------
+// Parses a single statement:
+// - control flow (if, while, for)
+// - function definition
+// - declaration
+// - return
+// - expression / assignment
+// Returns: unique pointer to abstract syntax tree node.
+// Throws:
+// - syntax errors for invalid constructs.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
     if (match(Token::Type::If)) {
         return createIfNode();
@@ -88,6 +108,13 @@ std::unique_ptr<Parser::NodeAST> Parser::createStatement() {
     throwError("Incorrect symbol after expression", tokens[index].line, tokens[index].position);
 }
 
+// -----------------------------------------------------------------------------
+// Create Expression
+// -----------------------------------------------------------------------------
+// Parses logical and comparison expressions.
+// Lowest precedence level (after arithmetic).
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
     std::unique_ptr<Parser::NodeAST> left = parseAddSub();
     while (
@@ -108,6 +135,12 @@ std::unique_ptr<Parser::NodeAST> Parser::createExpression() {
     return left;
 }
 
+// -----------------------------------------------------------------------------
+// Parse Add/Sub
+// -----------------------------------------------------------------------------
+// Handles addition and subtraction.
+// Returns: unique pointer to abstract syntax tree node
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::parseAddSub() {
     std::unique_ptr<NodeAST> left = parseMulDiv();
     while (match(Token::Type::Add) || match(Token::Type::Sub)) {
@@ -119,6 +152,12 @@ std::unique_ptr<Parser::NodeAST> Parser::parseAddSub() {
     return left;
 }
 
+// -----------------------------------------------------------------------------
+// Parse Mul/Div
+// -----------------------------------------------------------------------------
+// Handles multiplication and division (higher precedence than Add/Sub).
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::parseMulDiv() {
     std::unique_ptr<NodeAST> left = parseNeg();
     while (match(Token::Type::Mul) || match(Token::Type::Div)) {
@@ -130,6 +169,12 @@ std::unique_ptr<Parser::NodeAST> Parser::parseMulDiv() {
     return left;
 }
 
+// -----------------------------------------------------------------------------
+// Parse Unary Negation
+// -----------------------------------------------------------------------------
+// Handles unary minus (right-associative).
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
     if (match(Token::Type::Sub)) {
         Token negToken = Token(Token::Type::Neg, tokens[index].line, tokens[index].position);
@@ -140,6 +185,17 @@ std::unique_ptr<Parser::NodeAST> Parser::parseNeg() {
     return parsePrimary();
 }
 
+// -----------------------------------------------------------------------------
+// Parse Primary
+// -----------------------------------------------------------------------------
+// Parses:
+// - literals (int, bool, string)
+// - variables / arguments
+// - function calls
+// - parenthesized expressions
+// Throws: syntax error if no valid primary expression is found.
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
     if (match(Token::Type::Var) && matchNext(Token::Type::Lpar)) {
         Token callToken = tokens[index];
@@ -190,6 +246,14 @@ std::unique_ptr<Parser::NodeAST> Parser::parsePrimary() {
     throwError("Syntax error (incorrect primary)", tokens[index].line, tokens[index].position);
 }
 
+// -----------------------------------------------------------------------------
+// Match Token
+// -----------------------------------------------------------------------------
+// Checks whether the current token matches the given type.
+// Parameters:
+//   type - token type
+// Returns: true if current token match token from argument otherwise false.
+// -----------------------------------------------------------------------------
 bool Parser::match(Token::Type type) {
     if (index < tokens.size() && tokens[index].type == type) {
         return true;
@@ -197,6 +261,14 @@ bool Parser::match(Token::Type type) {
     return false;
 }
 
+// -----------------------------------------------------------------------------
+// Match Next Token
+// -----------------------------------------------------------------------------
+// Checks whether the next token matches the given type.
+// Parameters:
+//   type - token type
+// Returns: true if next token match token from argument otherwise false.
+// -----------------------------------------------------------------------------
 bool Parser::matchNext(Token::Type type) {
     if (index + 1< tokens.size() && tokens[index + 1].type == type) {
         return true;
@@ -204,6 +276,15 @@ bool Parser::matchNext(Token::Type type) {
     return false;
 }
 
+// -----------------------------------------------------------------------------
+// Create If Node
+// -----------------------------------------------------------------------------
+// Parses an if / else-if / else structure.
+// condition -> condition expression
+// left      -> if block
+// right     -> else block or nested if (else-if)
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createIfNode() {
     Token ifToken = tokens[index];
     index++; // consume if
@@ -226,6 +307,14 @@ std::unique_ptr<Parser::NodeAST> Parser::createIfNode() {
     return std::make_unique<NodeAST>(NodeAST(ifToken, std::move(condition), std::move(ifBlock), std::move(elseBlock)));
 }
 
+// -----------------------------------------------------------------------------
+// Create While Node
+// -----------------------------------------------------------------------------
+// Parses a while loop.
+// condition -> loop condition
+// left      -> loop body
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createWhileNode() {
     Token whileToken = tokens[index];
     index++; // consume while
@@ -236,6 +325,16 @@ std::unique_ptr<Parser::NodeAST> Parser::createWhileNode() {
     return std::make_unique<NodeAST>(NodeAST(whileToken, std::move(condition), std::move(whileBlock), nullptr));
 }
 
+// -----------------------------------------------------------------------------
+// Create For Node
+// -----------------------------------------------------------------------------
+// Parses a for loop.
+// right     -> initialization
+// condition -> loop condition
+// increment -> increment expression
+// left      -> loop body
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createForNode() {
     Token forToken = tokens[index];
     index++; // consume for
@@ -270,6 +369,14 @@ std::unique_ptr<Parser::NodeAST> Parser::createForNode() {
     return std::make_unique<NodeAST>(NodeAST(forToken, std::move(condition), std::move(forBlock), std::move(initial), std::move(increment)));
 }
 
+// -----------------------------------------------------------------------------
+// Create Declaration Node
+// -----------------------------------------------------------------------------
+// Parses variable declaration.
+// left  -> variable
+// right -> optional assigned expression
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createDeclarationNode() {
     index++;
 
@@ -292,6 +399,15 @@ std::unique_ptr<Parser::NodeAST> Parser::createDeclarationNode() {
     throwError("Incorrect declaration statement", tokens[index].line);
 }
 
+// -----------------------------------------------------------------------------
+// Create Assignment Node
+// -----------------------------------------------------------------------------
+// Parses assignment expression.
+// left  -> variable (must be assignable)
+// right -> assigned value
+// Throws: error if left side is not a valid l-value.
+// Returns: unique pointer to abstract syntax tree node.
+// -----------------------------------------------------------------------------
 std::unique_ptr<Parser::NodeAST> Parser::createAssignmentNode(std::unique_ptr<NodeAST> left) {
     if (left->token.type == Token::Type::Var) {
         Token currToken = tokens[index];
@@ -303,7 +419,14 @@ std::unique_ptr<Parser::NodeAST> Parser::createAssignmentNode(std::unique_ptr<No
     }
 }
 
-// Check and consume Semicolon, New line and Indentation tokens
+// -----------------------------------------------------------------------------
+// Consume SNI (Semicolon, NewLine, Indentation)
+// -----------------------------------------------------------------------------
+// Ensures and consumes the sequence:
+// ";" -> NewLine -> Indentation
+// Used to enforce block structure.
+// Throws: error if any required token is missing
+// -----------------------------------------------------------------------------
 void Parser::consumeSNI() {
     if (!match(Token::Type::Scolon)) {
         throwError("\";\" is missing", tokens[index].line, tokens[index].position);

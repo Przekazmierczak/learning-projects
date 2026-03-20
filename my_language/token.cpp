@@ -1,5 +1,10 @@
 #include "token.h"
 
+// -----------------------------------------------------------------------------
+// Stream output operator
+// -----------------------------------------------------------------------------
+// Prints a Token in a readable format (for debugging).
+// -----------------------------------------------------------------------------
 std::ostream& operator << (std::ostream& cout, const Token& token)
 {
     if (token.type == Token::Type::Int) {

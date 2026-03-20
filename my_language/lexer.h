@@ -23,6 +23,7 @@
 // Lexer Structure
 // -----------------------------------------------------------------------------
 // Stores source file path, tokens, current index, and current line.
+// -----------------------------------------------------------------------------
 struct Lexer {
     std::string sourceCode; // Path to source code file
     std::vector<Token> tokens; // Tokens produced by the lexer
