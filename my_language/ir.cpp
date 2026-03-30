@@ -4,9 +4,13 @@
 // Main IR Generation Dispatcher
 // -----------------------------------------------------------------------------
 // Traverses AST and dispatches node types to appropriate handlers.
+// Parameters:
+//   node - current AST node
 // Returns:
 //   - register index for expressions
 //   - -1 for statements
+// Throws:
+//   error if unsupported token is encountered
 // -----------------------------------------------------------------------------
 int IR::generate(const std::unique_ptr<Parser::NodeAST>& node) {
     Opcode newInstruction;
@@ -179,6 +183,9 @@ int IR::addNegInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
 // -----------------------------------------------------------------------------
 // Variable Assignment
 // -----------------------------------------------------------------------------
+// Assigns evaluated expression to an existing variable.
+// Throws error if variable is not declared.
+// -----------------------------------------------------------------------------
 void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
     int index = findInMaps(node->left->token.strval);
     if (index == -1) {
@@ -194,6 +201,9 @@ void IR::addAssignInstructions(const std::unique_ptr<Parser::NodeAST>& node){
 
 // -----------------------------------------------------------------------------
 // Variable Load
+// -----------------------------------------------------------------------------
+// Loads variable value into a register.
+// Throws error if variable is not found.
 // -----------------------------------------------------------------------------
 int IR::addVarInstructions(const std::unique_ptr<Parser::NodeAST>& node) {
     int index = findInMaps(node->token.strval);
