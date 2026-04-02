@@ -1,5 +1,16 @@
+// -----------------------------------------------------------------------------
+// Standard Library Implementation
+// -----------------------------------------------------------------------------
+// Implements native functions used by the VM.
+//
+// Includes I/O operations and type conversions.
+// -----------------------------------------------------------------------------
+
 #include "stdlib.h"
 
+// -----------------------------------------------------------------------------
+// Native Functions Table Initialization
+// -----------------------------------------------------------------------------
 std::vector<NativeFunction> nativeFunctions = {
     {"print", 1, print},
     {"printn", 1, printn},
@@ -10,28 +21,69 @@ std::vector<NativeFunction> nativeFunctions = {
     {"toString", 1, toString}
 };
 
+// -----------------------------------------------------------------------------
+// Print (No Newline)
+// -----------------------------------------------------------------------------
+// Prints value without newline.
+// Parameters:
+//   vars - vector containing one Value to print
+// Returns: Empty Value (NaN)
+// -----------------------------------------------------------------------------
 Value print(const std::vector<Value>& vars) {
     std::cout << printHelper(vars[0]);
     return Value();
 }
 
+// -----------------------------------------------------------------------------
+// Print (With Newline)
+// -----------------------------------------------------------------------------
+// Prints value followed by newline.
+// Parameters:
+//   vars - vector containing one Value to print
+// Returns: Empty Value (NaN)
+// -----------------------------------------------------------------------------
 Value printn(const std::vector<Value>& vars) {
     std::cout << printHelper(vars[0]) << std::endl;
     return Value();
 }
 
+// -----------------------------------------------------------------------------
+// Input (String)
+// -----------------------------------------------------------------------------
+// Reads a full line from standard input.
+// Parameters:
+//   vars - unused
+// Returns: Value containing input string
+// -----------------------------------------------------------------------------
 Value input(const std::vector<Value>& vars) {
     std::string input;
     std::getline(std::cin, input);
     return Value(input);
 }
 
+// -----------------------------------------------------------------------------
+// Input (Integer)
+// -----------------------------------------------------------------------------
+// Reads integer from standard input.
+// Parameters:
+//   vars - unused
+// Returns: Value containing integer
+// -----------------------------------------------------------------------------
 Value inputInt(const std::vector<Value>& vars) {
     int input;
     std::cin >> input;
     return Value(input);
 }
 
+// -----------------------------------------------------------------------------
+// Convert to Integer
+// -----------------------------------------------------------------------------
+// Converts Value to integer if possible.
+// Parameters:
+//   vars - vector containing one Value
+// Returns: Value containing integer
+// Throws: Error if conversion fails or type is invalid
+// -----------------------------------------------------------------------------
 Value toInt(const std::vector<Value>& vars) {
     const Value& var = vars[0];
 
@@ -61,6 +113,15 @@ Value toInt(const std::vector<Value>& vars) {
     throwError("Invalid type in toInt()");
 }
 
+// -----------------------------------------------------------------------------
+// Convert to Boolean
+// -----------------------------------------------------------------------------
+// Converts Value to boolean if possible.
+// Parameters:
+//   vars - vector containing one Value
+// Returns: Value containing boolean
+// Throws: Error if conversion fails or type is invalid
+// -----------------------------------------------------------------------------
 Value toBool(const std::vector<Value>& vars) {
     const Value& var = vars[0];
 
@@ -91,6 +152,15 @@ Value toBool(const std::vector<Value>& vars) {
     throwError("Invalid type in toBool()");
 }
 
+// -----------------------------------------------------------------------------
+// Convert to String
+// -----------------------------------------------------------------------------
+// Converts Value to string representation.
+// Parameters:
+//   vars - vector containing one Value
+// Returns: Value containing string
+// Throws: Error if type is invalid
+// -----------------------------------------------------------------------------
 Value toString(const std::vector<Value>& vars) {
     const Value& var = vars[0];
 
@@ -115,6 +185,15 @@ Value toString(const std::vector<Value>& vars) {
     throwError("Invalid type in toString()");
 }
 
+// -----------------------------------------------------------------------------
+// Print Helper
+// -----------------------------------------------------------------------------
+// Converts Value to printable string representation.
+// Parameters:
+//   var - Value to convert
+// Returns: String representation of Value
+// Throws: Error if type is unknown
+// -----------------------------------------------------------------------------
 std::string printHelper(const Value& var) {
     if (var.isInt()) {
         return std::to_string(var.getInt());

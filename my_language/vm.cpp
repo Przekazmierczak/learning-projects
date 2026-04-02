@@ -1,5 +1,23 @@
+// -----------------------------------------------------------------------------
+// VM Implementation
+// -----------------------------------------------------------------------------
+// Implements execution logic for the Virtual Machine.
+//
+// Each function corresponds to a specific IR opcode and performs
+// operations on registers, stack frames, and control flow.
+//
+// The VM uses a dispatch table to efficiently execute instructions.
+// -----------------------------------------------------------------------------
+
 #include "vm.h"
 
+// -----------------------------------------------------------------------------
+// Main Execution Loop
+// -----------------------------------------------------------------------------
+// Iterates through instructions and executes them using dispatch table.
+// Returns: none
+// Throws: Runtime error if execution ends inside a function frame
+// -----------------------------------------------------------------------------
 void VM::run() {
     while (pc < (*frames.back().instructions).size()) {
         IR::Opcode inst = getInstruction(pc);
@@ -11,6 +29,9 @@ void VM::run() {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Dispatch Table Initialization
+// -----------------------------------------------------------------------------
 VM::Funct VM::dispatch[] = {
     &VM::Int, &VM::Bool, &VM::String,
     &VM::Add, &VM::Sub, &VM::Mul, &VM::Div,
@@ -22,21 +43,53 @@ VM::Funct VM::dispatch[] = {
     &VM::Push
 };
 
+// -----------------------------------------------------------------------------
+// Load Integer Constant
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing destination and integer value
+// Returns: none
+// -----------------------------------------------------------------------------
 void VM::Int(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.val;
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Load Boolean Constant
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing destination and boolean value
+// Returns: none
+// -----------------------------------------------------------------------------
 void VM::Bool(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.bval;
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Load String Constant
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing destination and string value
+// Returns: none
+// -----------------------------------------------------------------------------
 void VM::String(IR::Opcode& inst) {
     getVariable(inst.dst).value = inst.name;
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Addition Operation
+// -----------------------------------------------------------------------------
+// Supports int + int and string + string
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+// Throws: Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::Add(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
@@ -51,6 +104,17 @@ void VM::Add(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Subtraction Operation
+// -----------------------------------------------------------------------------
+// Supports int - int
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+// Throws: Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::Sub(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
@@ -63,6 +127,17 @@ void VM::Sub(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Multiplication Operation
+// -----------------------------------------------------------------------------
+// Supports int * int
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+// Throws: Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::Mul(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
@@ -75,6 +150,19 @@ void VM::Mul(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Division Operation
+// -----------------------------------------------------------------------------
+// Supports int / int
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+// Throws:
+//   Error on division by zero or invalid types
+//   Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::Div(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
@@ -88,6 +176,16 @@ void VM::Div(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Negation Operation
+// -----------------------------------------------------------------------------
+// Supports -int
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> operand register index
+// Throws: Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::Neg(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
@@ -99,16 +197,44 @@ void VM::Neg(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Assign Variable
+// -----------------------------------------------------------------------------
+// Copies register value into variable map
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> source register index (value to copy)
+//          src1 -> variable index in current frame
+// -----------------------------------------------------------------------------
 void VM::Assign(IR::Opcode& inst) {
     frames.back().varMap[inst.src1] = getVariable(inst.dst);
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Load Variable
+// -----------------------------------------------------------------------------
+// Loads variable from frame into register
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register index
+//          src1 -> variable index in current frame
+// -----------------------------------------------------------------------------
 void VM::Load(IR::Opcode& inst) {
     getVariable(inst.dst) = frames.back().varMap[inst.src1];
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Function Call
+// -----------------------------------------------------------------------------
+// Handles both native and user-defined functions
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> register to store return value
+//          src1 -> function index in functionsMap
+// Throws: Error if function metadata is invalid
+// -----------------------------------------------------------------------------
 void VM::Call(IR::Opcode& inst) {
     IR::FunctionMeta funMeta = functionsMap[inst.src1];
     
@@ -145,6 +271,14 @@ void VM::Call(IR::Opcode& inst) {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Return from Function
+// -----------------------------------------------------------------------------
+// Restores previous frame and passes return value
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> register holding return value
+// -----------------------------------------------------------------------------
 void VM::Ret(IR::Opcode& inst) {
     Value result = getVariable(inst.dst);
     int returnReg = frames.back().returnReg;
@@ -157,6 +291,13 @@ void VM::Ret(IR::Opcode& inst) {
     registersEnd = frames.back().topStack;
 }
 
+// -----------------------------------------------------------------------------
+// Push Argument onto Stack
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing:
+//          src1 -> register index of value to push onto stack
+// -----------------------------------------------------------------------------
 void VM::Push(IR::Opcode& inst) {
     resizeReg(registersEnd);
     registers[registersEnd] = getVariable(inst.src1);
@@ -164,6 +305,15 @@ void VM::Push(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Comparison Operations
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing:
+//          dst  -> destination register for boolean result
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+// -----------------------------------------------------------------------------
 void VM::CmpEq(IR::Opcode& inst) {
     runCmp(inst);
     pc++;
@@ -194,10 +344,25 @@ void VM::CmpLsEq(IR::Opcode& inst) {
     pc++;
 }
 
+// -----------------------------------------------------------------------------
+// Unconditional Jump
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing:
+//          dst -> target instruction index (program counter)
+// -----------------------------------------------------------------------------
 void VM::Jmp(IR::Opcode& inst) {
     pc = inst.dst;
 }
 
+// -----------------------------------------------------------------------------
+// Jump If Zero / False
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing:
+//          src1 -> condition register index
+//          dst  -> target instruction index (program counter)
+// -----------------------------------------------------------------------------
 void VM::JmpZ(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
@@ -218,6 +383,14 @@ void VM::JmpZ(IR::Opcode& inst) {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Jump If Not Zero / True
+// -----------------------------------------------------------------------------
+// Parameters:
+//   inst - IR instruction containing:
+//          src1 -> condition register index
+//          dst  -> target instruction index (program counter)
+// -----------------------------------------------------------------------------
 void VM::JmpNZ(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
 
@@ -238,16 +411,37 @@ void VM::JmpNZ(IR::Opcode& inst) {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Resize Register Storage
+// -----------------------------------------------------------------------------
+// Parameters:
+//   dst - required register index
+// -----------------------------------------------------------------------------
 void VM::resizeReg(int dst) {
     if (dst >= registers.size()) {
         registers.resize(dst + 1);
     }
 }
 
+// -----------------------------------------------------------------------------
+// Fetch Instruction
+// -----------------------------------------------------------------------------
+// Parameters:
+//   pc - program counter index of instruction to fetch
+// Returns:
+//   Reference to the IR instruction at given pc
+// -----------------------------------------------------------------------------
 const IR::Opcode& VM::getInstruction(int pc) {
     return (*frames.back().instructions)[pc];
 }
 
+
+// -----------------------------------------------------------------------------
+// Access Register Variable
+// -----------------------------------------------------------------------------
+// Throws:
+//   Error if index is out of bounds
+// -----------------------------------------------------------------------------
 Value& VM::getVariable(int offset) {
     int index = frames.back().bottomStack + offset;
     if (index >= registers.size()) {
@@ -256,6 +450,17 @@ Value& VM::getVariable(int offset) {
     return registers[index];
 }
 
+// -----------------------------------------------------------------------------
+// Comparison Logic
+// -----------------------------------------------------------------------------
+// Handles all comparison operations based on opcode type
+//   inst - IR instruction containing:
+//          dst  -> destination register for result
+//          src1 -> first operand register index
+//          src2 -> second operand register index
+//          operation -> comparison type (e.g., Eq, Gt, etc.)
+// Throws: Error on incompatible types
+// -----------------------------------------------------------------------------
 void VM::runCmp(IR::Opcode& inst) {
     auto& src1 = getVariable(inst.src1);
     auto& src2 = getVariable(inst.src2);
@@ -309,6 +514,9 @@ void VM::runCmp(IR::Opcode& inst) {
     }
 }
 
+// -----------------------------------------------------------------------------
+// Debug Print Registers
+// -----------------------------------------------------------------------------
 void VM::print() {
     for (int i = 0; i < registers.size(); i++) {
         if (registers[i].isNaN()) {
